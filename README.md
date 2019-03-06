@@ -23,9 +23,9 @@ wget https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz
 tar -xvf ./ants_bees.tar.gz
 ```
 
-and unpack it to `catalyst/examples/data` folder:
+and unpack it to `data` folder:
 ```bash
-catalyst/examples/data/
+finetune.catalyst/data/
     ants_bees/
         ants/
             ...
@@ -40,7 +40,7 @@ catalyst-data tag2label \
     --out-dataset=./data/ants_bees/dataset.csv \
     --out-labeling=./data/ants_bees/tag2cls.json
 
-python finetune/prepare_splits.py \
+python src/prepare_splits.py \
     --in-csv=./data/ants_bees/dataset.csv \
     --tag2class=./data/ants_bees/tag2cls.json \
     --tag-column=tag \
@@ -66,7 +66,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-base bash finetune/bin/run_model.sh
+   catalyst-base bash bin/run_model.sh
 ```
 
 ### Training visualization

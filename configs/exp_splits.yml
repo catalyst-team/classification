@@ -1,0 +1,119 @@
+model_params:
+  fp16: false       # general flag
+  model: baseline
+  encoder_params:
+    arch: resnet18
+    pretrained: True
+    frozen: True
+    pooling: GlobalConcatPool2d
+  head_params:
+    hiddens: [1024]
+    emb_size: 64
+    n_cls: 2
+    activation_fn: ReLU
+    norm_fn: BatchNorm1d
+    bias: false
+    dropout: 0.5
+
+args:
+  expdir: "finetune"
+  logdir: &logdir "/logs/finetune"
+  baselogdir: "./logs/finetune"
+
+stages:
+
+  state_params:
+    main_metric: &reduce_metric precision01
+    minimize_metric: False
+
+  criterion_params:
+    criterion: CrossEntropyLoss
+
+  scheduler_params:
+    scheduler: MultiStepLR
+    milestones: [8]
+    gamma: 0.3
+
+  # train head
+  stage1:
+
+    state_params:
+      n_epochs: 10
+
+    data_params:
+      n_workers: 4
+      batch_size: 64
+      in_csv_train: "./data/ants_bees/dataset_train.csv"
+      in_csv_valid: "./data/ants_bees/dataset_valid.csv"
+      datapath: "./data/ants_bees/"
+
+    optimizer_params:
+      optimizer: Adam
+      lr: 0.001
+      weight_decay: 0.0001
+
+    callbacks_params:
+      loss:
+        callback: EmbeddingsLossCallback
+        emb_l2_reg: -1
+      optimizer:
+        callback: OptimizerCallback
+      precision:
+        callback: PrecisionCallback
+        precision_args: [1]
+      scheduler:
+        callback: SchedulerCallback
+        reduce_metric: *reduce_metric
+      saver:
+        callback: CheckpointCallback
+
+  # tune whole network
+  stage2:
+
+    state_params:
+      n_epochs: 5
+
+    data_params:
+      n_workers: 4
+      batch_size: 64
+      in_csv_train: "./data/ants_bees/dataset_train.csv"
+      in_csv_valid: "./data/ants_bees/dataset_valid.csv"
+      datapath: "./data/ants_bees/"
+
+    optimizer_params:
+      optimizer: SGD
+      lr: 0.0001
+
+    callbacks_params:
+      loss:
+        callback: EmbeddingsLossCallback
+        emb_l2_reg: -1
+      optimizer:
+        callback: OptimizerCallback
+      precision:
+        callback: PrecisionCallback
+        precision_args: [1]
+      scheduler:
+        callback: SchedulerCallback
+        reduce_metric: *reduce_metric
+      saver:
+        callback: CheckpointCallback
+
+  infer:
+
+    data_params:
+      n_workers: 4
+      batch_size: 64
+
+      in_csv_train: null
+      in_csv_valid: "./data/ants_bees/dataset_valid.csv"
+      in_csv_infer: "./data/ants_bees/dataset_train.csv"
+      datapath: "./data/ants_bees/"
+
+    callbacks_params:
+      loader:
+        callback: CheckpointCallback
+      infer:
+        callback: InferCallback
+        out_dir: *logdir
+        out_prefix: "dataset.predictions.{suffix}.npy"
