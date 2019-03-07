@@ -3,9 +3,8 @@ set -e
 
 echo "training...and inference"
 catalyst-dl run \
-    --expdir=src \
     --config=configs/exp_splits.yml \
-    --logdir=${LOGDIR} \
+    --logdir="${LOGDIR}" \
     --verbose
 
 # docker trick

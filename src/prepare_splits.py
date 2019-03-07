@@ -1,6 +1,7 @@
 import argparse
+import json
 import pandas as pd
-from catalyst.legacy.utils.parse import parse_in_csvs
+from catalyst.utils.parse import read_csv_data
 
 
 def build_args(parser):
@@ -37,14 +38,16 @@ def main(args, _=None):
         if args.valid_folds is not None else None
     )
 
-    df, df_train, df_valid, _ = parse_in_csvs(
+    tag2class = json.load(open(args.tag2class))
+
+    df, df_train, df_valid, _ = read_csv_data(
         in_csv=args.in_csv,
-        tag2class=args.tag2class,
+        tag2class=tag2class,
         tag_column=args.tag_column,
         class_column=args.class_column,
         train_folds=train_folds,
         valid_folds=valid_folds,
-        folds_seed=args.folds_seed,
+        seed=args.folds_seed,
         n_folds=args.n_folds
     )
     df.to_csv(args.out_csv, index=False)

@@ -16,8 +16,8 @@ model_params:
     dropout: 0.5
 
 args:
-  expdir: "finetune"
-  logdir: &logdir "/logs/finetune"
+  expdir: "src"
+  logdir: &logdir "./logs/finetune"
   baselogdir: "./logs/finetune"
 
 stages:
@@ -116,4 +116,4 @@ stages:
       infer:
         callback: InferCallback
         out_dir: *logdir
-        out_prefix: "dataset.predictions.{suffix}.npy"
+        out_prefix: "/predictions/{suffix}.npy"
