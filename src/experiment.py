@@ -13,10 +13,8 @@ from albumentations.torch import ToTensor
 import torch
 import torch.nn as nn
 
-from catalyst.dl.utils import UtilsFactory
 from catalyst.data.reader import ImageReader, ScalarReader, ReaderCompose
 from catalyst.data.augmentor import Augmentor
-from catalyst.data.sampler import BalanceClassSampler
 from catalyst.utils.parse import read_csv_data
 from catalyst.dl.experiments import ConfigExperiment
 from catalyst.data.dataset import ListDataset
@@ -162,8 +160,6 @@ class Experiment(ConfigExperiment):
                 datasets[mode] = dataset
 
         return datasets
-
-
 
     # def get_loaders(
     #     self,

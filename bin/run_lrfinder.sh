@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-catalyst-dl train \
+catalyst-dl run \
     --expdir=finetune \
-    --config=finetune/configs/debug.yml \
+    --config=./configs/finetune/debug.yml \
     --logdir=${LOGDIR} --verbose
 
 # docker trick

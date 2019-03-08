@@ -2,32 +2,32 @@
 set -e
 
 echo "Training...1"
-catalyst-dl train \
+catalyst-dl run \
     --expdir=finetune \
-    --config=finetune/configs/train_splits.yml \
-    --baselogdir=${BASELOGDIR} --verbose
+    --config=./configs/finetune/exp_splits.yml \
+    --logdir=${BASELOGDIR} --verbose
 
 echo "Training...2"
-catalyst-dl train \
+catalyst-dl run \
     --expdir=finetune \
-    --config=finetune/configs/train_splits.yml \
-    --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/finetune/exp_splits.yml \
+    --logdir=${BASELOGDIR} --verbose \
     --model_params/encoder_params/pooling=GlobalAvgPool2d:str \
     --model_params/head_params/hiddens=[512]:list
 
 echo "Training...3"
-catalyst-dl train \
+catalyst-dl run \
     --expdir=finetune \
-    --config=finetune/configs/train_splits.yml \
-    --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/finetune/exp_splits.yml \
+    --logdir=${BASELOGDIR} --verbose \
     --model_params/encoder_params/pooling=GlobalMaxPool2d:str \
     --model_params/head_params/hiddens=[512]:list
 
 echo "Training...4"
-catalyst-dl train \
+catalyst-dl run \
     --expdir=finetune \
-    --config=finetune/configs/train_splits.yml \
-    --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/finetune/exp_splits.yml \
+    --logdir=${BASELOGDIR} --verbose \
     --model_params/head_params/emb_size=128:int
 
 # docker trick

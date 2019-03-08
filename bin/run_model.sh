@@ -3,7 +3,7 @@ set -e
 
 echo "training...and inference"
 catalyst-dl run \
-    --config=configs/exp_splits.yml \
+    --config=configs/finetune/exp_splits.yml \
     --logdir="${LOGDIR}" \
     --verbose
 
