@@ -56,7 +56,7 @@ for ((i=0; i < N_TRIALS; ++i)); do
         --out-labeling="${DATAPATH_PROCESSED}"/tag2cls.json
 
     catalyst-dl train \
-        --expdir=finetune \
+        --expdir=src \
         --config=configs/autolabel/train.yml \
         --logdir="${LOGDIR}" \
         --stages/data_params/datapath="${DATAPATH_PROCESSED}":str \
@@ -65,7 +65,7 @@ for ((i=0; i < N_TRIALS; ++i)); do
         --model_params/head_params/n_cls="${N_CLASS}:int"
 
     catalyst-dl infer \
-       --expdir=finetune \
+       --expdir=src \
        --resume="${LOGDIR}"/checkpoint.best.pth.tar \
        --out-prefix="${LOGDIR}"/dataset.predictions.{suffix}.npy \
        --config="${LOGDIR}"/config.json,./config/autolabel/infer.yml \

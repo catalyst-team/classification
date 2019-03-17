@@ -56,6 +56,9 @@ stages:
       loss:
         callback: EmbeddingsLossCallback
         emb_l2_reg: -1
+        input_key: targets
+        embeddings_key: embeddings
+        logits_key: logits
       optimizer:
         callback: OptimizerCallback
       precision:
@@ -88,6 +91,9 @@ stages:
       loss:
         callback: EmbeddingsLossCallback
         emb_l2_reg: -1
+        input_key: targets
+        embeddings_key: embeddings
+        logits_key: logits
       optimizer:
         callback: OptimizerCallback
       precision:

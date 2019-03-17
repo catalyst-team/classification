@@ -23,6 +23,6 @@ catalyst-contrib check-index-model \
   --knn-metric="l2" --batch-size=64 | tee ${LOGDIR}/index_check.txt
 
 # docker trick
-if [ "$EUID" -eq 0 ]; then
+if [[ "$EUID" -eq 0 ]]; then
   chmod -R 777 ${LOGDIR}
 fi

@@ -2,11 +2,11 @@
 set -e
 
 catalyst-dl run \
-    --expdir=finetune \
+    --expdir=src \
     --config=./configs/finetune/debug.yml \
     --logdir=${LOGDIR} --verbose
 
 # docker trick
-if [ "$EUID" -eq 0 ]; then
+if [[ "$EUID" -eq 0 ]]; then
   chmod -R 777 ${LOGDIR}
 fi

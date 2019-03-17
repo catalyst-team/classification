@@ -31,6 +31,8 @@ stages:
     weight_decay: 0.0001
 
   data_params:
+    n_workers: 4
+    batch_size: 64
     in_csv: "./data/ants_bees/dataset.csv"
     tag2class: "./data/ants_bees/tag2cls.json"
     tag_column: "tag"
@@ -43,19 +45,12 @@ stages:
     loss:
       callback: EmbeddingsLossCallback
       emb_l2_reg: -1
+      input_key: targets
+      embeddings_key: embeddings
+      logits_key: logits
     optimizer:
       callback: OptimizerCallback
     finder:
       callback: LRFinder
       final_lr: 0.01
       n_steps: 1000
-    logger:
-      callback: Logger
-    tflogger:
-      callback: TensorboardLogger
-
-  debug:
-
-    args:
-      epochs: 100
-      batch_size: 16

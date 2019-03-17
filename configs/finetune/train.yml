@@ -16,7 +16,6 @@ model_params:
     dropout: 0.5
 
 args:
-  workers: 4
   expdir: "finetune"
   baselogdir: "./logs/finetune"
 
@@ -35,6 +34,7 @@ stages:
     gamma: 0.3
 
   data_params:
+    n_workers: 4
     in_csv: "./data/ants_bees/dataset.csv"
     tag2class: "./data/ants_bees/tag2cls.json"
     tag_column: "tag"
@@ -47,6 +47,9 @@ stages:
     loss:
       callback: EmbeddingsLossCallback
       emb_l2_reg: -1
+      input_key: targets
+      embeddings_key: embeddings
+      logits_key: logits
     optimizer:
       callback: OptimizerCallback
     precision:
@@ -57,16 +60,12 @@ stages:
       reduce_metric: *reduce_metric
     saver:
       callback: CheckpointCallback
-    logger:
-      callback: Logger
-    tflogger:
-      callback: TensorboardLogger
 
   # train head
   stage1:
-
-    args:
-      epochs: 10
+    state_params:
+      n_epochs: 10
+    data_params:
       batch_size: 64
 
     optimizer_params:
@@ -76,14 +75,11 @@ stages:
 
   # tune whole network
   stage2:
-
-    args:
-      epochs: 5
+    state_params:
+      n_epochs: 5
+    data_params:
       batch_size: 64
 
     optimizer_params:
       optimizer: SGD
       lr: 0.0001
-
-    data_params:
-      reload_loaders: true

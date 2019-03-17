@@ -13,6 +13,6 @@ catalyst-contrib project-embeddings \
    --meta-cols="tag"
 
 # docker trick
-if [ "$EUID" -eq 0 ]; then
+if [[ "$EUID" -eq 0 ]]; then
   chmod -R 777 ${LOGDIR}
 fi

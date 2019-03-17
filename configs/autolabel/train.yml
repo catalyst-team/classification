@@ -16,7 +16,6 @@ model_params:
     dropout: 0.5
 
 args:
-  workers: 4
   expdir: "finetune"
   baselogdir: "./logs/autolabel"
 
@@ -35,6 +34,7 @@ stages:
     gamma: 0.3
 
   data_params:
+    n_workers: 4
     datapath: "@TODO:change_me"
     in_csv: "@TODO:change_me"
     tag2class: "@TODO:change_me"
@@ -47,6 +47,9 @@ stages:
     loss:
       callback: EmbeddingsLossCallback
       emb_l2_reg: -1
+      input_key: targets
+      embeddings_key: embeddings
+      logits_key: logits
     optimizer:
       callback: OptimizerCallback
     precision:
@@ -65,8 +68,8 @@ stages:
   # train head
   stage1:
 
-    args:
-      epochs: 16
+    data_params:
+      n_epochs: 16
       batch_size: 256
 
     optimizer_params:
@@ -77,13 +80,11 @@ stages:
   # tune whole network
   stage2:
 
-    args:
-      epochs: 4
+    data_params:
+      n_epochs: 4
       batch_size: 256
 
     optimizer_params:
       optimizer: SGD
       lr: 0.0001
 
-    data_params:
-      reload_loaders: true

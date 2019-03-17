@@ -1,2 +1,5 @@
 catalyst
 albumentations
+nmslib
+seaborn
+opencv-python
