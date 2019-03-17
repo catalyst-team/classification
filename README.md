@@ -84,6 +84,17 @@ For tensorboard visualization use
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs/finetune
 ```
 
+### Creating embeddings
+
+```bash
+export LOGDIR=$(pwd)/logs/finetune/baseline
+docker run -it --rm --shm-size 8G \
+   -v $(pwd):/workspace/ \
+   -e "CUDA_VISIBLE_DEVICES=0" \
+   -e "LOGDIR=/logdir" \
+   catalyst-finetune bash ./bin/run_embeddings.sh
+```
+
 ### Embeddings projecting
 
 ```bash
@@ -92,7 +103,6 @@ docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
    catalyst-finetune bash ./bin/run_projector.sh
 tensorboard --logdir=./logs/finetune/projector
-
 ```
 
 ### Index model training
@@ -100,7 +110,7 @@ tensorboard --logdir=./logs/finetune/projector
 ```bash
 export LOGDIR=$(pwd)/logs/finetune/baseline
 docker run -it --rm --shm-size 8G \
-   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
+   -v $(pwd):/workspace/ \
    -e "LOGDIR=/logdir" \
    catalyst-finetune bash ./bin/run_index.sh
 ```

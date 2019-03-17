@@ -3,3 +3,4 @@ albumentations
 nmslib
 seaborn
 opencv-python
+tensorflow

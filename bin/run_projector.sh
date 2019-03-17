@@ -4,7 +4,7 @@ set -e
 echo "projection creating..."
 mkdir -p ${LOGDIR}/projector
 catalyst-contrib project-embeddings \
-   --in-npy=${LOGDIR}/dataset.predictions.infer.embeddings.npy \
+   --in-npy=${LOGDIR}/embeddings/embeddings_train.npy \
    --in-csv="./data/ants_bees/dataset_train.csv" \
    --out-dir=${LOGDIR}/projector \
    --img-size=64 \
