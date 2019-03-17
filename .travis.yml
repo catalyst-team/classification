@@ -22,5 +22,3 @@ jobs:
           --show-source --statistics
         # exit-zero treats all errors as warnings.
         - flake8 . --count --exit-zero --max-complexity=10 --statistics
-        # test to make sure the code is yapf compliant
-        - ./yapf.sh --all
