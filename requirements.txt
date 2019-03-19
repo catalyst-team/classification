@@ -1,6 +1,6 @@
-catalyst
-albumentations
-nmslib
-seaborn
-opencv-python
-tensorflow
+catalyst==19.3rc0
+albumentations==0.2.0
+nmslib==1.7.3.6
+seaborn==0.9.0
+opencv-python==4.0.0.21
+tensorflow==1.13.1

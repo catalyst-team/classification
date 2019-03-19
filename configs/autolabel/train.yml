@@ -34,6 +34,7 @@ stages:
     gamma: 0.3
 
   data_params:
+    batch_size: 256
     n_workers: 4
     datapath: "@TODO:change_me"
     in_csv: "@TODO:change_me"
@@ -68,9 +69,8 @@ stages:
   # train head
   stage1:
 
-    data_params:
+    state_params:
       n_epochs: 16
-      batch_size: 256
 
     optimizer_params:
       optimizer: Adam
@@ -79,10 +79,8 @@ stages:
 
   # tune whole network
   stage2:
-
-    data_params:
+    state_params:
       n_epochs: 4
-      batch_size: 256
 
     optimizer_params:
       optimizer: SGD
