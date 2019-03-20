@@ -90,6 +90,7 @@ CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs/finetune
 export LOGDIR=$(pwd)/logs/finetune/baseline
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
+   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
    catalyst-finetune bash ./bin/run_embeddings.sh
@@ -101,6 +102,8 @@ docker run -it --rm --shm-size 8G \
 export LOGDIR=$(pwd)/logs/finetune/baseline
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
+   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
+   -e "LOGDIR=/logdir" \
    catalyst-finetune bash ./bin/run_projector.sh
 tensorboard --logdir=./logs/finetune/projector
 ```
@@ -111,6 +114,7 @@ tensorboard --logdir=./logs/finetune/projector
 export LOGDIR=$(pwd)/logs/finetune/baseline
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
+   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "LOGDIR=/logdir" \
    catalyst-finetune bash ./bin/run_index.sh
 ```
