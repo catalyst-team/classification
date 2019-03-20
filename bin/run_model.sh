@@ -3,11 +3,11 @@ set -e
 
 echo "training...and inference"
 catalyst-dl run \
-    --config=configs/exp_splits.yml \
+    --config=configs/finetune/exp_splits.yml \
     --logdir="${LOGDIR}" \
     --verbose
 
 # docker trick
-if [ "$EUID" -eq 0 ]; then
+if [[ "$EUID" -eq 0 ]]; then
   chmod -R 777 ${LOGDIR}
 fi

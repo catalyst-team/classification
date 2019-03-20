@@ -1,3 +1,4 @@
+# flake8: noqa
 from catalyst.contrib.registry import Registry
 
 from .experiment import Experiment

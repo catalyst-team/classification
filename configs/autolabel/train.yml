@@ -8,7 +8,7 @@ model_params:
     pooling: GlobalConcatPool2d
   head_params:
     hiddens: [1024]
-    emb_size: 64
+    emb_size: 256
     n_cls: 2
     activation_fn: ReLU
     norm_fn: BatchNorm1d
@@ -16,9 +16,8 @@ model_params:
     dropout: 0.5
 
 args:
-  workers: 4
   expdir: "finetune"
-  baselogdir: "./logs/finetune"
+  baselogdir: "./logs/autolabel"
 
 stages:
 
@@ -31,22 +30,27 @@ stages:
 
   scheduler_params:
     scheduler: MultiStepLR
-    milestones: [8]
+    milestones: [8, 14]
     gamma: 0.3
 
   data_params:
-    in_csv: "./data/ants_bees/dataset.csv"
-    tag2class: "./data/ants_bees/tag2cls.json"
+    batch_size: 256
+    n_workers: 4
+    datapath: "@TODO:change_me"
+    in_csv: "@TODO:change_me"
+    tag2class: "@TODO:change_me"
     tag_column: "tag"
     class_column: "class"
     n_folds: 5
     train_folds: [0, 1, 2, 3]
-    datapath: "./data/ants_bees/"
 
   callbacks_params:
     loss:
       callback: EmbeddingsLossCallback
       emb_l2_reg: -1
+      input_key: targets
+      embeddings_key: embeddings
+      logits_key: logits
     optimizer:
       callback: OptimizerCallback
     precision:
@@ -65,9 +69,8 @@ stages:
   # train head
   stage1:
 
-    args:
-      epochs: 10
-      batch_size: 64
+    state_params:
+      n_epochs: 16
 
     optimizer_params:
       optimizer: Adam
@@ -76,14 +79,10 @@ stages:
 
   # tune whole network
   stage2:
-
-    args:
-      epochs: 5
-      batch_size: 64
+    state_params:
+      n_epochs: 4
 
     optimizer_params:
       optimizer: SGD
       lr: 0.0001
 
-    data_params:
-      reload_loaders: true

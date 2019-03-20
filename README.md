@@ -1,4 +1,6 @@
-## Catalyst.DL – resnet finetune pipeline
+# Catalyst.DL Pipelines
+
+## Resnet finetune
 
 KNN is all you need.
 
@@ -56,7 +58,12 @@ And `pip install tensorflow` for visualization.
 
 ### Docker
 
-For more information about docker image goto `catalyst/docker`.
+To build docker image run
+```bash
+make finetune
+```
+
+This creates a build `catalyst-finetune` with all needed libraries.
 
 ### Model training
 
@@ -66,7 +73,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-base bash bin/run_model.sh
+   catalyst-finetune bash bin/run_model.sh
 ```
 
 ### Training visualization
@@ -77,15 +84,28 @@ For tensorboard visualization use
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs/finetune
 ```
 
+### Creating embeddings
+
+```bash
+export LOGDIR=$(pwd)/logs/finetune/baseline
+docker run -it --rm --shm-size 8G \
+   -v $(pwd):/workspace/ \
+   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
+   -e "CUDA_VISIBLE_DEVICES=0" \
+   -e "LOGDIR=/logdir" \
+   catalyst-finetune bash ./bin/run_embeddings.sh
+```
+
 ### Embeddings projecting
 
 ```bash
 export LOGDIR=$(pwd)/logs/finetune/baseline
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
-   catalyst-contrib bash finetune/bin/run_projector.sh
+   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
+   -e "LOGDIR=/logdir" \
+   catalyst-finetune bash ./bin/run_projector.sh
 tensorboard --logdir=./logs/finetune/projector
-
 ```
 
 ### Index model training
@@ -93,9 +113,10 @@ tensorboard --logdir=./logs/finetune/projector
 ```bash
 export LOGDIR=$(pwd)/logs/finetune/baseline
 docker run -it --rm --shm-size 8G \
-   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
+   -v $(pwd):/workspace/ \
+   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "LOGDIR=/logdir" \
-   catalyst-contrib bash finetune/bin/run_index.sh
+   catalyst-finetune bash ./bin/run_index.sh
 ```
 
 ### LrFinder example
@@ -106,7 +127,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-base bash finetune/bin/run_lrfinder.sh
+   catalyst-finetune bash ./bin/run_lrfinder.sh
 ```
 
 ### Grid search metrics visualization
@@ -117,7 +138,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "BASELOGDIR=/logdir" \
-   catalyst-base bash finetune/bin/run_grid.sh
+   catalyst-finetune bash ./bin/run_grid.sh
 ```
 
 
@@ -129,5 +150,37 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "BASELOGDIR=/logdir" \
-   catalyst-base bash finetune/bin/run_kfold.sh
+   catalyst-finetune bash ./bin/run_kfold.sh
+```
+
+## Autolabel example
+
+Pseudo is all you need.
+
+### Preparation
+
+```bash
+project/
+    data/
+        data_raw/
+            all/
+                ...
+        data_clean/
+            cls_1/
+                ...
+            cls_N/
+                ...
+```
+
+
+### Model training
+
+```bash
+export GPUS=""
+CUDA_VISIBLE_DEVICES="${GPUS}" bash ./bin/run_autolabel.sh \
+    --data-raw ./data/data_raw/ \
+    --data-clean ./data/data_clean/ \
+    --baselogdir ./logs/autolabel \
+    --n-trials 10 \
+    --threshold 0.95
 ```
