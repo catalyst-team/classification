@@ -55,7 +55,7 @@ for ((i=0; i < N_TRIALS; ++i)); do
         --out-dataset="${DATAPATH_PROCESSED}"/dataset.csv \
         --out-labeling="${DATAPATH_PROCESSED}"/tag2cls.json
 
-    catalyst-dl train \
+    catalyst-dl run \
         --expdir=src \
         --config=configs/autolabel/train.yml \
         --logdir="${LOGDIR}" \
@@ -64,7 +64,7 @@ for ((i=0; i < N_TRIALS; ++i)); do
         --stages/data_params/tag2class="${DATAPATH_PROCESSED}"/tag2cls.json:str \
         --model_params/head_params/n_cls="${N_CLASS}:int"
 
-    catalyst-dl infer \
+    catalyst-dl run \
        --expdir=src \
        --resume="${LOGDIR}"/checkpoint.best.pth.tar \
        --out-prefix="${LOGDIR}"/dataset.predictions.{suffix}.npy \

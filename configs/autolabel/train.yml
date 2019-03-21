@@ -61,14 +61,9 @@ stages:
       reduce_metric: *reduce_metric
     saver:
       callback: CheckpointCallback
-    logger:
-      callback: Logger
-    tflogger:
-      callback: TensorboardLogger
 
   # train head
   stage1:
-
     state_params:
       n_epochs: 16
 
@@ -85,4 +80,3 @@ stages:
     optimizer_params:
       optimizer: SGD
       lr: 0.0001
-
