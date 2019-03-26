@@ -34,6 +34,7 @@ stages:
     gamma: 0.3
 
   data_params:
+    batch_size: 64
     n_workers: 4
     in_csv: "./data/ants_bees/dataset.csv"
     tag2class: "./data/ants_bees/tag2cls.json"
@@ -65,8 +66,6 @@ stages:
   stage1:
     state_params:
       n_epochs: 10
-    data_params:
-      batch_size: 64
 
     optimizer_params:
       optimizer: Adam
@@ -77,8 +76,6 @@ stages:
   stage2:
     state_params:
       n_epochs: 5
-    data_params:
-      batch_size: 64
 
     optimizer_params:
       optimizer: SGD

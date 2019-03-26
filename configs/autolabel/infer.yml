@@ -1,11 +1,10 @@
 data_params:
+  n_workers: 4
+  batch_size: 256
   in_csv: null
   tag2class: null
   in_csv_infer: "@TODO:change_me"
   datapath: "@TODO:change_me"
-
-args:
-  batch_size: 256
 
 stages: null
 callbacks_params:

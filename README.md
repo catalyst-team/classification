@@ -21,8 +21,8 @@ Additional
 
 Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz)
 ```bash
-wget https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz
-tar -xvf ./ants_bees.tar.gz
+wget -P ./data/ https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz
+tar -xvf ./data/ants_bees.tar.gz -C ./data/
 ```
 
 and unpack it to `data` folder:
