@@ -22,13 +22,15 @@ Additional
 Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz)
 ```bash
 wget -P ./data/ https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz
-tar -xvf ./data/ants_bees.tar.gz -C ./data/
+tar -xvf ./data/ants_bees.tar.gz -C ./data
+mv ./data/ants_bees ./data/dataset
+
 ```
 
 and unpack it to `data` folder:
 ```bash
-finetune.catalyst/data/
-    ants_bees/
+classification/data/
+    dataset/
         ants/
             ...
         bees/
@@ -38,20 +40,20 @@ finetune.catalyst/data/
 Process the data
 ```bash
 catalyst-data tag2label \
-    --in-dir=./data/ants_bees \
-    --out-dataset=./data/ants_bees/dataset.csv \
-    --out-labeling=./data/ants_bees/tag2cls.json
+    --in-dir=./data/dataset \
+    --out-dataset=./data/dataset.csv \
+    --out-labeling=./data/tag2cls.json
 
 python src/prepare_splits.py \
-    --in-csv=./data/ants_bees/dataset.csv \
-    --tag2class=./data/ants_bees/tag2cls.json \
+    --in-csv=./data/dataset.csv \
+    --tag2class=./data/tag2cls.json \
     --tag-column=tag \
     --class-column=class \
     --n-folds=5 \
     --train-folds=0,1,2,3 \
-    --out-csv=./data/ants_bees/dataset_folds.csv \
-    --out-csv-train=./data/ants_bees/dataset_train.csv \
-    --out-csv-valid=./data/ants_bees/dataset_valid.csv
+    --out-csv=./data/dataset_folds.csv \
+    --out-csv-train=./data/dataset_train.csv \
+    --out-csv-valid=./data/dataset_valid.csv
 ```
 
 And `pip install tensorflow` for visualization.

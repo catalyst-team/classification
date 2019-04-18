@@ -31,7 +31,7 @@ stages:
     weight_decay: 0.0001
 
   data_params:
-    n_workers: 4
+    num_workers: 4
     batch_size: 64
     in_csv: "./data/ants_bees/dataset.csv"
     tag2class: "./data/ants_bees/tag2cls.json"

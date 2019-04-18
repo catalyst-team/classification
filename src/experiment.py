@@ -18,7 +18,7 @@ from catalyst.data.augmentor import Augmentor
 from catalyst.utils.parse import read_csv_data
 from catalyst.dl.experiments import ConfigExperiment
 from catalyst.data.dataset import ListDataset
-
+from catalyst.data.sampler import BalanceClassSampler
 
 # ---- Augmentations ----
 cv2.setNumThreads(0)
@@ -77,10 +77,10 @@ class Experiment(ConfigExperiment):
             model_ = model_.module
 
         if stage in ["debug", "stage1"]:
-            for param in model_.encoder.parameters():
+            for param in model_.encoder_net.parameters():
                 param.requires_grad = False
         elif stage == "stage2":
-            for param in model_.encoder.parameters():
+            for param in model_.encoder_net.parameters():
                 param.requires_grad = True
         return model_
 
@@ -112,7 +112,8 @@ class Experiment(ConfigExperiment):
         class_column: str = None,
         tag_column: str = None,
         folds_seed: int = 42,
-        n_folds: int = 5
+        n_folds: int = 5,
+        one_hot_classes: int = None
     ):
         datasets = collections.OrderedDict()
         tag2class = json.load(open(tag2class)) \
@@ -144,6 +145,17 @@ class Experiment(ConfigExperiment):
                 dtype=np.int64
             )
         ]
+
+        if one_hot_classes:
+            open_fn.append(
+                ScalarReader(
+                    input_key="class",
+                    output_key="targets_one_hot",
+                    default_value=-1,
+                    dtype=np.int64,
+                    one_hot_classes=one_hot_classes
+                ))
+
         open_fn = ReaderCompose(readers=open_fn)
 
         for source, mode in zip(
@@ -157,117 +169,13 @@ class Experiment(ConfigExperiment):
                         stage=stage, mode=mode
                     ),
                 )
+                if mode == "train":
+                    labels = [x["class"] for x in source]
+                    sampler = BalanceClassSampler(labels, mode="upsampling")
+                    dataset = {
+                        "dataset": dataset,
+                        "sampler": sampler
+                    }
                 datasets[mode] = dataset
 
         return datasets
-
-    # def get_loaders(
-    #     self,
-    #     stage: str,
-    #     n_workers: int = None,
-    #     batch_size: int = None,
-    #     datapath: str = None,
-    #     in_csv: str = None,
-    #     in_csv_train: str = None,
-    #     in_csv_valid: str = None,
-    #     in_csv_infer: str = None,
-    #     train_folds: str = None,
-    #     valid_folds: str = None,
-    #     tag2class: str = None,
-    #     class_column: str = None,
-    #     tag_column: str = None,
-    #     folds_seed: int = 42,
-    #     n_folds: int = 5
-    # ):
-    #     loaders = collections.OrderedDict()
-    #     tag2class = json.load(open(tag2class)) \
-    #         if tag2class is not None \
-    #         else None
-    #
-    #     df, df_train, df_valid, df_infer = read_csv_data(
-    #         in_csv=in_csv,
-    #         in_csv_train=in_csv_train,
-    #         in_csv_valid=in_csv_valid,
-    #         in_csv_infer=in_csv_infer,
-    #         train_folds=train_folds,
-    #         valid_folds=valid_folds,
-    #         tag2class=tag2class,
-    #         class_column=class_column,
-    #         tag_column=tag_column,
-    #         seed=folds_seed,
-    #         n_folds=n_folds
-    #     )
-    #
-    #     open_fn = [
-    #         ImageReader(
-    #             input_key="filepath", output_key="image", datapath=datapath
-    #         ),
-    #         ScalarReader(
-    #             input_key="class",
-    #             output_key="targets",
-    #             default_value=-1,
-    #             dtype=np.int64
-    #         )
-    #     ]
-    #     open_fn = ReaderCompose(readers=open_fn)
-    #
-    #     if len(df_train) > 0:
-    #         labels = [x["class"] for x in df_train]
-    #         sampler = BalanceClassSampler(labels, mode="upsampling")
-    #
-    #         train_loader = UtilsFactory.create_loader(
-    #             data_source=df_train,
-    #             open_fn=open_fn,
-    #             dict_transform=self.get_transforms(
-    #                 stage=stage, mode="train"
-    #             ),
-    #             dataset_cache_prob=-1,
-    #             batch_size=batch_size,
-    #             workers=n_workers,
-    #             shuffle=sampler is None,
-    #             sampler=sampler
-    #         )
-    #
-    #         print("Train samples", len(train_loader) * batch_size)
-    #         print("Train batches", len(train_loader))
-    #         loaders["train"] = train_loader
-    #
-    #     if len(df_valid) > 0:
-    #         sampler = None
-    #
-    #         valid_loader = UtilsFactory.create_loader(
-    #             data_source=df_valid,
-    #             open_fn=open_fn,
-    #             dict_transform=self.get_transforms(
-    #                 stage=stage, mode="valid"
-    #             ),
-    #             dataset_cache_prob=-1,
-    #             batch_size=batch_size,
-    #             workers=n_workers,
-    #             shuffle=False,
-    #             sampler=sampler
-    #         )
-    #
-    #         print("Valid samples", len(valid_loader) * batch_size)
-    #         print("Valid batches", len(valid_loader))
-    #         loaders["valid"] = valid_loader
-    #
-    #     if len(df_infer) > 0:
-    #         infer_loader = UtilsFactory.create_loader(
-    #             data_source=df_infer,
-    #             open_fn=open_fn,
-    #             dict_transform=self.get_transforms(
-    #                 stage=stage, mode="infer"
-    #             ),
-    #             dataset_cache_prob=-1,
-    #             batch_size=batch_size,
-    #             workers=n_workers,
-    #             shuffle=False,
-    #             sampler=None
-    #         )
-    #
-    #         print("Infer samples", len(infer_loader) * batch_size)
-    #         print("Infer batches", len(infer_loader))
-    #         loaders["infer"] = infer_loader
-    #
-    #     return loaders

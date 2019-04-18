@@ -1,10 +1,14 @@
 # flake8: noqa
-from catalyst.contrib.registry import Registry
+from catalyst.dl import registry
 
 from .experiment import Experiment
 from .runner import ModelRunner as Runner
-from .callbacks import EmbeddingsLossCallback
-from .model import baseline
+from .callbacks import EmbeddingsLossCallback, AUCCallback, \
+    ConfusionMatrixCallback, ConfusionMatrixCallbackV2
+from .model import MultiHeadNet
 
-Registry.model(baseline)
-Registry.callback(EmbeddingsLossCallback)
+registry.Model(MultiHeadNet)
+registry.Callback(EmbeddingsLossCallback)
+registry.Callback(AUCCallback)
+registry.Callback(ConfusionMatrixCallback)
+registry.Callback(ConfusionMatrixCallbackV2)
