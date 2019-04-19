@@ -118,4 +118,4 @@ stages:
       infer:
         callback: InferCallback
         out_dir: *logdir
-        out_prefix: "/predictions/{suffix}.npy"
+        out_prefix: "/predictions/"

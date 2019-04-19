@@ -5,9 +5,9 @@ mkdir -p ${LOGDIR}/embeddings
 
 echo "train embeddings creating..."
 catalyst-data image2embedding \
-    --in-csv=./data/ants_bees/dataset_train.csv \
+    --in-csv=./data/dataset_train.csv \
     --img-col="filepath" \
-    --img-datapath=./data/ants_bees/ \
+    --img-datapath=./data/dataset/ \
     --out-npy=${LOGDIR}/embeddings/embeddings_train.npy \
     --arch="resnet18" \
     --pooling=GlobalMaxPool2d \
@@ -17,9 +17,9 @@ catalyst-data image2embedding \
 
 echo "valid embeddings creating..."
 catalyst-data image2embedding \
-    --in-csv=./data/ants_bees/dataset_valid.csv \
+    --in-csv=./data/dataset_valid.csv \
     --img-col="filepath" \
-    --img-datapath=./data/ants_bees/ \
+    --img-datapath=./data/dataset/ \
     --out-npy=${LOGDIR}/embeddings/embeddings_valid.npy \
     --arch="resnet18" \
     --pooling=GlobalMaxPool2d \

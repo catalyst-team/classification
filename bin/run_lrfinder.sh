@@ -2,8 +2,7 @@
 set -e
 
 catalyst-dl run \
-    --expdir=src \
-    --config=./configs/finetune/debug.yml \
+    --config=./configs/finetune/lrfiner.yml \
     --logdir=${LOGDIR} --verbose
 
 # docker trick

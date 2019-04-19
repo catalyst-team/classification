@@ -5,6 +5,7 @@ echo "training...and inference"
 catalyst-dl run \
     --config=configs/finetune/exp_splits.yml \
     --logdir="${LOGDIR}" \
+    --out_dir="${LOGDIR}":str \
     --verbose
 
 # docker trick

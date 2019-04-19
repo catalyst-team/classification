@@ -28,10 +28,13 @@ class MultiHeadNet(nn.Module):
             head_kwargs_[key] = nn.Linear(self.emb_size, value, bias=True)
         self.heads = nn.ModuleDict(head_kwargs_)
 
-    def forward(self, *, image):
-        features = self.encoder_net(image)
+    def forward(self, x):
+        features = self.encoder_net(x)
         embeddings = self.embedding_net(features)
-        result = {"embeddings": embeddings}
+        result = {
+            "features": features,
+            "embeddings": embeddings
+        }
 
         for key, value in self.heads.items():
             result[key] = value(embeddings)
