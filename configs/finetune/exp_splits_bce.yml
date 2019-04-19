@@ -61,21 +61,21 @@ stages:
         input_key: targets_one_hot
         embeddings_key: embeddings
         logits_key: logits
-      optimizer:
-        callback: OptimizerCallback
       precision:
         callback: PrecisionCallback
         precision_args: [1]
       auc:
         callback: AUCCallback
         input_key: targets_one_hot
-        logits_key: logits
+        output_key: logits
+        num_classes: *num_classes
       cm:
         callback: ConfusionMatrixCallback
         input_key: targets
         output_key: logits
-        prefix: "confusion_matrix"
         num_classes: *num_classes
+      optimizer:
+        callback: OptimizerCallback
       scheduler:
         callback: SchedulerCallback
         reduce_metric: *reduce_metric

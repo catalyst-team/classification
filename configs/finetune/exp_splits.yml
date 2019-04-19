@@ -60,8 +60,6 @@ stages:
         input_key: targets
         embeddings_key: embeddings
         logits_key: logits
-      optimizer:
-        callback: OptimizerCallback
       precision:
         callback: PrecisionCallback
         precision_args: [1]
@@ -69,8 +67,9 @@ stages:
         callback: ConfusionMatrixCallback
         input_key: targets
         output_key: logits
-        prefix: "confusion_matrix"
         num_classes: *num_classes
+      optimizer:
+        callback: OptimizerCallback
       scheduler:
         callback: SchedulerCallback
         reduce_metric: *reduce_metric
