@@ -2,7 +2,7 @@
 set -e
 
 catalyst-dl run \
-    --config=./configs/finetune/lrfiner.yml \
+    --config=./configs/classification/lrfiner.yml \
     --logdir=${LOGDIR} --verbose
 
 # docker trick

@@ -20,12 +20,18 @@ class Experiment(ConfigExperiment):
     def _prepare_logdir(self, config: Dict):
         model_params = config["model_params"]
         data_params = config["stages"]["data_params"]
-        return f"{data_params['train_folds']}" \
-            f"-{model_params['model']}" \
-            f"-{model_params['encoder_params']['arch']}" \
-            f"-{model_params['encoder_params']['pooling']}" \
-            f"-{model_params['head_params']['hiddens']}" \
-            f"-{model_params['head_params']['emb_size']}"
+
+        if data_params.get("train_folds") is not None:
+            train_folds = "-".join(list(map(str, data_params["train_folds"])))
+        else:
+            train_folds = "split"
+        hiddens = "-".join(list(map(
+            str, model_params["embedding_net_params"]["hiddens"])))
+        return f"{train_folds}" \
+            f".{model_params['model']}" \
+            f".{model_params['encoder_params']['arch']}" \
+            f".{model_params['encoder_params']['pooling']}" \
+            f".{hiddens}"
 
     def _postprocess_model_for_stage(self, stage: str, model: nn.Module):
         model_ = model

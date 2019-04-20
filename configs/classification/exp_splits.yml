@@ -17,8 +17,8 @@ model_params:
 
 args:
   expdir: "src"
-  logdir: &logdir "./logs/finetune_focal"
-  baselogdir: "./logs/finetune"
+  logdir: &logdir "./logs/classification"
+  baselogdir: "./logs/classification"
 
 stages:
 
@@ -26,23 +26,22 @@ stages:
     main_metric: &reduce_metric precision01
     minimize_metric: False
 
+  data_params:
+    num_workers: 4
+    batch_size: 64
+    per_gpu_batch_size: True
+    in_csv_train: "./data/dataset_train.csv"
+    in_csv_valid: "./data/dataset_valid.csv"
+    datapath: "./data/dataset"
+
   criterion_params:
-    criterion: FocalLossMultiClass
+    criterion: CrossEntropyLoss
 
   # train head
   stage1:
 
     state_params:
       num_epochs: 10
-
-    data_params: &data_params
-      num_workers: 4
-      batch_size: 64
-      per_gpu_batch_size: True
-      in_csv_train: "./data/dataset_train.csv"
-      in_csv_valid: "./data/dataset_valid.csv"
-      datapath: "./data/dataset"
-      one_hot_classes: *num_classes
 
     optimizer_params:
       optimizer: Adam
@@ -64,11 +63,6 @@ stages:
       precision:
         callback: PrecisionCallback
         precision_args: [1]
-      auc:
-        callback: AUCCallback
-        input_key: targets_one_hot
-        output_key: logits
-        num_classes: *num_classes
       cm:
         callback: ConfusionMatrixCallback
         input_key: targets
@@ -88,8 +82,6 @@ stages:
     state_params:
       num_epochs: 5
 
-    data_params: *data_params
-
     optimizer_params:
       optimizer: SGD
       lr: 0.0001
@@ -107,10 +99,12 @@ stages:
       num_workers: 4
       batch_size: 64
       per_gpu_batch_size: True
+      in_csv: null
       in_csv_train: null
       in_csv_valid: "./data/dataset_valid.csv"
       in_csv_infer: "./data/dataset_train.csv"
       datapath: "./data/dataset"
+      one_hot_classes: null
 
     callbacks_params:
       loader:

@@ -16,7 +16,7 @@ model_params:
     dropout: 0.5
 
 args:
-  expdir: "finetune"
+  expdir: "classification"
   baselogdir: "./logs/autolabel"
 
 stages:

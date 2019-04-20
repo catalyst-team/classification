@@ -17,8 +17,8 @@ model_params:
 
 args:
   expdir: "src"
-  logdir: &logdir "./logs/finetune"
-  baselogdir: "./logs/finetune"
+  logdir: &logdir "./logs/classification_bce"
+  baselogdir: "./logs/classification"
 
 stages:
 
@@ -26,22 +26,23 @@ stages:
     main_metric: &reduce_metric precision01
     minimize_metric: False
 
+  data_params:
+    num_workers: 4
+    batch_size: 64
+    per_gpu_batch_size: True
+    in_csv_train: "./data/dataset_train.csv"
+    in_csv_valid: "./data/dataset_valid.csv"
+    datapath: "./data/dataset"
+    one_hot_classes: *num_classes
+
   criterion_params:
-    criterion: CrossEntropyLoss
+    criterion: BCEWithLogitsLoss
 
   # train head
   stage1:
 
     state_params:
       num_epochs: 10
-
-    data_params: &data_params
-      num_workers: 4
-      batch_size: 64
-      per_gpu_batch_size: True
-      in_csv_train: "./data/dataset_train.csv"
-      in_csv_valid: "./data/dataset_valid.csv"
-      datapath: "./data/dataset"
 
     optimizer_params:
       optimizer: Adam
@@ -57,12 +58,17 @@ stages:
       loss:
         callback: EmbeddingsLossCallback
         emb_l2_reg: -1
-        input_key: targets
+        input_key: targets_one_hot
         embeddings_key: embeddings
         logits_key: logits
       precision:
         callback: PrecisionCallback
         precision_args: [1]
+      auc:
+        callback: AUCCallback
+        input_key: targets_one_hot
+        output_key: logits
+        num_classes: *num_classes
       cm:
         callback: ConfusionMatrixCallback
         input_key: targets
@@ -82,8 +88,6 @@ stages:
     state_params:
       num_epochs: 5
 
-    data_params: *data_params
-
     optimizer_params:
       optimizer: SGD
       lr: 0.0001
@@ -101,10 +105,12 @@ stages:
       num_workers: 4
       batch_size: 64
       per_gpu_batch_size: True
+      in_csv: null
       in_csv_train: null
       in_csv_valid: "./data/dataset_valid.csv"
       in_csv_infer: "./data/dataset_train.csv"
       datapath: "./data/dataset"
+      one_hot_classes: null
 
     callbacks_params:
       loader:

@@ -34,7 +34,7 @@ classification/data/
             ...
 ```
 
-For your dataset user:
+For your dataset use:
 ```bash
 ln -s /path/to/your_dataset $(pwd)/data/dataset
 ```
@@ -60,36 +60,36 @@ catalyst-data split-dataframe \
 
 To build docker image run
 ```bash
-make finetune
+make classification
 ```
 
-This creates a build `catalyst-finetune` with all needed libraries.
+This creates a build `catalyst-classification` with all needed libraries.
 
 ### Model training
 
 Local run (with softmax classificaiton):
 ```bash
-catalyst-dl run --config=configs/finetune/exp_splits.yml
+catalyst-dl run --config=configs/classification/exp_splits.yml
 ```
 
 Local run (with "multilabel" classificaiton):
 ```bash
-catalyst-dl run --config=configs/finetune/exp_splits_bce.yml
+catalyst-dl run --config=configs/classification/exp_splits_bce.yml
 ```
 
 Local run (with "multilabel" classificaiton and FocalLoss):
 ```bash
-catalyst-dl run --config=configs/finetune/exp_splits_focal.yml
+catalyst-dl run --config=configs/classification/exp_splits_focal.yml
 ```
 
 Docker run:
 ```bash
-export LOGDIR=$(pwd)/logs/finetune
+export LOGDIR=$(pwd)/logs/classification
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash bin/run_model.sh
+   catalyst-classification bash bin/run_model.sh
 ```
 
 ### Tensorboard metrics visualization 
@@ -102,12 +102,12 @@ CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ### Index model preparation
 
 ```bash
-export LOGDIR=$(pwd)/logs/finetune
+export LOGDIR=$(pwd)/logs/classification
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
    -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_index.sh
+   catalyst-classification bash ./bin/run_index.sh
 ```
 
 
@@ -122,7 +122,7 @@ docker run -it --rm --shm-size 8G \
    -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_embeddings.sh
+   catalyst-classification bash ./bin/run_embeddings.sh
 ```
 
 ### Embeddings projection
@@ -133,7 +133,7 @@ docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
    -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_projector.sh
+   catalyst-classification bash ./bin/run_projector.sh
 ```
 
 ### Embeddings visualization 
@@ -151,7 +151,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_lrfinder.sh
+   catalyst-classification bash ./bin/run_lrfinder.sh
 ```
 
 ## * Grid search visualization
@@ -164,19 +164,19 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "BASELOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_grid.sh
+   catalyst-classification bash ./bin/run_grid.sh
 ```
 
 
 ### KFold training
 
 ```bash
-export BASELOGDIR=$(pwd)/logs/finetune/kfold
+export BASELOGDIR=$(pwd)/logs/classification/kfold
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "BASELOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_kfold.sh
+   catalyst-classification bash ./bin/run_kfold.sh
 ```
 
 # Autolabel example
