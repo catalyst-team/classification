@@ -1,5 +1,5 @@
-catalyst==19.3rc0
-albumentations==0.2.0
+catalyst==19.04rc1
+albumentations==0.2.2
 nmslib==1.7.3.6
 seaborn==0.9.0
 opencv-python==4.0.0.21

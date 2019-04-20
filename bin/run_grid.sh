@@ -1,34 +1,39 @@
 #!/usr/bin/env bash
 set -e
 
+if [[ -z "$RUN_CONFIG" ]]
+then
+      RUN_CONFIG=exp_splits.yml
+fi
+
+echo "Training...0"
+catalyst-dl run \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
+    --stages/infer=None:str
+
 echo "Training...1"
 catalyst-dl run \
-    --expdir=src \
-    --config=./configs/finetune/exp_splits.yml \
-    --logdir=${BASELOGDIR} --verbose
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
+    --stages/infer=None:str \
+    --model_params/embedding_net_params/hiddens=[128]:list
 
 echo "Training...2"
 catalyst-dl run \
-    --expdir=src \
-    --config=./configs/finetune/exp_splits.yml \
-    --logdir=${BASELOGDIR} --verbose \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
+    --stages/infer=None:str \
     --model_params/encoder_params/pooling=GlobalAvgPool2d:str \
-    --model_params/head_params/hiddens=[512]:list
+    --model_params/embedding_net_params/hiddens=[256]:list
 
 echo "Training...3"
 catalyst-dl run \
-    --expdir=src \
-    --config=./configs/finetune/exp_splits.yml \
-    --logdir=${BASELOGDIR} --verbose \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
+    --stages/infer=None:str \
     --model_params/encoder_params/pooling=GlobalMaxPool2d:str \
-    --model_params/head_params/hiddens=[512]:list
-
-echo "Training...4"
-catalyst-dl run \
-    --expdir=src \
-    --config=./configs/finetune/exp_splits.yml \
-    --logdir=${BASELOGDIR} --verbose \
-    --model_params/head_params/emb_size=128:int
+    --model_params/embedding_net_params/hiddens=[256]:list
 
 # docker trick
 if [[ "$EUID" -eq 0 ]]; then

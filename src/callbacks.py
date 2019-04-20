@@ -1,4 +1,5 @@
 import torch
+
 from catalyst.dl.callbacks import Callback
 from catalyst.dl.state import RunnerState
 
@@ -17,10 +18,9 @@ class EmbeddingsLossCallback(Callback):
         self.input_key = input_key
 
     def on_batch_end(self, state: RunnerState):
-        embeddings = state.output[self.embeddings_key].float()
-        logits = state.output[self.logits_key].float()
-
-        targets = state.input[self.input_key].long()
+        embeddings = state.output[self.embeddings_key]
+        logits = state.output[self.logits_key]
+        targets = state.input[self.input_key]
 
         loss = state.criterion(logits, targets)
 

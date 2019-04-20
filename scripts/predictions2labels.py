@@ -57,6 +57,10 @@ def main(args, _=None):
     train_filepath = df_train["filename"].tolist()
     df_infer = df_infer[~df_infer["filename"].isin(train_filepath)]
 
+    if len(df_infer) == 0:
+        raise NotImplementedError(
+            "Pseudo Lgabeling done. Nothing more to label.")
+
     counter_ = 0
     for i, row in df_infer.iterrows():
         if row["confidence"] < args.threshold:
@@ -71,6 +75,6 @@ def main(args, _=None):
     print(f"Predicted: {counter_} ({100*counter_/len(df_infer):2.2f}%)")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parse_args()
     main(args)

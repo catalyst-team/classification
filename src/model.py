@@ -1,39 +1,42 @@
-import torch
+from copy import deepcopy
 import torch.nn as nn
 from catalyst.contrib.models import ResnetEncoder, SequentialNet
 
 
-class MiniNet(nn.Module):
+class MultiHeadNet(nn.Module):
     def __init__(
         self,
-        enc,
-        n_cls,
-        hiddens,
-        emb_size,
-        activation_fn=torch.nn.ReLU,
-        norm_fn=None,
-        bias=True,
-        dropout=None
+        encoder_params,
+        embedding_net_params,
+        heads_params
     ):
         super().__init__()
-        self.encoder = enc
-        self.emb_net = SequentialNet(
-            hiddens=hiddens + [emb_size],
-            activation_fn=activation_fn,
-            norm_fn=norm_fn,
-            bias=bias,
-            dropout=dropout
-        )
-        self.head = nn.Linear(emb_size, n_cls, bias=True)
 
-    def forward(self, *, image):
-        features = self.encoder(image)
-        embeddings = self.emb_net(features)
-        logits = self.head(embeddings)
-        return embeddings, logits
+        encoder_params_ = deepcopy(encoder_params)
+        embedding_net_params_ = deepcopy(embedding_net_params)
+        heads_params_ = deepcopy(heads_params)
 
+        self.encoder_net = encoder = ResnetEncoder(**encoder_params_)
+        self.enc_size = encoder.out_features
 
-def baseline(encoder_params, head_params):
-    img_enc = ResnetEncoder(**encoder_params)
-    net = MiniNet(enc=img_enc, **head_params)
-    return net
+        embedding_net_params_["hiddens"].insert(0, self.enc_size)
+        self.embedding_net = SequentialNet(**embedding_net_params_)
+        self.emb_size = embedding_net_params_["hiddens"][-1]
+
+        head_kwargs_ = {}
+        for key, value in heads_params_.items():
+            head_kwargs_[key] = nn.Linear(self.emb_size, value, bias=True)
+        self.heads = nn.ModuleDict(head_kwargs_)
+
+    def forward(self, x):
+        features = self.encoder_net(x)
+        embeddings = self.embedding_net(features)
+        result = {
+            "features": features,
+            "embeddings": embeddings
+        }
+
+        for key, value in self.heads.items():
+            result[key] = value(embeddings)
+
+        return result

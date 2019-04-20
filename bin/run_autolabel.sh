@@ -3,10 +3,15 @@
 set -e
 
 DATAPATH_RAW=""
-DATAPATH_PROCESSED=""
+DATAPATH_CLEAN=""
 BASELOGDIR=""
 N_TRIALS=10
 THRESHOLD=0.95
+
+if [[ -z "$RUN_CONFIG" ]]
+then
+      RUN_CONFIG=exp_splits.yml
+fi
 
 
 # bash argparse
@@ -17,7 +22,7 @@ while (( "$#" )); do
       shift 2
       ;;
     --data-clean)
-      DATAPATH_PROCESSED=$2
+      DATAPATH_CLEAN=$2
       shift 2
       ;;
     --baselogdir)
@@ -38,47 +43,52 @@ while (( "$#" )); do
   esac
 done
 
-N_CLASS=$(find "${DATAPATH_PROCESSED}" -type d -maxdepth 1 | wc -l | awk '{print $1}')
-N_CLASS="$(($N_CLASS-1))"
-echo "NUM OF CLASSES: $N_CLASS"
+NUM_CLASSES=$(find "${DATAPATH_CLEAN}" -type d -maxdepth 1 | wc -l | awk '{print $1}')
+NUM_CLASSES="$(($NUM_CLASSES-1))"
+echo "NUM CLASSES: $NUM_CLASSES"
 
 catalyst-data tag2label \
     --in-dir="${DATAPATH_RAW}" \
-    --out-dataset="${DATAPATH_RAW}"/dataset.csv \
+    --out-dataset="${DATAPATH_RAW}"/dataset_raw.csv \
     --out-labeling="${DATAPATH_RAW}"/tag2cls.json
 
 for ((i=0; i < N_TRIALS; ++i)); do
     LOGDIR="${BASELOGDIR}_${i}"
 
     catalyst-data tag2label \
-        --in-dir="${DATAPATH_PROCESSED}" \
-        --out-dataset="${DATAPATH_PROCESSED}"/dataset.csv \
-        --out-labeling="${DATAPATH_PROCESSED}"/tag2cls.json
+        --in-dir="${DATAPATH_CLEAN}" \
+        --out-dataset="${DATAPATH_CLEAN}"/dataset_raw.csv \
+        --out-labeling="${DATAPATH_CLEAN}"/tag2cls.json
+
+    catalyst-data split-dataframe \
+        --in-csv="${DATAPATH_CLEAN}"/dataset_raw.csv \
+        --tag2class="${DATAPATH_CLEAN}"/tag2cls.json \
+        --tag-column=tag \
+        --class-column=class \
+        --n-folds=5 \
+        --train-folds=0,1,2,3 \
+        --out-csv="${DATAPATH_CLEAN}"/dataset.csv
+
+    sed -i '.bak' "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
 
     catalyst-dl run \
-        --expdir=src \
-        --config=configs/autolabel/train.yml \
+        --config=./configs/${RUN_CONFIG} \
         --logdir="${LOGDIR}" \
-        --stages/data_params/datapath="${DATAPATH_PROCESSED}":str \
-        --stages/data_params/in_csv="${DATAPATH_PROCESSED}"/dataset.csv:str \
-        --stages/data_params/tag2class="${DATAPATH_PROCESSED}"/tag2cls.json:str \
-        --model_params/head_params/n_cls="${N_CLASS}:int"
+        --out_dir="${LOGDIR}":str \
+        --stages/data_params/datapath="${DATAPATH_CLEAN}":str \
+        --stages/data_params/in_csv_train="${DATAPATH_CLEAN}/dataset_train.csv":str \
+        --stages/data_params/in_csv_valid="${DATAPATH_CLEAN}/dataset_valid.csv":str \
+        --stages/infer/data_params/datapath="${DATAPATH_RAW}":str \
+        --stages/infer/data_params/in_csv_train=None:str \
+        --stages/infer/data_params/in_csv_valid=None:str \
+        --stages/infer/data_params/in_csv_infer="${DATAPATH_RAW}/dataset_raw.csv":str
 
-    catalyst-dl run \
-       --expdir=src \
-       --resume="${LOGDIR}"/checkpoint.best.pth.tar \
-       --out-prefix="${LOGDIR}"/dataset.predictions.{suffix}.npy \
-       --config="${LOGDIR}"/config.json,./config/autolabel/infer.yml \
-       --data_params/datapath="${DATAPATH_RAW}":str \
-       --data_params/in_csv_infer="${DATAPATH_RAW}"/dataset.csv:str \
-       --verbose
-
-    PYTHONPATH=. python ./src/predictions2labels.py \
-        --in-npy="${LOGDIR}"/dataset.predictions.infer.logits.npy \
-        --in-csv-infer="${DATAPATH_RAW}"/dataset.csv \
-        --in-csv-train="${DATAPATH_PROCESSED}"/dataset.csv \
-        --in-tag2cls="${DATAPATH_PROCESSED}"/tag2cls.json \
+    PYTHONPATH=. python ./scripts/predictions2labels.py \
+        --in-npy="${LOGDIR}"/predictions/infer.logits.npy \
+        --in-csv-infer="${DATAPATH_RAW}"/dataset_raw.csv \
+        --in-csv-train="${DATAPATH_CLEAN}"/dataset.csv \
+        --in-tag2cls="${DATAPATH_CLEAN}"/tag2cls.json \
         --in-dir="${DATAPATH_RAW}" \
-        --out-dir="${DATAPATH_PROCESSED}"/ \
+        --out-dir="${DATAPATH_CLEAN}"/ \
         --threshold="${THRESHOLD}"
 done

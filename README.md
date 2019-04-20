@@ -1,16 +1,15 @@
-# Catalyst.DL Pipelines
+# Catalyst.Classification & Autolabel
 
-## Resnet finetune
-
-KNN is all you need.
+## Classification
 
 ### Goals
 
 Main
 - tune ResnetEncoder
-- train MiniNet for image classification
+- train MultiHeadNet for image classification
 - learn embeddings representation
 - create knn index model
+- or train MultiHeadNet for "multilabel" image classification
 
 Additional
 - visualize embeddings with TF.Projector
@@ -19,157 +18,199 @@ Additional
 
 ### Preparation
 
-Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz)
+Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz) and unpack it to `data` folder:
 ```bash
 wget -P ./data/ https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz
-tar -xvf ./data/ants_bees.tar.gz -C ./data/
+tar -xvf ./data/ants_bees.tar.gz -C ./data
+mv ./data/ants_bees ./data/dataset
+
 ```
 
-and unpack it to `data` folder:
+Final folder structure with training data:
 ```bash
-finetune.catalyst/data/
-    ants_bees/
+catalyst.classification/data/
+    dataset/
         ants/
             ...
         bees/
             ...
 ```
 
+For your dataset use:
+```bash
+ln -s /path/to/your_dataset $(pwd)/data/dataset
+```
+
+To change num_classes use:
+```bash
+export NUM_CLASSES=4
+export RUN_CONFIG=exp_splits.yml
+sed -i '.bak' "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+```
+
 Process the data
 ```bash
 catalyst-data tag2label \
-    --in-dir=./data/ants_bees \
-    --out-dataset=./data/ants_bees/dataset.csv \
-    --out-labeling=./data/ants_bees/tag2cls.json
+    --in-dir=./data/dataset \
+    --out-dataset=./data/dataset_raw.csv \
+    --out-labeling=./data/tag2cls.json
 
-python src/prepare_splits.py \
-    --in-csv=./data/ants_bees/dataset.csv \
-    --tag2class=./data/ants_bees/tag2cls.json \
+catalyst-data split-dataframe \
+    --in-csv=./data/dataset_raw.csv \
+    --tag2class=./data/tag2cls.json \
     --tag-column=tag \
     --class-column=class \
     --n-folds=5 \
     --train-folds=0,1,2,3 \
-    --out-csv=./data/ants_bees/dataset_folds.csv \
-    --out-csv-train=./data/ants_bees/dataset_train.csv \
-    --out-csv-valid=./data/ants_bees/dataset_valid.csv
+    --out-csv=./data/dataset.csv
 ```
-
-And `pip install tensorflow` for visualization.
 
 ### Docker
 
 To build docker image run
 ```bash
-make finetune
+make classification
 ```
 
-This creates a build `catalyst-finetune` with all needed libraries.
+This creates a build `catalyst-classification` with all needed libraries.
 
 ### Model training
 
+Local run (with softmax classification):
 ```bash
-export LOGDIR=$(pwd)/logs/finetune/baseline
+catalyst-dl run --config=configs/exp_splits.yml
+```
+
+Local run (with "multilabel" classification):
+```bash
+catalyst-dl run --config=configs/exp_splits_bce.yml
+```
+
+Local run (with "multilabel" classification and FocalLoss):
+```bash
+catalyst-dl run --config=configs/exp_splits_focal.yml
+```
+
+Docker run:
+```bash
+export LOGDIR=$(pwd)/logs/classification
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash bin/run_model.sh
+   catalyst-classification bash bin/run_model.sh
 ```
 
-### Training visualization
-
-For tensorboard visualization use 
+#### Tensorboard metrics visualization 
 
 ```bash
-CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs/finetune
+CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
 
-### Creating embeddings
+
+#### Index model preparation
 
 ```bash
-export LOGDIR=$(pwd)/logs/finetune/baseline
+export LOGDIR=$(pwd)/logs/classification
+docker run -it --rm --shm-size 8G \
+   -v $(pwd):/workspace/ \
+   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
+   -e "LOGDIR=/logdir" \
+   catalyst-classification bash ./bin/run_index.sh
+```
+
+
+## * TF.Projector and embeddings visualization
+
+#### Embeddings creation
+
+```bash
+export LOGDIR=$(pwd)/logs/projector
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
    -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_embeddings.sh
+   catalyst-classification bash ./bin/run_embeddings.sh
 ```
 
-### Embeddings projecting
+#### Embeddings projection
 
 ```bash
-export LOGDIR=$(pwd)/logs/finetune/baseline
+export LOGDIR=$(pwd)/logs/projector
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
    -v $LOGDIR/embeddings/:/logdir/embeddings/ \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_projector.sh
-tensorboard --logdir=./logs/finetune/projector
+   catalyst-classification bash ./bin/run_projector.sh
 ```
 
-### Index model training
+#### Embeddings visualization 
 
 ```bash
-export LOGDIR=$(pwd)/logs/finetune/baseline
-docker run -it --rm --shm-size 8G \
-   -v $(pwd):/workspace/ \
-   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
-   -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_index.sh
+export LOGDIR=$(pwd)/logs/projector
+CUDA_VISIBLE_DEVICE="" tensorboard --logdir=$LOGDIR/projector
 ```
 
-### LrFinder example
+## * Finding best start LR with LrFinder
 
 ```bash
-export LOGDIR=$(pwd)/logs/finetune/lrfinder
+export LOGDIR=$(pwd)/logs/lrfinder
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_lrfinder.sh
+   catalyst-classification bash ./bin/run_lrfinder.sh
 ```
 
-### Grid search metrics visualization
+## * Grid search visualization
+
+#### Hyperparameters grid search training
 
 ```bash
-export BASELOGDIR=$(pwd)/logs/finetune
+export BASELOGDIR=$(pwd)/logs/grid
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "BASELOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_grid.sh
+   catalyst-classification bash ./bin/run_grid.sh
 ```
 
 
-### KFold training metrics visualization
+#### KFold training
 
 ```bash
-export BASELOGDIR=$(pwd)/logs/finetune/kfold
+export BASELOGDIR=$(pwd)/logs/classification/kfold
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "BASELOGDIR=/logdir" \
-   catalyst-finetune bash ./bin/run_kfold.sh
+   catalyst-classification bash ./bin/run_kfold.sh
 ```
 
-## Autolabel example
+## Autolabel
 
-Pseudo is all you need.
+### Goals
+
+Main
+- tune ResnetEncoder
+- train MultiHeadNet for image classification
+- predict unlabelled dataset
+- use most confident predictions as true labels
+- repeat
 
 ### Preparation
 
 ```bash
-project/
-    data/
-        data_raw/
-            all/
-                ...
-        data_clean/
-            cls_1/
-                ...
-            cls_N/
-                ...
+catalyst.classification/data/
+    data_raw/
+        raw/
+            ...
+    data_clean/
+        ants/
+            ...
+        bees/
+            ...
 ```
 
 
@@ -182,5 +223,5 @@ CUDA_VISIBLE_DEVICES="${GPUS}" bash ./bin/run_autolabel.sh \
     --data-clean ./data/data_clean/ \
     --baselogdir ./logs/autolabel \
     --n-trials 10 \
-    --threshold 0.95
+    --threshold 0.8
 ```
