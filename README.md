@@ -1,4 +1,6 @@
-# Catalyst.Classification
+# Catalyst.Classification & Autolabel
+
+## Classification
 
 ### Goals
 
@@ -26,7 +28,7 @@ mv ./data/ants_bees ./data/dataset
 
 Final folder structure with training data:
 ```bash
-classification/data/
+catalyst.classification/data/
     dataset/
         ants/
             ...
@@ -37,6 +39,13 @@ classification/data/
 For your dataset use:
 ```bash
 ln -s /path/to/your_dataset $(pwd)/data/dataset
+```
+
+To change num_classes use:
+```bash
+export NUM_CLASSES=4
+export RUN_CONFIG=exp_splits.yml
+sed -i '.bak' "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
 ```
 
 Process the data
@@ -67,19 +76,19 @@ This creates a build `catalyst-classification` with all needed libraries.
 
 ### Model training
 
-Local run (with softmax classificaiton):
+Local run (with softmax classification):
 ```bash
-catalyst-dl run --config=configs/classification/exp_splits.yml
+catalyst-dl run --config=configs/exp_splits.yml
 ```
 
-Local run (with "multilabel" classificaiton):
+Local run (with "multilabel" classification):
 ```bash
-catalyst-dl run --config=configs/classification/exp_splits_bce.yml
+catalyst-dl run --config=configs/exp_splits_bce.yml
 ```
 
-Local run (with "multilabel" classificaiton and FocalLoss):
+Local run (with "multilabel" classification and FocalLoss):
 ```bash
-catalyst-dl run --config=configs/classification/exp_splits_focal.yml
+catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
 
 Docker run:
@@ -92,14 +101,14 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash bin/run_model.sh
 ```
 
-### Tensorboard metrics visualization 
+#### Tensorboard metrics visualization 
 
 ```bash
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
 
 
-### Index model preparation
+#### Index model preparation
 
 ```bash
 export LOGDIR=$(pwd)/logs/classification
@@ -113,7 +122,7 @@ docker run -it --rm --shm-size 8G \
 
 ## * TF.Projector and embeddings visualization
 
-### Embeddings creation
+#### Embeddings creation
 
 ```bash
 export LOGDIR=$(pwd)/logs/projector
@@ -125,7 +134,7 @@ docker run -it --rm --shm-size 8G \
    catalyst-classification bash ./bin/run_embeddings.sh
 ```
 
-### Embeddings projection
+#### Embeddings projection
 
 ```bash
 export LOGDIR=$(pwd)/logs/projector
@@ -136,7 +145,7 @@ docker run -it --rm --shm-size 8G \
    catalyst-classification bash ./bin/run_projector.sh
 ```
 
-### Embeddings visualization 
+#### Embeddings visualization 
 
 ```bash
 export LOGDIR=$(pwd)/logs/projector
@@ -156,7 +165,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 
 ## * Grid search visualization
 
-### Hyperparameters grid search training
+#### Hyperparameters grid search training
 
 ```bash
 export BASELOGDIR=$(pwd)/logs/grid
@@ -168,7 +177,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 ```
 
 
-### KFold training
+#### KFold training
 
 ```bash
 export BASELOGDIR=$(pwd)/logs/classification/kfold
@@ -179,23 +188,29 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash ./bin/run_kfold.sh
 ```
 
-# Autolabel example
+## Autolabel
 
-Pseudo is all you need.
+### Goals
+
+Main
+- tune ResnetEncoder
+- train MultiHeadNet for image classification
+- predict unlabelled dataset
+- use most confident predictions as true labels
+- repeat
 
 ### Preparation
 
 ```bash
-project/
-    data/
-        data_raw/
-            all/
-                ...
-        data_clean/
-            cls_1/
-                ...
-            cls_N/
-                ...
+catalyst.classification/data/
+    data_raw/
+        raw/
+            ...
+    data_clean/
+        ants/
+            ...
+        bees/
+            ...
 ```
 
 
@@ -208,5 +223,5 @@ CUDA_VISIBLE_DEVICES="${GPUS}" bash ./bin/run_autolabel.sh \
     --data-clean ./data/data_clean/ \
     --baselogdir ./logs/autolabel \
     --n-trials 10 \
-    --threshold 0.95
+    --threshold 0.8
 ```

@@ -8,8 +8,8 @@ fi
 
 echo "Training...0"
 catalyst-dl run \
-    --config=./configs/classification/${RUN_CONFIG} \
-    --logdir=-nodir --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
     --stages/infer=None:str \
     --stages/data_params/in_csv=./data/dataset.csv:str \
     --stages/data_params/in_csv_train=None:str \
@@ -18,8 +18,8 @@ catalyst-dl run \
 
 echo "Training...1"
 catalyst-dl run \
-    --config=./configs/classification/${RUN_CONFIG} \
-    --logdir=-nodir --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
     --stages/infer=None:str \
     --stages/data_params/in_csv=./data/dataset.csv:str \
     --stages/data_params/in_csv_train=None:str \
@@ -28,8 +28,8 @@ catalyst-dl run \
 
 echo "Training...2"
 catalyst-dl run \
-    --config=./configs/classification/${RUN_CONFIG} \
-    --logdir=-nodir --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
     --stages/infer=None:str \
     --stages/data_params/in_csv=./data/dataset.csv:str \
     --stages/data_params/in_csv_train=None:str \
@@ -38,8 +38,8 @@ catalyst-dl run \
 
 echo "Training...3"
 catalyst-dl run \
-    --config=./configs/classification/${RUN_CONFIG} \
-    --logdir=-nodir --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
     --stages/infer=None:str \
     --stages/data_params/in_csv=./data/dataset.csv:str \
     --stages/data_params/in_csv_train=None:str \
@@ -48,8 +48,8 @@ catalyst-dl run \
 
 echo "Training...4"
 catalyst-dl run \
-    --config=./configs/classification/${RUN_CONFIG} \
-    --logdir=-nodir --baselogdir=${BASELOGDIR} --verbose \
+    --config=./configs/${RUN_CONFIG} \
+    --logdir=none --baselogdir=${BASELOGDIR} --verbose \
     --stages/infer=None:str \
     --stages/data_params/in_csv=./data/dataset.csv:str \
     --stages/data_params/in_csv_train=None:str \

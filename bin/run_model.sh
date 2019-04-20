@@ -8,7 +8,7 @@ fi
 
 echo "training...and inference"
 catalyst-dl run \
-    --config=./configs/classification/${RUN_CONFIG} \
+    --config=./configs/${RUN_CONFIG} \
     --logdir="${LOGDIR}" \
     --out_dir="${LOGDIR}":str \
     --verbose
