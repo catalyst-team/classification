@@ -69,7 +69,11 @@ for ((i=0; i < N_TRIALS; ++i)); do
         --train-folds=0,1,2,3 \
         --out-csv="${DATAPATH_CLEAN}"/dataset.csv
 
-    sed -i '.bak' "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+    if [[ "$(uname)" == "Darwin" ]]; then
+        sed -i ".bak" "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+    elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
+        sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+    fi
 
     catalyst-dl run \
         --config=./configs/${RUN_CONFIG} \
