@@ -45,7 +45,12 @@ To change num_classes use:
 ```bash
 export NUM_CLASSES=4
 export RUN_CONFIG=exp_splits.yml
-sed -i '.bak' "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+
+# for Linux use
+sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+
+# for MacOS use
+sed -i ".bak" "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
 ```
 
 Process the data
