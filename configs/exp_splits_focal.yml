@@ -23,7 +23,7 @@ args:
 stages:
 
   state_params:
-    main_metric: &reduce_metric precision01
+    main_metric: &reduce_metric accuracy01
     minimize_metric: False
 
   data_params:
@@ -61,9 +61,9 @@ stages:
         input_key: targets
         embeddings_key: embeddings
         logits_key: logits
-      precision:
-        callback: PrecisionCallback
-        precision_args: [1]
+      accuracy:
+        callback: AccuracyCallback
+        accuracy_args: [1]
       auc:
         callback: AUCCallback
         input_key: targets_one_hot

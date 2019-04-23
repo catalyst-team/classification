@@ -41,18 +41,6 @@ For your dataset use:
 ln -s /path/to/your_dataset $(pwd)/data/dataset
 ```
 
-To change num_classes use:
-```bash
-export NUM_CLASSES=4
-export RUN_CONFIG=exp_splits.yml
-
-# for Linux use
-sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
-
-# for MacOS use
-sed -i ".bak" "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
-```
-
 Process the data
 ```bash
 catalyst-data tag2label \
@@ -68,6 +56,18 @@ catalyst-data split-dataframe \
     --n-folds=5 \
     --train-folds=0,1,2,3 \
     --out-csv=./data/dataset.csv
+```
+
+To change num_classes in configs use:
+```bash
+export NUM_CLASSES=4  # change me
+export RUN_CONFIG=exp_splits.yml
+
+# for Linux use
+sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+
+# for MacOS use
+sed -i ".bak" "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
 ```
 
 ### Docker
