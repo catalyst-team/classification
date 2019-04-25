@@ -11,7 +11,7 @@ matrix:
 
 stages:
   - Codestyle
-  - Examples
+  - Pipeline Tests
 
 install: &requirements
   pip install -r requirements.txt
@@ -28,8 +28,8 @@ jobs:
         - flake8 . --count --exit-zero --max-complexity=10 --statistics
         # test to make sure the code is yapf compliant
         - ./yapf.sh --all
-    - stage: Examples
-      name: "Examples DL"
+    - stage: Pipeline Tests
+      name: "Pipeline Tests"
       install: *requirements
       script:
         - wget -P ./data https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz
@@ -47,21 +47,7 @@ jobs:
           --n-folds=5
           --train-folds=0,1,2,3
           --out-csv=./data/dataset.csv
-        - NUM_CLASSES=10;
-          RUN_CONFIG=exp_splits.yml;
-          sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG";
-        - NUM_CLASSES=10;
-          RUN_CONFIG=exp_splits_bce.yml;
-          sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
-        - NUM_CLASSES=10;
-          RUN_CONFIG=exp_splits_focal.yml;
-          sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
-        - NUM_CLASSES=10;
-          RUN_CONFIG=exp_splits_roration.yml;
-          sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
-        - NUM_CLASSES=80;
-          RUN_CONFIG=exp_splits_rotation.yml;
-          sed -i "s/class_rotation_logits: \&num_class_rotations .*/class_rotation_logits: \&num_class_rotations $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+        - export NUM_CLASSES=10; bash ./bin/prepare_configs.sh
         - catalyst-dl run --config=configs/exp_splits.yml --check --stages/stage2=None:str --stages/infer=None:str
         - python -c "data = open('./logs/classification/metrics.txt', 'r').readlines(); assert float(data[8].rsplit('loss=', 1)[-1][:6]) < float(data[1].rsplit('loss=', 1)[-1][:6]); assert float(data[8].rsplit('loss=', 1)[-1][:6]) < 2.2"
         - catalyst-dl run --config=configs/exp_splits_bce.yml --check --stages/stage2=None:str --stages/infer=None:str

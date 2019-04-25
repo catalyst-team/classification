@@ -17,7 +17,6 @@ from .transforms import pre_transforms, post_transforms, hard_transform, \
 
 
 class Experiment(ConfigExperiment):
-
     def _prepare_logdir(self, config: Dict):
         model_params = config["model_params"]
         data_params = config["stages"]["data_params"]
@@ -26,8 +25,9 @@ class Experiment(ConfigExperiment):
             train_folds = "-".join(list(map(str, data_params["train_folds"])))
         else:
             train_folds = "split"
-        hiddens = "-".join(list(map(
-            str, model_params["embedding_net_params"]["hiddens"])))
+        hiddens = "-".join(
+            list(map(str, model_params["embedding_net_params"]["hiddens"]))
+        )
         return f"{train_folds}" \
             f".{model_params['model']}" \
             f".{model_params['encoder_params']['arch']}" \
@@ -142,13 +142,14 @@ class Experiment(ConfigExperiment):
                     default_value=-1,
                     dtype=np.int64,
                     one_hot_classes=one_hot_classes
-                ))
+                )
+            )
 
         open_fn = ReaderCompose(readers=open_fn)
 
         for source, mode in zip(
-                (df_train, df_valid, df_infer),
-                ("train", "valid", "infer")):
+            (df_train, df_valid, df_infer), ("train", "valid", "infer")
+        ):
             if len(source) > 0:
                 dataset = ListDataset(
                     source,
@@ -160,10 +161,7 @@ class Experiment(ConfigExperiment):
                 if mode == "train":
                     labels = [x["class"] for x in source]
                     sampler = BalanceClassSampler(labels, mode="upsampling")
-                    dataset = {
-                        "dataset": dataset,
-                        "sampler": sampler
-                    }
+                    dataset = {"dataset": dataset, "sampler": sampler}
                 datasets[mode] = dataset
 
         return datasets

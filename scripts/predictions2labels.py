@@ -59,7 +59,8 @@ def main(args, _=None):
 
     if len(df_infer) == 0:
         raise NotImplementedError(
-            "Pseudo Lgabeling done. Nothing more to label.")
+            "Pseudo Lgabeling done. Nothing more to label."
+        )
 
     counter_ = 0
     for i, row in df_infer.iterrows():
