@@ -59,7 +59,7 @@ stages:
         emb_l2_reg: -1
         input_key: targets
         embeddings_key: embeddings
-        logits_key: logits
+        output_key: logits
       optimizer:
         callback: OptimizerCallback
       finder:

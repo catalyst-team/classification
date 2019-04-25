@@ -12,7 +12,8 @@ from catalyst.utils.parse import read_csv_data
 from catalyst.dl.experiments import ConfigExperiment
 from catalyst.data.dataset import ListDataset
 from catalyst.data.sampler import BalanceClassSampler
-from .transforms import train_transform, valid_transform
+from .transforms import pre_transforms, post_transforms, hard_transform, \
+    RotateMixin, MixinAdapter, Compose
 
 
 class Experiment(ConfigExperiment):
@@ -48,17 +49,41 @@ class Experiment(ConfigExperiment):
 
     @staticmethod
     def get_transforms(stage: str = None, mode: str = None, image_size=224):
-        if mode == "train":
-            transform_fn = train_transform(image_size=image_size)
-        elif mode in ["valid", "infer"]:
-            transform_fn = valid_transform(image_size=image_size)
-        else:
-            raise NotImplementedError
+        pre_transform_fn = pre_transforms(image_size=image_size)
 
-        return Augmentor(
-            dict_key="image",
-            augment_fn=lambda x: transform_fn(image=x)["image"]
-        )
+        if mode == "train":
+            post_transform_fn = Compose([hard_transform(), post_transforms()])
+        elif mode in ["valid", "infer"]:
+            post_transform_fn = post_transforms()
+        else:
+            raise NotImplementedError()
+
+        if mode in ["train", "valid"]:
+            result = MixinAdapter(
+                mixin=RotateMixin(
+                    input_key="image",
+                    output_key="rotation_factor",
+                    targets_key="targets"
+                ),
+                pre_transforms=Augmentor(
+                    dict_key="image",
+                    augment_fn=lambda x: pre_transform_fn(image=x)["image"]
+                ),
+                post_transforms=Augmentor(
+                    dict_key="image",
+                    augment_fn=lambda x: post_transform_fn(image=x)["image"]
+                )
+            )
+        elif mode in ["infer"]:
+            result_fn = Compose([pre_transform_fn, post_transform_fn])
+            result = Augmentor(
+                dict_key="image",
+                augment_fn=lambda x: result_fn(image=x)["image"]
+            )
+        else:
+            raise NotImplementedError()
+
+        return result
 
     def get_datasets(
         self,

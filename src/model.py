@@ -19,7 +19,9 @@ class MultiHeadNet(nn.Module):
         self.encoder_net = encoder = ResnetEncoder(**encoder_params_)
         self.enc_size = encoder.out_features
 
-        embedding_net_params_["hiddens"].insert(0, self.enc_size)
+        if self.enc_size is not None:
+            embedding_net_params_["hiddens"].insert(0, self.enc_size)
+
         self.embedding_net = SequentialNet(**embedding_net_params_)
         self.emb_size = embedding_net_params_["hiddens"][-1]
 
