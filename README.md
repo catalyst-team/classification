@@ -91,7 +91,7 @@ catalyst-dl run --config=configs/exp_splits_focal.yml
 
 Local run with classification and rotation factor prediction:
 ```bash
-catalyst-dl run --config=configs/exp_splits_roration.yml
+catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
 
 Docker run:
