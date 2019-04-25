@@ -4,12 +4,7 @@ from catalyst.contrib.models import ResnetEncoder, SequentialNet
 
 
 class MultiHeadNet(nn.Module):
-    def __init__(
-        self,
-        encoder_params,
-        embedding_net_params,
-        heads_params
-    ):
+    def __init__(self, encoder_params, embedding_net_params, heads_params):
         super().__init__()
 
         encoder_params_ = deepcopy(encoder_params)
@@ -33,10 +28,7 @@ class MultiHeadNet(nn.Module):
     def forward(self, x):
         features = self.encoder_net(x)
         embeddings = self.embedding_net(features)
-        result = {
-            "features": features,
-            "embeddings": embeddings
-        }
+        result = {"features": features, "embeddings": embeddings}
 
         for key, value in self.heads.items():
             result[key] = value(embeddings)

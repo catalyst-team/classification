@@ -60,14 +60,7 @@ catalyst-data split-dataframe \
 
 To change num_classes in configs use:
 ```bash
-export NUM_CLASSES=4  # change me
-export RUN_CONFIG=exp_splits.yml
-
-# for Linux use
-sed -i "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
-
-# for MacOS use
-sed -i ".bak" "s/logits: \&num_classes .*/logits: \&num_classes $NUM_CLASSES/g" "./configs/$RUN_CONFIG"
+export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
 ```
 
 ### Docker

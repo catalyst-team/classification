@@ -2,12 +2,9 @@ import random
 import cv2
 
 from albumentations import (
-    Compose, RandomRotate90, HorizontalFlip,
-    LongestMaxSize, PadIfNeeded, Normalize,
-    HueSaturationValue,
-    ShiftScaleRotate, RandomGamma, IAAPerspective,
-    JpegCompression, ToGray,
-    ChannelShuffle, RGBShift, CLAHE,
+    Compose, RandomRotate90, HorizontalFlip, LongestMaxSize, PadIfNeeded,
+    Normalize, HueSaturationValue, ShiftScaleRotate, RandomGamma,
+    IAAPerspective, JpegCompression, ToGray, ChannelShuffle, RGBShift, CLAHE,
     RandomBrightnessContrast
 )
 from albumentations.torch import ToTensor
@@ -78,10 +75,14 @@ class MixinAdapter:
 
 
 def pre_transforms(image_size=224):
-    return Compose([
-        LongestMaxSize(max_size=image_size),
-        PadIfNeeded(image_size, image_size, border_mode=cv2.BORDER_CONSTANT),
-    ])
+    return Compose(
+        [
+            LongestMaxSize(max_size=image_size),
+            PadIfNeeded(
+                image_size, image_size, border_mode=cv2.BORDER_CONSTANT
+            ),
+        ]
+    )
 
 
 def post_transforms():
@@ -99,9 +100,7 @@ def hard_transform():
         ),
         IAAPerspective(scale=(0.02, 0.05), p=0.3),
         RandomBrightnessContrast(
-            brightness_limit=0.2,
-            contrast_limit=0.2,
-            p=0.3
+            brightness_limit=0.2, contrast_limit=0.2, p=0.3
         ),
         RandomGamma(gamma_limit=(85, 115), p=0.3),
         HueSaturationValue(p=0.3),
