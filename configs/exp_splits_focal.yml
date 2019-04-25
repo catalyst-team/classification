@@ -27,8 +27,8 @@ stages:
     minimize_metric: False
 
   data_params:
-    num_workers: 6
-    batch_size: 128
+    num_workers: 4
+    batch_size: 64
     per_gpu_batch_size: True
     in_csv_train: "./data/dataset_train.csv"
     in_csv_valid: "./data/dataset_valid.csv"
@@ -102,7 +102,7 @@ stages:
   infer:
 
     data_params:
-      num_workers: 6
+      num_workers: 4
       batch_size: 64
       per_gpu_batch_size: True
       in_csv: null
