@@ -91,7 +91,6 @@ catalyst-dl run --config=configs/exp_splits_focal.yml
 
 Local run with classification and rotation factor prediction:
 ```bash
-# do not forget to change class_rotation_logits to logits * 8 (number of different rotations)
 catalyst-dl run --config=configs/exp_splits_roration.yml
 ```
 
