@@ -37,7 +37,7 @@ stages:
       num_epochs: 100
 
     data_params: &data_params
-      num_workers: 4
+      num_workers: 6
       batch_size: 64
       per_gpu_batch_size: True
       in_csv_train: "./data/dataset_train.csv"
@@ -59,7 +59,7 @@ stages:
         emb_l2_reg: -1
         input_key: targets
         embeddings_key: embeddings
-        logits_key: logits
+        output_key: logits
       optimizer:
         callback: OptimizerCallback
       finder:

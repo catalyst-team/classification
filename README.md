@@ -81,19 +81,25 @@ This creates a build `catalyst-classification` with all needed libraries.
 
 ### Model training
 
-Local run (with softmax classification):
+Local run with softmax classification:
 ```bash
 catalyst-dl run --config=configs/exp_splits.yml
 ```
 
-Local run (with "multilabel" classification):
+Local run with "multilabel" classification:
 ```bash
 catalyst-dl run --config=configs/exp_splits_bce.yml
 ```
 
-Local run (with "multilabel" classification and FocalLoss):
+Local run with "multilabel" classification and FocalLoss:
 ```bash
 catalyst-dl run --config=configs/exp_splits_focal.yml
+```
+
+Local run with classification and rotation factor prediction:
+```bash
+# do not forget to change class_rotation_logits to logits * 8 (number of different rotations)
+catalyst-dl run --config=configs/exp_splits_roration.yml
 ```
 
 Docker run:

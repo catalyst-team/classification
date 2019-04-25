@@ -1,0 +1,171 @@
+model_params:
+  fp16: false
+  model: MultiHeadNet
+  encoder_params:
+    arch: resnet18
+    pretrained: True
+    frozen: True
+    pooling: MaxPool2d
+    pooling_kwargs:
+      kernel_size: 7      # [14, 7]
+      stride: 7           # [14, 7]
+  embedding_net_params:
+    hiddens: [2048, 256]  # [512, 2048] first taken from resnet output, by hand
+    activation_fn: ReLU
+    norm_fn: BatchNorm1d
+    bias: false
+    dropout: 0.5
+  heads_params:
+    logits: &num_classes 2
+    rotation_logits: &num_rotations 8
+    class_rotation_logits: &num_class_rotations 16
+
+args:
+  expdir: "src"
+  logdir: &logdir "./logs/classification_rotation"
+  baselogdir: "./logs/classification_rotation_base"
+
+stages:
+
+  state_params:
+    main_metric: &reduce_metric accuracy_class_rotations01
+    minimize_metric: False
+
+  data_params:
+    num_workers: 6
+    batch_size: 64
+    per_gpu_batch_size: True
+    in_csv_train: "./data/dataset_train.csv"
+    in_csv_valid: "./data/dataset_valid.csv"
+    datapath: "./data/dataset"
+    image_size: 448
+
+  criterion_params:
+    _key_value: True
+
+    class:
+      criterion: CrossEntropyLoss
+    rotation:
+      criterion: CrossEntropyLoss
+    class_rotation:
+      criterion: CrossEntropyLoss
+
+  # train head
+  stage1:
+
+    state_params:
+      num_epochs: 20
+
+    optimizer_params:
+      optimizer: Adam
+      lr: 0.001
+      weight_decay: 0.0001
+
+    scheduler_params:
+      scheduler: MultiStepLR
+      milestones: [10]
+      gamma: 0.3
+
+    callbacks_params: &callbacks
+      loss_class:
+        callback: LossCallback
+        input_key: targets
+        output_key: logits
+        prefix: loss_class
+        criterion_key: class
+      loss_rotation:
+        callback: LossCallback
+        input_key: rotation_factor
+        output_key: rotation_logits
+        prefix: loss_rotation
+        criterion_key: rotation
+      loss_class_rotation:
+        callback: LossCallback
+        input_key: class_rotation_targets
+        output_key: class_rotation_logits
+        prefix: loss_class_rotation
+        criterion_key: class_rotation
+
+      accuracy_class:
+        callback: AccuracyCallback
+        input_key: targets
+        output_key: logits
+        prefix: accuracy_class
+        accuracy_args: [1, 3, 5]
+      accuracy_rotation:
+        callback: AccuracyCallback
+        input_key: rotation_factor
+        output_key: rotation_logits
+        prefix: accuracy_rotation
+        accuracy_args: [1]
+      accuracy_class_rotation:
+        callback: AccuracyCallback
+        input_key: class_rotation_targets
+        output_key: class_rotation_logits
+        prefix: accuracy_class_rotations
+        accuracy_args: [1, 8, 24]
+
+      cm_class:
+        callback: ConfusionMatrixCallback
+        input_key: targets
+        output_key: logits
+        prefix: cm_class
+        num_classes: *num_classes
+      cm_rotation:
+        callback: ConfusionMatrixCallback
+        input_key: rotation_factor
+        output_key: rotation_logits
+        prefix: cm_rotation
+        num_classes: *num_rotations
+      cm_class_rotation:
+        callback: ConfusionMatrixCallback
+        input_key: class_rotation_targets
+        output_key: class_rotation_logits
+        prefix: class_rotations
+        num_classes: *num_class_rotations
+
+      optimizer:
+        callback: OptimizerCallback
+      scheduler:
+        callback: SchedulerCallback
+        reduce_metric: *reduce_metric
+      saver:
+        callback: CheckpointCallback
+
+  # tune whole network
+  stage2:
+
+    state_params:
+      num_epochs: 10
+
+    optimizer_params:
+      optimizer: SGD
+      lr: 0.0001
+
+    scheduler_params:
+      scheduler: MultiStepLR
+      milestones: [8]
+      gamma: 0.3
+
+    callbacks_params: *callbacks
+
+  infer:
+
+    data_params:
+      num_workers: 6
+      batch_size: 64
+      per_gpu_batch_size: True
+      in_csv: null
+      in_csv_train: null
+      in_csv_valid: "./data/dataset_valid.csv"
+      in_csv_infer: "./data/dataset_train.csv"
+      datapath: "./data/dataset"
+      one_hot_classes: null
+
+    callbacks_params:
+      loader:
+        callback: CheckpointCallback
+      infer:
+        callback: InferCallback
+        out_dir: *logdir
+        out_prefix: "/predictions/"
