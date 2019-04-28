@@ -91,7 +91,7 @@ stages:
         input_key: targets
         output_key: logits
         prefix: accuracy_class
-        accuracy_args: [1, 3, 5]
+        accuracy_args: [1]
       accuracy_rotation:
         callback: AccuracyCallback
         input_key: rotation_factor
@@ -103,7 +103,7 @@ stages:
         input_key: class_rotation_targets
         output_key: class_rotation_logits
         prefix: accuracy_class_rotations
-        accuracy_args: [1, 8, 24]
+        accuracy_args: [1]
 
       cm_class:
         callback: ConfusionMatrixCallback
