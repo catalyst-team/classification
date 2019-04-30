@@ -22,8 +22,8 @@ model_params:
 
 args:
   expdir: "src"
-  logdir: &logdir "./logs/classification_rotation"
-  baselogdir: "./logs/classification_rotation_base"
+  logdir: &logdir "./logs/classification_rotation_focal"
+  baselogdir: "./logs/classification_rotation_focal_base"
 
 stages:
 
@@ -39,16 +39,17 @@ stages:
     in_csv_valid: "./data/dataset_valid.csv"
     datapath: "./data/dataset"
     image_size: 448
+    one_hot_classes: *num_classes
 
   criterion_params:
     _key_value: True
 
     class:
-      criterion: CrossEntropyLoss
+      criterion: FocalLossMultiClass
     rotation:
       criterion: CrossEntropyLoss
     class_rotation:
-      criterion: CrossEntropyLoss
+      criterion: CrossEntropyLoss  # FocalLossMultiClass
 
   # train head
   stage1:
@@ -104,6 +105,19 @@ stages:
         output_key: class_rotation_logits
         prefix: accuracy_class_rotations
         accuracy_args: [1]
+
+      auc_class:
+        callback: AUCCallback
+        input_key: targets_one_hot
+        output_key: logits
+        prefix: auc_class
+        num_classes: *num_classes
+#      auc_class_rotation:
+#        callback: AUCCallback
+#        input_key: class_rotation_targets_one_hot
+#        output_key: class_rotation_logits
+#        prefix: auc_class_rotation
+#        num_classes: *num_class_rotations
 
       cm_class:
         callback: ConfusionMatrixCallback

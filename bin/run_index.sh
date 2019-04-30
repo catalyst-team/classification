@@ -8,7 +8,7 @@ fi
 
 if [[ -z "$KNN_METRIC" ]]
 then
-      $KNN_METRIC="l2"
+      KNN_METRIC="l2"
 fi
 
 echo "index model creating..."

@@ -1,4 +1,5 @@
 import random
+import numpy as np
 import cv2
 
 from albumentations import (
@@ -25,6 +26,7 @@ class RotateMixin:
         targets_key: str = None,
         rotate_probability: float = 0.5,
         hflip_probability: float = 0.5,
+        one_hot_classes: int = None
     ):
         """
         Args:
@@ -38,6 +40,9 @@ class RotateMixin:
         self.hflip_probability = hflip_probability
         self.rotate = RandomRotate90()
         self.hflip = HorizontalFlip()
+        self.one_hot_classes = one_hot_classes * 8 \
+            if one_hot_classes is not None \
+            else None
 
     def __call__(self, dct):
         image = dct[self.input_key]
@@ -55,8 +60,13 @@ class RotateMixin:
         dct[self.output_key] = rotation_factor
 
         if self.targets_key is not None:
-            dct[f"class_rotation_{self.targets_key}"] = \
-                dct[self.targets_key] * 8 + rotation_factor
+            class_rotation_factor = dct[self.targets_key] * 8 + rotation_factor
+            dct[f"class_rotation_{self.targets_key}"] = class_rotation_factor
+
+            if self.one_hot_classes is not None:
+                one_hot = np.zeros(self.one_hot_classes, dtype=np.float32)
+                one_hot[class_rotation_factor] = 1.0
+                dct[f"class_rotation_{self.targets_key}_one_hot"] = one_hot
 
         return dct
 

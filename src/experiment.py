@@ -48,7 +48,12 @@ class Experiment(ConfigExperiment):
         return model_
 
     @staticmethod
-    def get_transforms(stage: str = None, mode: str = None, image_size=224):
+    def get_transforms(
+        stage: str = None,
+        mode: str = None,
+        image_size=224,
+        one_hot_classes=None
+    ):
         pre_transform_fn = pre_transforms(image_size=image_size)
 
         if mode == "train":
@@ -63,7 +68,8 @@ class Experiment(ConfigExperiment):
                 mixin=RotateMixin(
                     input_key="image",
                     output_key="rotation_factor",
-                    targets_key="targets"
+                    targets_key="targets",
+                    one_hot_classes=one_hot_classes
                 ),
                 pre_transforms=Augmentor(
                     dict_key="image",
@@ -155,7 +161,9 @@ class Experiment(ConfigExperiment):
                     source,
                     open_fn=open_fn,
                     dict_transform=self.get_transforms(
-                        stage=stage, mode=mode, image_size=image_size
+                        stage=stage, mode=mode,
+                        image_size=image_size,
+                        one_hot_classes=one_hot_classes
                     ),
                 )
                 if mode == "train":
