@@ -53,7 +53,7 @@ catalyst-data tag2label \
     --out-labeling="${DATAPATH_RAW}"/tag2cls.json
 
 for ((i=0; i < N_TRIALS; ++i)); do
-    LOGDIR="${BASELOGDIR}_${i}"
+    LOGDIR="${BASELOGDIR}/${i}"
 
     catalyst-data tag2label \
         --in-dir="${DATAPATH_CLEAN}" \
