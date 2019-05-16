@@ -38,3 +38,8 @@ catalyst-dl run \
     --stages/data_params/in_csv_train="${DATAPATH_CLEAN}/dataset_train.csv":str \
     --stages/data_params/in_csv_valid="${DATAPATH_CLEAN}/dataset_valid.csv":str \
     --stages/infer="None":str
+
+# docker trick
+if [[ "$EUID" -eq 0 ]]; then
+  chmod -R 777 ${LOGDIR}
+fi

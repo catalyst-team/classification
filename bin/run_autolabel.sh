@@ -96,3 +96,8 @@ for ((i=0; i < N_TRIALS; ++i)); do
         --out-dir="${DATAPATH_CLEAN}"/ \
         --threshold="${THRESHOLD}"
 done
+
+# docker trick
+if [[ "$EUID" -eq 0 ]]; then
+  chmod -R 777 ${LOGDIR}
+fi
