@@ -20,9 +20,10 @@ done
    
 docker run -it --rm --shm-size 8G --runtime=nvidia \
             -v $(pwd):/workspace \
-	        -v ${BASELOGDIR}:/baselogdir  \
-	        -v ${DATAPATH_RAW}:/data_raw \
-	        -v ${DATAPATH_CLEAN}:/data_clean \
+            -v ${BASELOGDIR}:/baselogdir  \
+            -v ${DATAPATH_RAW}:/data_raw \
+            -v ${DATAPATH_CLEAN}:/data_clean \
+            --env NVIDIA_VISIBLE_DEVICES=${GPUS} \
             -e RUN_CONFIG \
             catalyst-classification bash ./bin/run_autolabel.sh \
                     --data-raw /data_raw \
