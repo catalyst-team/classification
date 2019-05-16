@@ -161,7 +161,8 @@ class Experiment(ConfigExperiment):
                     source,
                     open_fn=open_fn,
                     dict_transform=self.get_transforms(
-                        stage=stage, mode=mode,
+                        stage=stage,
+                        mode=mode,
                         image_size=image_size,
                         one_hot_classes=one_hot_classes
                     ),
