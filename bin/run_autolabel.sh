@@ -99,5 +99,5 @@ done
 
 # docker trick
 if [[ "$EUID" -eq 0 ]]; then
-  chmod -R 777 ${LOGDIR}
+  chmod -R 777 ${BASELOGDIR}
 fi
