@@ -163,7 +163,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 ```bash
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
-![Stage 1](/images/1_stage.jpg "Stage 1")
+![Stage 1](/images/1_stage.png "Stage 1")
 
 #### Checkpoints
 Checkpoins of all stages can be found in directory `./logs/classification/checkpoints`
