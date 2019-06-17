@@ -2,7 +2,7 @@
 
 ***Intro: введение: в данном туториале вы сделаете кучу сложнейших всопроизводимых штук простым способом - конфигурируя конфиги. Каждый этап пару слов***
 
-## Classification
+## 1.Classification
 
 ### Goals
 
@@ -18,9 +18,23 @@ Additional
 - find best starting lr with LRFinder - ***t***
 - plot grid search metrics and compare different approaches - ***t***
 
-### Preparation
 
-#### 1. Get Dataset
+### 1.1 Install requirements
+
+if you want use your local environment: 
+```pip install -r requirements.txt```
+
+if you want use docker: 
+
+```bash
+make classification
+```
+or 
+```
+docker build -t catalyst-classification:latest . -f docker/Dockerfile
+```
+
+### 1.2 Get Dataset
 
 ![Ants-bees dataset example](/images/ant-bees-example.PNG "Ants-bees dataset example")
 
@@ -47,24 +61,7 @@ For your dataset use:
 ln -s /path/to/your_dataset $(pwd)/data/dataset
 ```
 
-
-#### 2. Install requirements
-
-if you want use your local environment: 
-```pip install -r requirements.txt```
-
-!add jpeg4py!
-
-if you want use docker: 
-
-```bash
-make classification
-```
-or 
-```
-docker build -t catalyst-classification:latest . -f docker/Dockerfile
-```
-#### 3. Process the data
+### 1.3 Process the data
 In your local environment: 
 
 ```bash
@@ -82,9 +79,11 @@ catalyst-data split-dataframe \
     --train-folds=0,1,2,3 \
     --out-csv=./data/dataset.csv
 ```
-In docker:
+
+Using docker:
+
 ```
-docker run -it --rm -v $(pwd):/workspace/ catalyst-classification catalyst-data tag2label  --in-dir=./data/dataset     --out-dataset=./data/dataset_raw.csv     --out-labeling=./data/tag2cls.json
+docker run -it --rm -v $(pwd):/workspace/ catalyst-classification catalyst-data tag2label --in-dir=./data/dataset     --out-dataset=./data/dataset_raw.csv     --out-labeling=./data/tag2cls.json
 ```
 ```
 docker run -it --rm -v $(pwd):/workspace/ catalyst-classification catalyst-data  split-dataframe  \
@@ -102,7 +101,9 @@ export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
 
 This creates a build `catalyst-classification` with all needed libraries.
 
-### Model training
+### 1.4 Model training
+
+#### In your local environment: 
 
 Local run with softmax classification:
 ```bash
@@ -124,7 +125,8 @@ Local run with classification and rotation factor prediction:
 catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
 
-Docker run:
+#### Using docker:
+
 ```bash
 export LOGDIR=$(pwd)/logs/classification
 docker run -it --rm --shm-size 8G --runtime=nvidia \
@@ -153,7 +155,7 @@ docker run -it --rm --shm-size 8G \
 ```
 
 
-## * TF.Projector and embeddings visualization
+### 1.5 * TF.Projector and embeddings visualization
 
 #### Embeddings creation
 
@@ -185,7 +187,7 @@ export LOGDIR=$(pwd)/logs/projector
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=$LOGDIR/projector
 ```
 
-## * Finding best start LR with LrFinder
+### 1.6 * Finding best start LR with LrFinder
 
 ```bash
 export LOGDIR=$(pwd)/logs/lrfinder
@@ -196,7 +198,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash ./bin/run_lrfinder.sh
 ```
 
-## * Grid search visualization
+### 1.7 * Grid search visualization
 
 #### Hyperparameters grid search training
 
@@ -221,7 +223,9 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash ./bin/run_kfold.sh
 ```
 
-## Autolabel
+## 2.Autolabel
+
+***There will be introduction***
 
 ### Goals
 
@@ -232,7 +236,7 @@ Main
 - use most confident predictions as true labels
 - repeat
 
-### Preparation
+### 2.1 Preparation
 
 ```bash
 catalyst.classification/data/
@@ -247,7 +251,7 @@ catalyst.classification/data/
 ```
 
 
-### Model training
+### 2.2 Model training
 
 ```bash
 export GPUS=""
