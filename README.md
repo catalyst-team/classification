@@ -48,7 +48,9 @@ ln -s /path/to/your_dataset $(pwd)/data/dataset
 #### 2. Install requirements
 
 if you want use your local environment: 
-```pip install -r requirements.txt``
+```pip install -r requirements.txt```
+
+!add jpeg4py!
 
 if you want use docker: 
 
