@@ -6,9 +6,6 @@
 
 ## 1.Classification
 
-
-
-
 ### Goals
 
 Main
@@ -109,8 +106,8 @@ catalyst-data  split-dataframe  \
 Powerful configs allow us to investigate models in a controlled and reproducible way. We will perform the following experiments: 
 - Two stages trained classification using `Softmax` 
 - Two stages trained "Multilabel" classification using `BCEWithLogitsLoss`
-- Two stages trained "Multilabel" classification using `FocalLossMultiClass`
-- Two stages trained classification and rotation factor prediction 
+- Two stages trained MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor prediction 
+- Two stages trained MultiHeadNet "Multilabel" classification using `CrossEntropyLoss` and with rotation factor prediction 
 
 #### Config training
 The config allows you to define:
@@ -127,22 +124,22 @@ The config allows you to define:
 
 #### Run in local environment: 
 
-- Softmax classification:
+- Classification using `Softmax`:
 ```bash
 catalyst-dl run --config=configs/exp_splits.yml
 ```
 
-- "Multilabel" classification:
+- "Multilabel" classification using `BCEWithLogitsLoss`:
 ```bash
 catalyst-dl run --config=configs/exp_splits_bce.yml
 ```
 
-- "Multilabel" classification and FocalLoss:
+-  MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor predictions:
 ```bash
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
 
-- Classification and rotation factor prediction:
+- Two stages trained MultiHeadNet "Multilabel" classification using `CrossEntropyLoss` and with rotation factor prediction :
 ```bash
 catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
