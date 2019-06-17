@@ -26,12 +26,9 @@ Additional
 
 #### Using docker: 
 
+This creates a build `catalyst-classification` with all needed libraries:
 ```bash
 make classification
-```
-or 
-```
-docker build -t catalyst-classification:latest . -f docker/Dockerfile
 ```
 
 ### 1.2 Get Dataset
@@ -45,7 +42,6 @@ tar -xvf ./data/ants_bees.tar.gz -C ./data
 mv ./data/ants_bees ./data/dataset
 
 ```
-
 Final folder structure with training data:
 ```bash
 catalyst.classification/data/
@@ -62,6 +58,9 @@ ln -s /path/to/your_dataset $(pwd)/data/dataset
 ```
 
 ### 1.3 Process the data
+Using methods `tag2label` and `split-dataframe` dataset is prepearing to json like {“class_id”: class_column_from_dataset} and then spliting into train/valid folds. in this example one fold from five is using for validation, others for train.  
+
+Here is description of another usefull metods for dataset preparation: `catalyst-data-documentation`[catalyst-data documentation](https://catalyst-team.github.io/catalyst/api/data.html)
 
 #### In your local environment: 
 
@@ -80,7 +79,6 @@ catalyst-data split-dataframe \
     --train-folds=0,1,2,3 \
     --out-csv=./data/dataset.csv
 ```
-
 #### Using docker:
 
 ```
@@ -99,17 +97,17 @@ catalyst-data  split-dataframe  \
  --out-csv=./data/dataset.csv
 ```
 
+#### For your dataset
 To change num_classes in configs use:
 ```bash
 export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
 ```
 
-This creates a build `catalyst-classification` with all needed libraries.
-
 ### 1.4 Model training
 
-#### Config training
 
+
+#### Config training
 
 
 #### Run in local environment: 
@@ -149,11 +147,33 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 
 Checkpoins of all stages can be found in directory `./logs/classification/checkpoints`
 
+At the end of each learning stage best checkpoints are logged:
+
+- 1 Stage:
+```
+19/20 * Epoch 19 (valid): _base/lr=0.0003 | _base/momentum=0.9000 | _timers/_fps=3749.7755 | _timers/batch_time=0.3367 | _timers/data_time=0.3266 | _timers/model_time=0.0099 | accuracy01=94.0848 | embeddings_loss=0.1721
+Top best models:
+logs/classification/checkpoints//stage1.11.pth  95.6473
+logs/classification/checkpoints//stage1.14.pth  95.6473
+logs/classification/checkpoints//stage1.7.pth   94.8661
+```
+
+- 2 Stage:
+```
+9/10 * Epoch 30 (valid): _base/lr=0.0001 | _base/momentum=0.0000 | _timers/_fps=3681.9615 | _timers/batch_time=0.3884 | _timers/data_time=0.3788 | _timers/model_time=0.0093 | accuracy01=95.6473 | embeddings_loss=0.2165
+Top best models:
+logs/classification/checkpoints//stage2.21.pth  95.6473
+logs/classification/checkpoints//stage2.27.pth  95.6473
+logs/classification/checkpoints//stage2.30.pth  95.6473
+```
+
 #### Tensorboard metrics visualization 
 
 ```bash
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
+![Stage 1](/images/1_stage.jpg "Stage 1")
+
 
 ####
 
