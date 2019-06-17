@@ -105,29 +105,29 @@ export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
 
 ### 1.4 Model training
 
-
+Softmax classification "Multilabel" classification Multilabel" classification and FocalLoss Classification and rotation factor prediction
 
 #### Config training
 
 
 #### Run in local environment: 
 
-- Local run with softmax classification:
+- Softmax classification:
 ```bash
 catalyst-dl run --config=configs/exp_splits.yml
 ```
 
-- Local run with "multilabel" classification:
+- "Multilabel" classification:
 ```bash
 catalyst-dl run --config=configs/exp_splits_bce.yml
 ```
 
-- Local run with "multilabel" classification and FocalLoss:
+- "Multilabel" classification and FocalLoss:
 ```bash
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
 
-- Local run with classification and rotation factor prediction:
+- Classification and rotation factor prediction:
 ```bash
 catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
