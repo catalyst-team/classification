@@ -112,22 +112,22 @@ export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
 
 #### Run in local environment: 
 
-Local run with softmax classification:
+- Local run with softmax classification:
 ```bash
 catalyst-dl run --config=configs/exp_splits.yml
 ```
 
-Local run with "multilabel" classification:
+- Local run with "multilabel" classification:
 ```bash
 catalyst-dl run --config=configs/exp_splits_bce.yml
 ```
 
-Local run with "multilabel" classification and FocalLoss:
+- Local run with "multilabel" classification and FocalLoss:
 ```bash
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
 
-Local run with classification and rotation factor prediction:
+- Local run with classification and rotation factor prediction:
 ```bash
 catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
