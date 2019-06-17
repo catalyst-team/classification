@@ -1,24 +1,21 @@
 # Catalyst.Classification & Autolabel
 
-***Intro: введение: в данном туториале вы сделаете кучу сложнейших всопроизводимых штук простым способом - конфигурируя конфиги. Каждый этап пару слов***
-
-
+We consider pipeline image classification using the "catalyst" framework. 
+Framework methods and powerful configs allow to investigate models within the whole pipeline in a controlled and reproducible way. Also the framework also provides tools for visualization and analyzing experiments.
 
 ## 1.Classification
 
 ### Goals
 
 Main
-- tune ResnetEncoder - ***t***
-- train MultiHeadNet for image classification - ***t***
-- learn embeddings representation - ***t***
-- create knn index model - ***t***
-- or train MultiHeadNet for "multilabel" image classification - ***t***
-
-Additional
-- visualize embeddings with TF.Projector - ***t***
-- find best starting lr with LRFinder - ***t***
-- plot grid search metrics and compare different approaches - ***t***
+- FineTune ResnetEncoder.
+- Train MultiHeadNet for image classification
+- Train MultiHeadNet for "multilabel" image classification
+- Learn embeddings representation
+- Create KNN index model 
+- Visualize embeddings with TF.Projector 
+- Find best starting lr with LRFinder 
+- Plot grid search metrics and compare different approaches 
 
 
 ### 1.1 Install requirements
@@ -103,11 +100,11 @@ catalyst-data  split-dataframe  \
 ```
 
 ### 1.4 Model training
-Powerful configs allow us to investigate models in a controlled and reproducible way. We will perform the following experiments: 
+We will perform the following experiments: 
 - Two stages trained classification using `Softmax` 
 - Two stages trained "Multilabel" classification using `BCEWithLogitsLoss`
 - Two stages trained MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor prediction 
-- Two stages trained MultiHeadNet "Multilabel" classification using `CrossEntropyLoss` and with rotation factor prediction 
+- Two stages trained MultiHeadNet classification using `CrossEntropyLoss` and with rotation factor prediction 
 
 #### Config training
 The config allows you to define:
@@ -139,7 +136,7 @@ catalyst-dl run --config=configs/exp_splits_bce.yml
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
 
-- Two stages trained MultiHeadNet "Multilabel" classification using `CrossEntropyLoss` and with rotation factor prediction :
+- Two stages trained MultiHeadNet classification using `CrossEntropyLoss` and with rotation factor prediction :
 ```bash
 catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
