@@ -113,8 +113,8 @@ The config allows you to define:
 - `model_params` detailed configuration of models, including:
     - detailed architecture description
     - using or not pretrained model 
-- `stages` you can configure training in several stages with different hyperparameters, optimizers and loss-functions. In our example:
-     - first learn the head
+- `stages` you can configure training in several stages with different hyperparameters, optimizers, callbacks and loss-functions. In our example:
+     - first learn the head(s)
      - then train the whole network  
      - produce predictions  
 - augmentation parametrs
