@@ -3,6 +3,7 @@
 
 
 ## 1.Classification
+
 You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework. 
 Framework methods and powerful configs allow to investigate models within the whole pipeline in a controlled and reproducible way. The framework also provides tools for visualization and analyzing experiments.
 
@@ -174,20 +175,20 @@ At the end of each learning stage best checkpoints are logged:
 
 - Stage 1:
 ```bash
-19/20 * Epoch 19 (valid): _base/lr=0.0003 | _base/momentum=0.9000 | _timers/_fps=3749.7755 | _timers/batch_time=0.3367 | _timers/data_time=0.3266 | _timers/model_time=0.0099 | accuracy01=94.0848 | embeddings_loss=0.1721
+19/20 * Epoch 19 (valid): _base/lr=0.0003 | _base/momentum=0.9000 | _timers/_fps=42.7747 | _timers/batch_time=2.7741 | _timers/data_time=0.2625 | _timers/model_time=2.5115 | accuracy01=92.0759 | auc/_mean=0.9793 | auc/class_0=0.9789 | auc/class_1=0.9796 | embeddings_loss=0.2581
 Top best models:
-logs/classification/checkpoints//stage1.11.pth  95.6473
-logs/classification/checkpoints//stage1.14.pth  95.6473
-logs/classification/checkpoints//stage1.7.pth   94.8661
+/logdir/checkpoints//stage1.18.pth  97.6562
+/logdir/checkpoints//stage1.16.pth  96.4286
+/logdir/checkpoints//stage1.7.pth  95.6473
 ```
 
 - Stage 2:
 ```bash
-9/10 * Epoch 30 (valid): _base/lr=0.0001 | _base/momentum=0.0000 | _timers/_fps=3681.9615 | _timers/batch_time=0.3884 | _timers/data_time=0.3788 | _timers/model_time=0.0093 | accuracy01=95.6473 | embeddings_loss=0.2165
+9/10 * Epoch 30 (valid): _base/lr=0.0001 | _base/momentum=0.0000 | _timers/_fps=37.3813 | _timers/batch_time=17.8423 | _timers/data_time=15.5075 | _timers/model_time=2.3346 | accuracy01=90.5134 | auc/_mean=0.9783 | auc/class_0=0.9776 | auc/class_1=0.9789 | embeddings_loss=0.2753
 Top best models:
-logs/classification/checkpoints//stage2.21.pth  95.6473
-logs/classification/checkpoints//stage2.27.pth  95.6473
-logs/classification/checkpoints//stage2.30.pth  95.6473
+/logdir/checkpoints//stage2.23.pth  99.2188
+/logdir/checkpoints//stage2.22.pth  95.6473
+/logdir/checkpoints//stage2.29.pth  95.6473
 ```
 
 
@@ -258,7 +259,6 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash ./bin/run_grid.sh
 ```
 
-
 #### KFold training
 
 ```bash
@@ -272,17 +272,18 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 
 ## 2.Autolabel
 
-The classical way to reduce the amount of unlabeled data by having a trained model would be to run unlabeled dataset through the model and automatically label the data. Then pushing automatically labeled data in the training process would maybe help to better tune the model.
-
-Framework tools and config files allow to config the whole pipeline of autolabeling in a controlled and reproducible way.
-
 ### Goals
+
+The classical way to reduce the amount of unlabeled data by having a trained model would be to run unlabeled dataset through the model and automatically label images with confidence of label prediction above the threshold. Then automatically labeled data pushing in the training process so as to optimize prediction accuracy.
+
+To run the iteration process we need to specify number of iterations `n-trials` and `threshold` of confidence to label image.
 
 - tune ResnetEncoder
 - train MultiHeadNet for image classification
 - predict unlabelled dataset
 - use most confident predictions as true labels
 - repeat
+
 
 ### 2.1 Preparation
 
