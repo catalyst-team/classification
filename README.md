@@ -8,7 +8,6 @@ Framework methods and powerful configs allow to investigate models within the wh
 
 ### Goals
 
-Main
 - FineTune ResnetEncoder.
 - FineTune MultiHeadNet for image classification
 - FineTune MultiHeadNet for "multilabel" image classification
@@ -17,7 +16,6 @@ Main
 - Visualize embeddings with TF.Projector 
 - Find best starting lr with LRFinder 
 - Plot grid search metrics and compare different approaches 
-
 
 ### 1.1 Install requirements
 
@@ -280,7 +278,6 @@ Framework tools and config files allow to config the whole pipeline of autolabel
 
 ### Goals
 
-Main
 - tune ResnetEncoder
 - train MultiHeadNet for image classification
 - predict unlabelled dataset
