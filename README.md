@@ -21,10 +21,10 @@ Additional
 
 ### 1.1 Install requirements
 
-if you want use your local environment: 
+#### Using local environment: 
 ```pip install -r requirements.txt```
 
-if you want use docker: 
+#### Using docker: 
 
 ```bash
 make classification
@@ -56,20 +56,21 @@ catalyst.classification/data/
             ...
 ```
 
-For your dataset use:
+#### For your dataset
 ```bash
 ln -s /path/to/your_dataset $(pwd)/data/dataset
 ```
 
 ### 1.3 Process the data
-In your local environment: 
+
+#### In your local environment: 
 
 ```bash
 catalyst-data tag2label \
     --in-dir=./data/dataset \
     --out-dataset=./data/dataset_raw.csv \
     --out-labeling=./data/tag2cls.json
-
+    
 catalyst-data split-dataframe \
     --in-csv=./data/dataset_raw.csv \
     --tag2class=./data/tag2cls.json \
@@ -80,14 +81,18 @@ catalyst-data split-dataframe \
     --out-csv=./data/dataset.csv
 ```
 
-Using docker:
+#### Using docker:
 
 ```
-docker run -it --rm -v $(pwd):/workspace/ catalyst-classification catalyst-data tag2label --in-dir=./data/dataset     --out-dataset=./data/dataset_raw.csv     --out-labeling=./data/tag2cls.json
-```
-```
-docker run -it --rm -v $(pwd):/workspace/ catalyst-classification catalyst-data  split-dataframe  \
-    --in-csv=./data/dataset_raw.csv     \
+docker run -it --rm -v $(pwd):/workspace/ catalyst-classification \
+catalyst-data tag2label \
+--in-dir=./data/dataset \
+--out-dataset=./data/dataset_raw.csv \
+--out-labeling=./data/tag2cls.json
+
+docker run -it --rm -v $(pwd):/workspace/ catalyst-classification \
+catalyst-data  split-dataframe  \
+--in-csv=./data/dataset_raw.csv     \
 --tag2class=./data/tag2cls.json     \
 --tag-column=tag     \
 --class-column=class     --n-folds=5     --train-folds=0,1,2,3    \
@@ -103,7 +108,11 @@ This creates a build `catalyst-classification` with all needed libraries.
 
 ### 1.4 Model training
 
-#### In your local environment: 
+#### Config training
+
+
+
+#### Run in local environment: 
 
 Local run with softmax classification:
 ```bash
@@ -125,7 +134,7 @@ Local run with classification and rotation factor prediction:
 catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
 
-#### Using docker:
+#### Run in docker:
 
 ```bash
 export LOGDIR=$(pwd)/logs/classification
@@ -136,11 +145,17 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash bin/run_model.sh
 ```
 
+#### Checkpoints
+
+Checkpoins of all stages can be found in directory `./logs/classification/checkpoints`
+
 #### Tensorboard metrics visualization 
 
 ```bash
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
+
+####
 
 
 #### Index model preparation
