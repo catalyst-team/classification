@@ -86,7 +86,7 @@ catalyst-data split-dataframe \
     --out-csv=./data/dataset.csv
 ```
 #### Using docker:
-```
+```bash
 docker run -it --rm -v $(pwd):/workspace/ catalyst-classification \
 catalyst-data tag2label \
 --in-dir=./data/dataset \
@@ -168,7 +168,7 @@ Checkpoins of all stages can be found in directory `./logs/classification/checkp
 At the end of each learning stage best checkpoints are logged:
 
 - Stage 1:
-```
+```bash
 19/20 * Epoch 19 (valid): _base/lr=0.0003 | _base/momentum=0.9000 | _timers/_fps=3749.7755 | _timers/batch_time=0.3367 | _timers/data_time=0.3266 | _timers/model_time=0.0099 | accuracy01=94.0848 | embeddings_loss=0.1721
 Top best models:
 logs/classification/checkpoints//stage1.11.pth  95.6473
@@ -177,7 +177,7 @@ logs/classification/checkpoints//stage1.7.pth   94.8661
 ```
 
 - Stage 2:
-```
+```bash
 9/10 * Epoch 30 (valid): _base/lr=0.0001 | _base/momentum=0.0000 | _timers/_fps=3681.9615 | _timers/batch_time=0.3884 | _timers/data_time=0.3788 | _timers/model_time=0.0093 | accuracy01=95.6473 | embeddings_loss=0.2165
 Top best models:
 logs/classification/checkpoints//stage2.21.pth  95.6473
