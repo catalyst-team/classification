@@ -4,3 +4,4 @@ nmslib==1.7.3.6
 seaborn==0.9.0
 opencv-python==4.0.0.21
 tensorflow==1.13.1
+jpeg4py==0.1.4
