@@ -2,6 +2,8 @@
 
 ***Intro: введение: в данном туториале вы сделаете кучу сложнейших всопроизводимых штук простым способом - конфигурируя конфиги. Каждый этап пару слов***
 
+
+
 ## 1.Classification
 
 
@@ -106,10 +108,12 @@ catalyst-data  split-dataframe  \
 ```
 
 ### 1.4 Model training
+Powerful configs allow us to investigate models in a controlled and reproducible way. We will perform the following experiments: 
+- Softmax classification - 
+- "Multilabel" classification -  
+- "Multilabel" classification and FocalLoss - 
+- Classification and rotation factor prediction - 
 
-Softmax classification "Multilabel" classification Multilabel" classification and FocalLoss Classification and rotation factor prediction
-
-Powerful configs allow us to investigate models in a controlled and reproducible way. 
 #### Config training
 
 The config allows you to define:
@@ -121,6 +125,7 @@ The config allows you to define:
      - first learn the head
      - then train the whole network  
      - produce predictions  
+- augmentation parametrs
 - technical parameters
 
 #### Run in local environment: 
