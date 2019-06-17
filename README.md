@@ -102,14 +102,14 @@ catalyst-data  split-dataframe  \
 
 ### 1.4 Model training
 
-Quite rarely is there a dataset for learning the deep convolutional network from scratch. Usually having a small dataset uses the weights obtained when training model with the same architecture on a large dataset, such as ImageNet, containing more than a million images.
+Quite rarely is there a dataset for learning the deep convolutional network from scratch. Usually we have a small dataset and use the weights obtained when training model with the same architecture on a large dataset, such as ImageNet, containing more than a million images.
 
-These are two basic scenarios of transfer training:
+Two basic scenarios of transfer training will be used:
 
 1. We initialize the network with a pre-trained network, for example, an Imagenet-trained dataset. We freeze weights for the entire network, with the exception the last fully connected layers, called "head". We initialize head's weights with random, and only this one is trained.
 2. We initialize the network with a pre-trained network, for example, an Imagenet trained dataset. Further we train a network entirely on ours dataset.
 
-We will use both approaches sequentially in two stages, also in the first we will train several heads simultaneously.
+We will use approaches sequentially in two stages, also in the first stage we will train several heads simultaneously.
 We will perform the following experiments using pre-trained model ResNet-18: 
 - Two stages traininig classification using `Softmax` 
 - Two stages training "Multilabel" classification using `BCEWithLogitsLoss`
