@@ -149,7 +149,7 @@ Checkpoins of all stages can be found in directory `./logs/classification/checkp
 
 At the end of each learning stage best checkpoints are logged:
 
-- 1 Stage:
+- Stage 1:
 ```
 19/20 * Epoch 19 (valid): _base/lr=0.0003 | _base/momentum=0.9000 | _timers/_fps=3749.7755 | _timers/batch_time=0.3367 | _timers/data_time=0.3266 | _timers/model_time=0.0099 | accuracy01=94.0848 | embeddings_loss=0.1721
 Top best models:
@@ -158,7 +158,7 @@ logs/classification/checkpoints//stage1.14.pth  95.6473
 logs/classification/checkpoints//stage1.7.pth   94.8661
 ```
 
-- 2 Stage:
+- Stage 2:
 ```
 9/10 * Epoch 30 (valid): _base/lr=0.0001 | _base/momentum=0.0000 | _timers/_fps=3681.9615 | _timers/batch_time=0.3884 | _timers/data_time=0.3788 | _timers/model_time=0.0093 | accuracy01=95.6473 | embeddings_loss=0.2165
 Top best models:
