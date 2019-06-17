@@ -1,23 +1,26 @@
 # Catalyst.Classification & Autolabel
 
+***Intro: введение: в данном туториале вы сделаете кучу сложнейших всопроизводимых штук простым способом - конфигурируя конфиги. Каждый этап пару слов***
+
 ## Classification
 
 ### Goals
 
 Main
-- tune ResnetEncoder
-- train MultiHeadNet for image classification
-- learn embeddings representation
-- create knn index model
-- or train MultiHeadNet for "multilabel" image classification
+- tune ResnetEncoder - ***t***
+- train MultiHeadNet for image classification - ***t***
+- learn embeddings representation - ***t***
+- create knn index model - ***t***
+- or train MultiHeadNet for "multilabel" image classification - ***t***
 
 Additional
-- visualize embeddings with TF.Projector
-- find best starting lr with LRFinder
-- plot grid search metrics and compare different approaches
+- visualize embeddings with TF.Projector - ***t***
+- find best starting lr with LRFinder - ***t***
+- plot grid search metrics and compare different approaches - ***t***
 
 ### Preparation
 
+#### 1. Get Dataset
 Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz) and unpack it to `data` folder:
 ```bash
 wget -P ./data/ https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz
@@ -41,7 +44,24 @@ For your dataset use:
 ln -s /path/to/your_dataset $(pwd)/data/dataset
 ```
 
-Process the data
+
+#### 2. Install requirements
+
+if you want use your local environment: 
+```pip install -r requirements.txt``
+
+if you want use docker: 
+
+```bash
+make classification
+```
+or 
+```
+docker build -t catalyst-classification:latest . -f docker/Dockerfile
+```
+#### 3. Process the data
+In your local environment: 
+
 ```bash
 catalyst-data tag2label \
     --in-dir=./data/dataset \
@@ -57,17 +77,22 @@ catalyst-data split-dataframe \
     --train-folds=0,1,2,3 \
     --out-csv=./data/dataset.csv
 ```
+In docker:
+```
+docker run -it --rm -v $(pwd):/workspace/ catalyst-classification catalyst-data tag2label  --in-dir=./data/dataset     --out-dataset=./data/dataset_raw.csv     --out-labeling=./data/tag2cls.json
+```
+```
+docker run -it --rm -v $(pwd):/workspace/ catalyst-classification catalyst-data  split-dataframe  \
+    --in-csv=./data/dataset_raw.csv     \
+--tag2class=./data/tag2cls.json     \
+--tag-column=tag     \
+--class-column=class     --n-folds=5     --train-folds=0,1,2,3    \
+ --out-csv=./data/dataset.csv
+```
 
 To change num_classes in configs use:
 ```bash
 export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
-```
-
-### Docker
-
-To build docker image run
-```bash
-make classification
 ```
 
 This creates a build `catalyst-classification` with all needed libraries.
