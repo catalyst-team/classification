@@ -3,15 +3,15 @@
 
 
 ## 1.Classification
-We consider pipeline image classification using the "catalyst" framework. 
-Framework methods and powerful configs allow to investigate models within the whole pipeline in a controlled and reproducible way. Also the framework also provides tools for visualization and analyzing experiments.
+You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework. 
+Framework methods and powerful configs allow to investigate models within the whole pipeline in a controlled and reproducible way. The framework also provides tools for visualization and analyzing experiments.
 
 ### Goals
 
 Main
 - FineTune ResnetEncoder.
-- Train MultiHeadNet for image classification
-- Train MultiHeadNet for "multilabel" image classification
+- FineTune MultiHeadNet for image classification
+- FineTune MultiHeadNet for "multilabel" image classification
 - Learn embeddings representation
 - Create KNN index model 
 - Visualize embeddings with TF.Projector 
@@ -101,7 +101,17 @@ catalyst-data  split-dataframe  \
 ```
 
 ### 1.4 Model training
-We will perform the following experiments: 
+
+Quite rarely is there a dataset for learning the deep convolutional network from scratch. Usually having a small dataset uses the weights obtained when training model with the same architecture on a large dataset, such as ImageNet, containing more than a million images.
+
+These are two basic scenarios of transfer training:
+
+1. We initialize the network with a pre-trained network, for example, an Imagenet-trained dataset. We freeze weights for the entire network, with the exception the last fully connected layers, called "head". We initialize head's weights with random, and only this one is trained.
+2. We initialize the network with a pre-trained network, for example, an Imagenet trained dataset. Further we train a network entirely on ours dataset.
+
+
+
+We will perform the following experiments using pre-trained model ResNet-18: 
 - Two stages trained classification using `Softmax` 
 - Two stages trained "Multilabel" classification using `BCEWithLogitsLoss`
 - Two stages trained MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor prediction 
@@ -291,7 +301,6 @@ catalyst.classification/data/
         bees/
             ...
 ```
-
 
 ### 2.2 Model training
 
