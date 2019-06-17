@@ -73,7 +73,6 @@ To change num_classes in configs use:
 export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
 ```
 #### In your local environment: 
-
 ```bash
 catalyst-data tag2label \
     --in-dir=./data/dataset \
@@ -90,7 +89,6 @@ catalyst-data split-dataframe \
     --out-csv=./data/dataset.csv
 ```
 #### Using docker:
-
 ```
 docker run -it --rm -v $(pwd):/workspace/ catalyst-classification \
 catalyst-data tag2label \
@@ -109,13 +107,12 @@ catalyst-data  split-dataframe  \
 
 ### 1.4 Model training
 Powerful configs allow us to investigate models in a controlled and reproducible way. We will perform the following experiments: 
-- Softmax classification - 
-- "Multilabel" classification -  
-- "Multilabel" classification and FocalLoss - 
-- Classification and rotation factor prediction - 
+- Two stages trained classification using `Softmax` 
+- Two stages trained "Multilabel" classification using `BCEWithLogitsLoss`
+- Two stages trained "Multilabel" classification using `FocalLossMultiClass`
+- Two stages trained classification and rotation factor prediction 
 
 #### Config training
-
 The config allows you to define:
 - `data` path, batch size, num of workers and so on.
 - `model_params` detailed configuration of models, including:
@@ -162,8 +159,13 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash bin/run_model.sh
 ```
 
-#### Checkpoints
+#### Tensorboard metrics visualization 
+```bash
+CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
+```
+![Stage 1](/images/1_stage.jpg "Stage 1")
 
+#### Checkpoints
 Checkpoins of all stages can be found in directory `./logs/classification/checkpoints`
 
 At the end of each learning stage best checkpoints are logged:
@@ -186,16 +188,8 @@ logs/classification/checkpoints//stage2.27.pth  95.6473
 logs/classification/checkpoints//stage2.30.pth  95.6473
 ```
 
-#### Tensorboard metrics visualization 
-
-```bash
-CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
-```
-![Stage 1](/images/1_stage.jpg "Stage 1")
-
 
 #### Index model preparation
-
 ```bash
 export LOGDIR=$(pwd)/logs/classification
 docker run -it --rm --shm-size 8G \
