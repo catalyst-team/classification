@@ -265,7 +265,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 
 ## 2.Autolabel
 
-The classical way to reduce the amount of unlabeled data by having a trained model would be to run unlabeled dataset through the model and automatically label the data. Then, pushing automatically labeled data in the training process would maybe help to better tune the model.
+The classical way to reduce the amount of unlabeled data by having a trained model would be to run unlabeled dataset through the model and automatically label the data. Then pushing automatically labeled data in the training process would maybe help to better tune the model.
 
 Framework methods and config files allow to config the whole pipeline of autolabeling in a controlled and reproducible way.
 
