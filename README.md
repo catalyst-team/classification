@@ -4,6 +4,9 @@
 
 ## 1.Classification
 
+
+
+
 ### Goals
 
 Main
@@ -62,6 +65,11 @@ Using methods `tag2label` and `split-dataframe` dataset is prepearing to json li
 
 Here is description of another usefull metods for dataset preparation: `catalyst-data-documentation`[catalyst-data documentation](https://catalyst-team.github.io/catalyst/api/data.html)
 
+#### For your dataset
+To change num_classes in configs use:
+```bash
+export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
+```
 #### In your local environment: 
 
 ```bash
@@ -97,18 +105,24 @@ catalyst-data  split-dataframe  \
  --out-csv=./data/dataset.csv
 ```
 
-#### For your dataset
-To change num_classes in configs use:
-```bash
-export NUM_CLASSES=2; bash ./bin/prepare_configs.sh
-```
-
 ### 1.4 Model training
 
 Softmax classification "Multilabel" classification Multilabel" classification and FocalLoss Classification and rotation factor prediction
 
+Powerful configs allow us to investigate models in a controlled and reproducible way. 
 #### Config training
 
+The config allows you to define:
+- `data` - path, batch size, num of workers and so on.
+- `model_params` - detailed configuration of models, including:
+    - architecture 
+    - using or not pretrained model 
+    - ...
+- `stages` - you can configure training in several stages with different hyperparameters, optimizers and loss functions. In our example:
+     - first learn the head
+     - then train the entire network  
+
+- `infer` how to produce predictions  
 
 #### Run in local environment: 
 
@@ -133,13 +147,14 @@ catalyst-dl run --config=configs/exp_splits_rotation.yml
 ```
 
 #### Run in docker:
-
+In docker run config of experiment is setting by `-e "RUN_CONFIG=exp_splits.yml"`:
 ```bash
 export LOGDIR=$(pwd)/logs/classification
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
+   -e "RUN_CONFIG=exp_splits.yml"
    catalyst-classification bash bin/run_model.sh
 ```
 
@@ -173,9 +188,6 @@ logs/classification/checkpoints//stage2.30.pth  95.6473
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
 ![Stage 1](/images/1_stage.jpg "Stage 1")
-
-
-####
 
 
 #### Index model preparation
