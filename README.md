@@ -113,16 +113,15 @@ Powerful configs allow us to investigate models in a controlled and reproducible
 #### Config training
 
 The config allows you to define:
-- `data` - path, batch size, num of workers and so on.
-- `model_params` - detailed configuration of models, including:
-    - architecture 
+- `data` path, batch size, num of workers and so on.
+- `model_params` detailed configuration of models, including:
+    - detailed architecture description
     - using or not pretrained model 
-    - ...
-- `stages` - you can configure training in several stages with different hyperparameters, optimizers and loss functions. In our example:
+- `stages` you can configure training in several stages with different hyperparameters, optimizers and loss-functions. In our example:
      - first learn the head
-     - then train the entire network  
-
-- `infer` how to produce predictions  
+     - then train the whole network  
+     - produce predictions  
+- technical parameters
 
 #### Run in local environment: 
 
