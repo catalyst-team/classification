@@ -109,13 +109,12 @@ These are two basic scenarios of transfer training:
 1. We initialize the network with a pre-trained network, for example, an Imagenet-trained dataset. We freeze weights for the entire network, with the exception the last fully connected layers, called "head". We initialize head's weights with random, and only this one is trained.
 2. We initialize the network with a pre-trained network, for example, an Imagenet trained dataset. Further we train a network entirely on ours dataset.
 
-
-
+We will use both approaches sequentially in two stages, also in the first we will train several heads simultaneously.
 We will perform the following experiments using pre-trained model ResNet-18: 
-- Two stages trained classification using `Softmax` 
-- Two stages trained "Multilabel" classification using `BCEWithLogitsLoss`
-- Two stages trained MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor prediction 
-- Two stages trained MultiHeadNet classification using `CrossEntropyLoss` and with rotation factor prediction 
+- Two stages traininig classification using `Softmax` 
+- Two stages training "Multilabel" classification using `BCEWithLogitsLoss`
+- Two stages training MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor prediction 
+- Two stages training MultiHeadNet classification using `CrossEntropyLoss` and with rotation factor prediction 
 
 #### Config training
 The config allows you to define:
