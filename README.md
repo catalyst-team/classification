@@ -33,7 +33,7 @@ make classification
 
 ### 1.2 Get Dataset
 
-![Ants-bees dataset example](/images/ant-bees-example.PNG "Ants-bees dataset example")
+![Ants-bees dataset example](/images/ant-bees.png "Ants-bees dataset example")
 
 Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz) and unpack it to `data` folder:
 ```bash
