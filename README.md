@@ -187,8 +187,8 @@ Top best models:
 9/10 * Epoch 30 (valid): _base/lr=0.0001 | _base/momentum=0.0000 | _timers/_fps=37.3813 | _timers/batch_time=17.8423 | _timers/data_time=15.5075 | _timers/model_time=2.3346 | accuracy01=90.5134 | auc/_mean=0.9783 | auc/class_0=0.9776 | auc/class_1=0.9789 | embeddings_loss=0.2753
 Top best models:
 /logdir/checkpoints//stage2.23.pth  99.2188
-/logdir/checkpoints//stage2.22.pth  95.6473
-/logdir/checkpoints//stage2.29.pth  95.6473
+/logdir/checkpoints//stage2.22.pth  98.6473
+/logdir/checkpoints//stage2.29.pth  98.6473
 ```
 
 
