@@ -201,6 +201,9 @@ Top best models:
 ```
 
 
+
+### 1.5 TF.Projector and embeddings visualization
+
 #### Index model preparation
 ```bash
 export LOGDIR=$(pwd)/logs/classification
@@ -210,9 +213,6 @@ docker run -it --rm --shm-size 8G \
    -e "LOGDIR=/logdir" \
    catalyst-classification bash ./bin/run_index.sh
 ```
-
-
-### 1.5 TF.Projector and embeddings visualization
 
 #### Embeddings creation
 
