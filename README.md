@@ -201,8 +201,6 @@ Top best models:
 /logdir/checkpoints//stage2.29.pth  98.6473
 ```
 
-### 1.5 TF.Projector and embeddings visualization
-
 #### Index model preparation
 ```bash
 export LOGDIR=$(pwd)/logs/classification
@@ -230,6 +228,8 @@ index model testing...
 [==      Recall@ 5: 100.0%      ==]
 [==      Recall@10: 100.0%      ==]
 ```
+
+### 1.5 TF.Projector and embeddings visualization
 
 #### Embeddings creation
 
