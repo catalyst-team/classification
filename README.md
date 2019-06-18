@@ -104,7 +104,7 @@ catalyst-data  split-dataframe  \
 
 ### 1.4 Model training
 
-Quite rarely is there a dataset for learning the deep convolutional network from scratch. Usually we have a small dataset and use the weights obtained when training model with the same architecture on a large dataset, such as ImageNet, containing more than a million images.
+Quite rarely we have a dataset for learning the deep convolutional network from scratch. Usually we have a small dataset and use the weights obtained from model with the same architecture have trained on a large dataset, such as ImageNet, containing more than a million images.
 
 Two basic scenarios of transfer training will be used:
 
@@ -199,8 +199,6 @@ Top best models:
 /logdir/checkpoints//stage2.22.pth  98.6473
 /logdir/checkpoints//stage2.29.pth  98.6473
 ```
-
-
 
 ### 1.5 TF.Projector and embeddings visualization
 
