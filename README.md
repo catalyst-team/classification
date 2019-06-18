@@ -274,6 +274,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 ### 1.7 Grid search visualization
 
 #### Hyperparameters grid search training
+Specifying parameters of trainings including hyperparametres and model parametres you can by one file `./bin/run_grid.sh` configurate and run the sequence of experiments with logging.
 
 ```bash
 export BASELOGDIR=$(pwd)/logs/grid
@@ -285,6 +286,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 ```
 
 #### KFold training
+You can by one file `./bin/run_kfold.sh` configurate and run the sequence of kfold trainings.
 
 ```bash
 export BASELOGDIR=$(pwd)/logs/classification/kfold
