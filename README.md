@@ -143,7 +143,7 @@ catalyst-dl run --config=configs/exp_splits.yml
 catalyst-dl run --config=configs/exp_splits_bce.yml
 ```
 
--  MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`:
+-  "Multilabel" classification using `FocalLossMultiClass`:
 ```bash
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
@@ -261,7 +261,7 @@ CUDA_VISIBLE_DEVICE="" tensorboard --logdir=$LOGDIR/projector
 ```
 
 ### 1.6 Finding best start LR with LrFinder
-
+Rut trainig with callback LRFinder to find the optimal learning rate range for your model and dataset.
 ```bash
 export LOGDIR=$(pwd)/logs/lrfinder
 docker run -it --rm --shm-size 8G --runtime=nvidia \
