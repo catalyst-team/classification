@@ -9,7 +9,7 @@ The also framework provide tools to:
  - plot grid search metrics and compare different approaches
  - perform autolabel 
  
-## 1.Classification
+## 1. Classification
 
 You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework. 
 
@@ -297,7 +297,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash ./bin/run_kfold.sh
 ```
 
-## 2.Autolabel
+## 2. Autolabel
 
 ### Goals
 
