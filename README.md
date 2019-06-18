@@ -116,7 +116,7 @@ We will use approaches sequentially in two stages, also in the first stage we wi
 We will perform the following experiments using pre-trained model ResNet-18: 
 - Two stages traininig classification using `Softmax` 
 - Two stages training "Multilabel" classification using `BCEWithLogitsLoss`
-- Two stages training MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor prediction 
+- Two stages training MultiHeadNet "Multilabel" classification using `FocalLossMultiClass` 
 - Two stages training MultiHeadNet classification using `CrossEntropyLoss` and with rotation factor prediction 
 
 #### Config training
@@ -143,7 +143,7 @@ catalyst-dl run --config=configs/exp_splits.yml
 catalyst-dl run --config=configs/exp_splits_bce.yml
 ```
 
--  MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`  and with rotation factor predictions:
+-  MultiHeadNet "Multilabel" classification using `FocalLossMultiClass`:
 ```bash
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
