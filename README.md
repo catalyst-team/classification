@@ -170,7 +170,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
 Classification metrics during learning:
-!classificaton](/images/classification.png "classificaton")
+![classificaton](/images/classification.png "classificaton")
 
 Confusion matrices:
 ![labels confusion matrix](/images/cm_classes.png "labels confusion matrix")
