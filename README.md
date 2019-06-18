@@ -1,17 +1,18 @@
 # Catalyst.Classification & Autolabel
 
-Framework provides tools and powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way. 
-The also framework includes 
- - tools for analyzing and visualization experiments 
- - tool to perform autolabel.
+Framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way. 
 
+The also framework provide tools to:
+ - create KNN index model and visualize embeddings
+ - find best starting learning rate
+ - plot grid search metrics and compare different approaches
+ - perform autolabel 
+ 
 ## 1.Classification
 
 You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework. 
 
-
 ### Goals
-
 - FineTune ResnetEncoder.
 - FineTune MultiHeadNet for image classification
 - FineTune MultiHeadNet for "multilabel" image classification
@@ -34,7 +35,6 @@ make classification
 ```
 
 ### 1.2 Get Dataset
-
 ![Ants-bees dataset example](/images/ant-bees.png "Ants-bees dataset example")
 
 Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz) and unpack it to `data` folder:
@@ -132,7 +132,6 @@ The config allows you to define:
 - technical parameters
 
 #### Run in local environment: 
-
 - Classification using `Softmax`:
 ```bash
 catalyst-dl run --config=configs/exp_splits.yml
@@ -212,7 +211,7 @@ docker run -it --rm --shm-size 8G \
 ```
 
 
-### 1.5 * TF.Projector and embeddings visualization
+### 1.5 TF.Projector and embeddings visualization
 
 #### Embeddings creation
 
@@ -244,7 +243,7 @@ export LOGDIR=$(pwd)/logs/projector
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=$LOGDIR/projector
 ```
 
-### 1.6 * Finding best start LR with LrFinder
+### 1.6 Finding best start LR with LrFinder
 
 ```bash
 export LOGDIR=$(pwd)/logs/lrfinder
@@ -255,7 +254,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash ./bin/run_lrfinder.sh
 ```
 
-### 1.7 * Grid search visualization
+### 1.7 Grid search visualization
 
 #### Hyperparameters grid search training
 
