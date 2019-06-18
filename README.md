@@ -1,11 +1,14 @@
 # Catalyst.Classification & Autolabel
 
-
+Framework provides tools and powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way. 
+The also framework includes 
+ - tools for analyzing and visualization experiments 
+ - tool to perform autolabel.
 
 ## 1.Classification
 
 You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework. 
-Framework methods and powerful configs allow to investigate models within the whole pipeline in a controlled and reproducible way. The framework also provides tools for visualization and analyzing experiments.
+
 
 ### Goals
 
@@ -166,7 +169,13 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 ```bash
 CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
 ```
-![Stage 1](/images/1_stage.png "Stage 1")
+Classification metrics during learning:
+!classificaton](/images/classification.png "classificaton")
+
+Confusion matrices:
+![labels confusion matrix](/images/cm_classes.png "labels confusion matrix")
+
+![rotation confusion matrix](/images/cm_rotation.png "rotation confusion matrix")
 
 #### Checkpoints
 Checkpoins of all stages can be found in directory `./logs/classification/checkpoints`
