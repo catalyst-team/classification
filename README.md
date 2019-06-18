@@ -3,7 +3,8 @@
 Framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way. 
 
 The also framework provide tools to:
- - create KNN index model and visualize embeddings
+ - create KNN index model 
+ - create and visualize embeddings
  - find best starting learning rate
  - plot grid search metrics and compare different approaches
  - perform autolabel 
@@ -211,6 +212,24 @@ docker run -it --rm --shm-size 8G \
    -e "LOGDIR=/logdir" \
    catalyst-classification bash ./bin/run_index.sh
 ```
+Out:
+```
+index model creating...
+[==       Loading features       ==]
+[==     Transforming features    ==]
+[ Explained variance ratio: 0.9602 ]
+[==        Saving pipeline       ==]
+[==  Adding features to indexer  ==]
+[==        Creating index        ==]
+[==         Saving index         ==]
+index model testing...
+[==       Loading features       ==]
+[==        Loading index         ==]
+[==      Recall@ 1: 97.44%      ==]
+[==      Recall@ 3: 98.72%      ==]
+[==      Recall@ 5: 100.0%      ==]
+[==      Recall@10: 100.0%      ==]
+```
 
 #### Embeddings creation
 
@@ -219,7 +238,6 @@ export LOGDIR=$(pwd)/logs/projector
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
    -v $LOGDIR/embeddings/:/logdir/embeddings/ \
-   -e "CUDA_VISIBLE_DEVICES=0" \
    -e "LOGDIR=/logdir" \
    catalyst-classification bash ./bin/run_embeddings.sh
 ```
