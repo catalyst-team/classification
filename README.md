@@ -13,7 +13,7 @@ The also framework provide tools to:
 You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework. 
 
 ### Goals
-- FineTune ResnetEncoder.
+- FineTune ResnetEncoder
 - FineTune MultiHeadNet for image classification
 - FineTune MultiHeadNet for "multilabel" image classification
 - Learn embeddings representation
