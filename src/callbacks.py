@@ -1,10 +1,10 @@
 import torch
 
-from catalyst.dl.callbacks import LossCallback
-from catalyst.dl.state import RunnerState
+from catalyst.dl.callbacks import CriterionCallback
+from catalyst.dl.core import RunnerState
 
 
-class EmbeddingsLossCallback(LossCallback):
+class EmbeddingsLossCallback(CriterionCallback):
     def __init__(
         self,
         input_key: str = "targets",

@@ -8,8 +8,8 @@ import torch.nn as nn
 
 from catalyst.data.reader import ImageReader, ScalarReader, ReaderCompose
 from catalyst.data.augmentor import Augmentor
-from catalyst.utils.parse import read_csv_data
-from catalyst.dl.experiments import ConfigExperiment
+from catalyst.utils.pandas import read_csv_data
+from catalyst.dl import ConfigExperiment
 from catalyst.data.dataset import ListDataset
 from catalyst.data.sampler import BalanceClassSampler
 from .transforms import pre_transforms, post_transforms, hard_transform, \

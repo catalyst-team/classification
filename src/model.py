@@ -1,6 +1,7 @@
 from copy import deepcopy
 import torch.nn as nn
-from catalyst.contrib.models import ResnetEncoder, SequentialNet
+from catalyst.contrib.models import SequentialNet
+from catalyst.contrib.models.encoder import ResnetEncoder
 
 
 class MultiHeadNet(nn.Module):

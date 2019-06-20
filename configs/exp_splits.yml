@@ -1,5 +1,4 @@
 model_params:
-  fp16: false
   model: MultiHeadNet
   encoder_params:
     arch: resnet18
@@ -29,7 +28,6 @@ stages:
   data_params:
     num_workers: 4
     batch_size: 64
-    per_gpu_batch_size: True
     in_csv_train: "./data/dataset_train.csv"
     in_csv_valid: "./data/dataset_valid.csv"
     datapath: "./data/dataset"
@@ -98,7 +96,6 @@ stages:
     data_params:
       num_workers: 4
       batch_size: 64
-      per_gpu_batch_size: True
       in_csv: null
       in_csv_train: null
       in_csv_valid: "./data/dataset_valid.csv"

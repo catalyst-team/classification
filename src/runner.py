@@ -1,5 +1,5 @@
 from typing import Mapping, Any
-from catalyst.dl.experiments import Runner
+from catalyst.dl.core import Runner
 
 
 class ModelRunner(Runner):
