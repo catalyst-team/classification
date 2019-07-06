@@ -18,7 +18,6 @@ from .transforms import pre_transforms, post_transforms, hard_transform, \
 
 
 class Experiment(ConfigExperiment):
-
     def _postprocess_model_for_stage(self, stage: str, model: nn.Module):
         model_ = model
         if isinstance(model, torch.nn.DataParallel):
@@ -34,58 +33,63 @@ class Experiment(ConfigExperiment):
 
     @staticmethod
     def get_transforms(
-            stage: str = None,
-            mode: str = None,
-            image_size=224,
-            one_hot_classes=None
+        stage: str = None,
+        mode: str = None,
+        image_size=224,
+        one_hot_classes=None
     ):
         pre_transform_fn = pre_transforms(image_size=image_size)
 
         if mode == "train":
-            post_transform_fn = Compose([
-                hard_transform(image_size=image_size),
-                post_transforms()
-            ])
+            post_transform_fn = Compose(
+                [hard_transform(image_size=image_size),
+                 post_transforms()]
+            )
         elif mode in ["valid", "infer"]:
             post_transform_fn = post_transforms()
         else:
             raise NotImplementedError()
 
         if mode in ["train", "valid"]:
-            result = DictTransformCompose([
-                Augmentor(
-                    dict_key="image",
-                    augment_fn=lambda x: pre_transform_fn(image=x)["image"]
-                ),
-                FlareMixin(
-                    input_key="image",
-                    output_key="flare_factor",
-                    sunflare_params={
-                        "flare_roi": (0, 0, 1, 1),
-                        "num_flare_circles_lower": 1,
-                        "num_flare_circles_upper": 4,
-                        "src_radius": image_size // 4,
-                        "p": 0.5
-                    }
-                ),
-                RotateMixin(
-                    input_key="image",
-                    output_key="rotation_factor",
-                    targets_key="targets",
-                    one_hot_classes=one_hot_classes
-                ),
-                BlurMixin(
-                    input_key="image",
-                    output_key="blur_factor",
-                    blur_min=3,
-                    blur_max=9,
-                    blur=["Blur", ]
-                ),
-                Augmentor(
-                    dict_key="image",
-                    augment_fn=lambda x: post_transform_fn(image=x)["image"]
-                )
-            ])
+            result = DictTransformCompose(
+                [
+                    Augmentor(
+                        dict_key="image",
+                        augment_fn=lambda x: pre_transform_fn(image=x)["image"]
+                    ),
+                    FlareMixin(
+                        input_key="image",
+                        output_key="flare_factor",
+                        sunflare_params={
+                            "flare_roi": (0, 0, 1, 1),
+                            "num_flare_circles_lower": 1,
+                            "num_flare_circles_upper": 4,
+                            "src_radius": image_size // 4,
+                            "p": 0.5
+                        }
+                    ),
+                    RotateMixin(
+                        input_key="image",
+                        output_key="rotation_factor",
+                        targets_key="targets",
+                        one_hot_classes=one_hot_classes
+                    ),
+                    BlurMixin(
+                        input_key="image",
+                        output_key="blur_factor",
+                        blur_min=3,
+                        blur_max=9,
+                        blur=[
+                            "Blur",
+                        ]
+                    ),
+                    Augmentor(
+                        dict_key="image",
+                        augment_fn=lambda x: post_transform_fn(image=x)["image"
+                                                                        ]
+                    )
+                ]
+            )
         elif mode in ["infer"]:
             result_fn = Compose([pre_transform_fn, post_transform_fn])
             result = Augmentor(

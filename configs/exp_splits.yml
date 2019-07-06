@@ -43,7 +43,7 @@ stages:
   stage1:
 
     state_params:
-      num_epochs: 10
+      num_epochs: 20
 
     optimizer_params:
       optimizer: Adam

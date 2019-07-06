@@ -89,9 +89,9 @@ Local run with "multilabel" classification and FocalLoss:
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
 
-Local run with classification and rotation factor prediction:
+Local run with classification and augmentations prediction:
 ```bash
-catalyst-dl run --config=configs/exp_splits_rotation.yml
+catalyst-dl run --config=configs/exp_splits_augs.yml
 ```
 
 Docker run:

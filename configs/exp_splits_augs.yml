@@ -18,11 +18,13 @@ model_params:
     logits: &num_classes 2
     rotation_logits: &num_rotations 8
     class_rotation_logits: &num_class_rotations 16
+    flare_logits: &num_flares 2
+    blur_logits: &num_blures 8  #  9 - 3 + 1 + 1
 
 args:
   expdir: "src"
-  logdir: &logdir "./logs/classification_rotation_focal"
-  baselogdir: "./logs/classification_rotation_focal_base"
+  logdir: &logdir "./logs/classification_augs"
+  baselogdir: "./logs/classification_augs_base"
 
 stages:
 
@@ -33,22 +35,25 @@ stages:
   data_params:
     num_workers: 4
     batch_size: 64
-    per_gpu_batch_size: True
+    per_gpu_scaling: True
     in_csv_train: "./data/dataset_train.csv"
     in_csv_valid: "./data/dataset_valid.csv"
     datapath: "./data/dataset"
     image_size: 448
-    one_hot_classes: *num_classes
 
   criterion_params:
     _key_value: True
 
     class:
-      criterion: FocalLossMultiClass
+      criterion: CrossEntropyLoss
     rotation:
       criterion: CrossEntropyLoss
     class_rotation:
-      criterion: CrossEntropyLoss  # FocalLossMultiClass
+      criterion: CrossEntropyLoss
+    flare:
+      criterion: CrossEntropyLoss
+    blur:
+      criterion: CrossEntropyLoss
 
   # train head
   stage1:
@@ -85,6 +90,18 @@ stages:
         output_key: class_rotation_logits
         prefix: loss_class_rotation
         criterion_key: class_rotation
+      loss_flare:
+        callback: CriterionCallback
+        input_key: flare_factor
+        output_key: flare_logits
+        prefix: loss_flare
+        criterion_key: flare
+      loss_blur:
+        callback: CriterionCallback
+        input_key: blur_factor
+        output_key: blur_logits
+        prefix: loss_blur
+        criterion_key: blur
 
       accuracy_class:
         callback: AccuracyCallback
@@ -104,19 +121,18 @@ stages:
         output_key: class_rotation_logits
         prefix: accuracy_class_rotations
         accuracy_args: [1]
-
-      auc_class:
-        callback: AUCCallback
-        input_key: targets_one_hot
-        output_key: logits
-        prefix: auc_class
-        num_classes: *num_classes
-#      auc_class_rotation:
-#        callback: AUCCallback
-#        input_key: class_rotation_targets_one_hot
-#        output_key: class_rotation_logits
-#        prefix: auc_class_rotation
-#        num_classes: *num_class_rotations
+      accuracy_flare:
+        callback: AccuracyCallback
+        input_key: flare_factor
+        output_key: flare_logits
+        prefix: accuracy_flare
+        accuracy_args: [1]
+      accuracy_blur:
+        callback: AccuracyCallback
+        input_key: blur_factor
+        output_key: blur_logits
+        prefix: accuracy_blur
+        accuracy_args: [1]
 
       cm_class:
         callback: ConfusionMatrixCallback
@@ -167,7 +183,7 @@ stages:
     data_params:
       num_workers: 4
       batch_size: 64
-      per_gpu_batch_size: True
+      per_gpu_scaling: True
       in_csv: null
       in_csv_train: null
       in_csv_valid: "./data/dataset_valid.csv"

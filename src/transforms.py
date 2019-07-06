@@ -110,8 +110,9 @@ class BlurMixin:
         if random.random() < self.blur_probability:
             blur_fn = np.random.choice(self.blur)
             blur_factor = int(
-                np.random.randint(self.blur_min, self.blur_max)
-                - self.blur_min + 1)
+                np.random.randint(self.blur_min, self.blur_max) -
+                self.blur_min + 1
+            )
             image = blur_fn.apply(image=image, ksize=blur_factor)
 
         dct[self.input_key] = image
@@ -186,8 +187,8 @@ def hard_transform(image_size=224, p=0.5):
     transforms = [
         Cutout(
             num_holes=4,
-            max_w_size=image_size//4,
-            max_h_size=image_size//4,
+            max_w_size=image_size // 4,
+            max_h_size=image_size // 4,
             p=p
         ),
         ShiftScaleRotate(
@@ -198,16 +199,16 @@ def hard_transform(image_size=224, p=0.5):
             p=p
         ),
         IAAPerspective(scale=(0.02, 0.05), p=p),
-        OneOf([
-            HueSaturationValue(p=p),
-            ToGray(p=p),
-            RGBShift(p=p),
-            ChannelShuffle(p=p),
-        ]),
+        OneOf(
+            [
+                HueSaturationValue(p=p),
+                ToGray(p=p),
+                RGBShift(p=p),
+                ChannelShuffle(p=p),
+            ]
+        ),
         RandomBrightnessContrast(
-            brightness_limit=0.5,
-            contrast_limit=0.5,
-            p=p
+            brightness_limit=0.5, contrast_limit=0.5, p=p
         ),
         RandomGamma(p=p),
         CLAHE(p=p),
