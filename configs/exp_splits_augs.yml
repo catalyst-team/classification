@@ -1,5 +1,4 @@
 model_params:
-  fp16: false
   model: MultiHeadNet
   encoder_params:
     arch: resnet18
@@ -19,11 +18,13 @@ model_params:
     logits: &num_classes 2
     rotation_logits: &num_rotations 8
     class_rotation_logits: &num_class_rotations 16
+    flare_logits: &num_flares 2
+    blur_logits: &num_blures 8  #  9 - 3 + 1 + 1
 
 args:
   expdir: "src"
-  logdir: &logdir "./logs/classification_rotation"
-  baselogdir: "./logs/classification_rotation_base"
+  logdir: &logdir "./logs/classification_augs"
+  baselogdir: "./logs/classification_augs_base"
 
 stages:
 
@@ -34,7 +35,7 @@ stages:
   data_params:
     num_workers: 4
     batch_size: 64
-    per_gpu_batch_size: True
+    per_gpu_scaling: True
     in_csv_train: "./data/dataset_train.csv"
     in_csv_valid: "./data/dataset_valid.csv"
     datapath: "./data/dataset"
@@ -48,6 +49,10 @@ stages:
     rotation:
       criterion: CrossEntropyLoss
     class_rotation:
+      criterion: CrossEntropyLoss
+    flare:
+      criterion: CrossEntropyLoss
+    blur:
       criterion: CrossEntropyLoss
 
   # train head
@@ -68,23 +73,35 @@ stages:
 
     callbacks_params: &callbacks
       loss_class:
-        callback: LossCallback
+        callback: CriterionCallback
         input_key: targets
         output_key: logits
         prefix: loss_class
         criterion_key: class
       loss_rotation:
-        callback: LossCallback
+        callback: CriterionCallback
         input_key: rotation_factor
         output_key: rotation_logits
         prefix: loss_rotation
         criterion_key: rotation
       loss_class_rotation:
-        callback: LossCallback
+        callback: CriterionCallback
         input_key: class_rotation_targets
         output_key: class_rotation_logits
         prefix: loss_class_rotation
         criterion_key: class_rotation
+      loss_flare:
+        callback: CriterionCallback
+        input_key: flare_factor
+        output_key: flare_logits
+        prefix: loss_flare
+        criterion_key: flare
+      loss_blur:
+        callback: CriterionCallback
+        input_key: blur_factor
+        output_key: blur_logits
+        prefix: loss_blur
+        criterion_key: blur
 
       accuracy_class:
         callback: AccuracyCallback
@@ -103,6 +120,18 @@ stages:
         input_key: class_rotation_targets
         output_key: class_rotation_logits
         prefix: accuracy_class_rotations
+        accuracy_args: [1]
+      accuracy_flare:
+        callback: AccuracyCallback
+        input_key: flare_factor
+        output_key: flare_logits
+        prefix: accuracy_flare
+        accuracy_args: [1]
+      accuracy_blur:
+        callback: AccuracyCallback
+        input_key: blur_factor
+        output_key: blur_logits
+        prefix: accuracy_blur
         accuracy_args: [1]
 
       cm_class:
@@ -154,7 +183,7 @@ stages:
     data_params:
       num_workers: 4
       batch_size: 64
-      per_gpu_batch_size: True
+      per_gpu_scaling: True
       in_csv: null
       in_csv_train: null
       in_csv_valid: "./data/dataset_valid.csv"

@@ -1,12 +1,14 @@
+from typing import List, Dict
 import random
 import numpy as np
 import cv2
 
+import albumentations as albu
 from albumentations import (
     Compose, RandomRotate90, HorizontalFlip, LongestMaxSize, PadIfNeeded,
     Normalize, HueSaturationValue, ShiftScaleRotate, RandomGamma,
     IAAPerspective, JpegCompression, ToGray, ChannelShuffle, RGBShift, CLAHE,
-    RandomBrightnessContrast
+    RandomBrightnessContrast, RandomSunFlare, Cutout, OneOf
 )
 from albumentations.torch import ToTensor
 
@@ -24,7 +26,7 @@ class RotateMixin:
         input_key: str = "image",
         output_key: str = "rotation_factor",
         targets_key: str = None,
-        rotate_probability: float = 0.5,
+        rotate_probability: float = 1.,
         hflip_probability: float = 0.5,
         one_hot_classes: int = None
     ):
@@ -71,16 +73,98 @@ class RotateMixin:
         return dct
 
 
-class MixinAdapter:
-    def __init__(self, mixin, pre_transforms, post_transforms):
-        self.mixin = mixin
-        self.pre_transforms = pre_transforms
-        self.post_transforms = post_transforms
+class BlurMixin:
+    """
+    Calculates blur factor for augmented image
+    """
+
+    def __init__(
+        self,
+        input_key: str = "image",
+        output_key: str = "blur_factor",
+        blur_min: int = 3,
+        blur_max: int = 9,
+        blur: List[str] = None
+    ):
+        """
+        Args:
+            input_key (str): input key to use from annotation dict
+            output_key (str): output key to use to store the result
+        """
+        self.input_key = input_key
+        self.output_key = output_key
+
+        self.blur_min = blur_min
+        self.blur_max = blur_max
+        blur = blur or ["Blur"]
+        self.blur = [albu.__dict__[x]() for x in blur]
+        self.num_blur = len(self.blur)
+        self.num_blur_classes = blur_max - blur_min + 1 + 1
+        self.blur_probability = \
+            (self.num_blur_classes - 1) / self.num_blur_classes
 
     def __call__(self, dct):
-        dct = self.pre_transforms(dct)
-        dct = self.mixin(dct)
-        dct = self.post_transforms(dct)
+        image = dct[self.input_key]
+        blur_factor = 0
+
+        if random.random() < self.blur_probability:
+            blur_fn = np.random.choice(self.blur)
+            blur_factor = int(
+                np.random.randint(self.blur_min, self.blur_max) -
+                self.blur_min + 1
+            )
+            image = blur_fn.apply(image=image, ksize=blur_factor)
+
+        dct[self.input_key] = image
+        dct[self.output_key] = blur_factor
+
+        return dct
+
+
+class FlareMixin:
+    """
+    Calculates blur factor for augmented image
+    """
+
+    def __init__(
+        self,
+        input_key: str = "image",
+        output_key: str = "flare_factor",
+        sunflare_params: Dict = None
+    ):
+        """
+        Args:
+            input_key (str): input key to use from annotation dict
+            output_key (str): output key to use to store the result
+        """
+        self.input_key = input_key
+        self.output_key = output_key
+
+        self.sunflare_params = sunflare_params or {}
+        self.transform = RandomSunFlare(**self.sunflare_params)
+
+    def __call__(self, dct):
+        image = dct[self.input_key]
+        sunflare_factor = 0
+
+        if random.random() < self.transform.p:
+            params = self.transform.get_params()
+            image = self.transform.apply(image=image, **params)
+            sunflare_factor = 1
+
+        dct[self.input_key] = image
+        dct[self.output_key] = sunflare_factor
+
+        return dct
+
+
+class DictTransformCompose:
+    def __init__(self, dict_transforms: List):
+        self.dict_transforms = dict_transforms
+
+    def __call__(self, dct):
+        for transform in self.dict_transforms:
+            dct = transform(dct)
         return dct
 
 
@@ -99,26 +183,36 @@ def post_transforms():
     return Compose([Normalize(), ToTensor()])
 
 
-def hard_transform():
+def hard_transform(image_size=224, p=0.5):
     transforms = [
+        Cutout(
+            num_holes=4,
+            max_w_size=image_size // 4,
+            max_h_size=image_size // 4,
+            p=p
+        ),
         ShiftScaleRotate(
             shift_limit=0.1,
             scale_limit=0.1,
             rotate_limit=15,
             border_mode=cv2.BORDER_REFLECT,
-            p=0.5
+            p=p
         ),
-        IAAPerspective(scale=(0.02, 0.05), p=0.3),
+        IAAPerspective(scale=(0.02, 0.05), p=p),
+        OneOf(
+            [
+                HueSaturationValue(p=p),
+                ToGray(p=p),
+                RGBShift(p=p),
+                ChannelShuffle(p=p),
+            ]
+        ),
         RandomBrightnessContrast(
-            brightness_limit=0.2, contrast_limit=0.2, p=0.3
+            brightness_limit=0.5, contrast_limit=0.5, p=p
         ),
-        RandomGamma(gamma_limit=(85, 115), p=0.3),
-        HueSaturationValue(p=0.3),
-        ChannelShuffle(p=0.5),
-        ToGray(p=0.2),
-        CLAHE(p=0.3),
-        RGBShift(p=0.3),
-        JpegCompression(quality_lower=50),
+        RandomGamma(p=p),
+        CLAHE(p=p),
+        JpegCompression(quality_lower=50, p=p),
     ]
     transforms = Compose(transforms)
     return transforms
