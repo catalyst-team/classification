@@ -1,4 +1,3 @@
-from typing import Dict
 import json
 import collections
 import numpy as np
@@ -6,33 +5,19 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from catalyst.data.reader import ImageReader, ScalarReader, ReaderCompose
 from catalyst.data.augmentor import Augmentor
-from catalyst.utils.parse import read_csv_data
-from catalyst.dl.experiments import ConfigExperiment
 from catalyst.data.dataset import ListDataset
+from catalyst.data.reader import ScalarReader, ReaderCompose, ImageReader
 from catalyst.data.sampler import BalanceClassSampler
+from catalyst.dl import ConfigExperiment
+from catalyst.utils.pandas import read_csv_data
+
 from .transforms import pre_transforms, post_transforms, hard_transform, \
-    RotateMixin, MixinAdapter, Compose
+    RotateMixin, BlurMixin, FlareMixin, \
+    DictTransformCompose, Compose
 
 
 class Experiment(ConfigExperiment):
-    def _prepare_logdir(self, config: Dict):
-        model_params = config["model_params"]
-        data_params = config["stages"]["data_params"]
-
-        if data_params.get("train_folds") is not None:
-            train_folds = "-".join(list(map(str, data_params["train_folds"])))
-        else:
-            train_folds = "split"
-        hiddens = "-".join(
-            list(map(str, model_params["embedding_net_params"]["hiddens"]))
-        )
-        return f"{train_folds}" \
-            f".{model_params['model']}" \
-            f".{model_params['encoder_params']['arch']}" \
-            f".{model_params['encoder_params']['pooling']}" \
-            f".{hiddens}"
 
     def _postprocess_model_for_stage(self, stage: str, model: nn.Module):
         model_ = model
@@ -49,37 +34,58 @@ class Experiment(ConfigExperiment):
 
     @staticmethod
     def get_transforms(
-        stage: str = None,
-        mode: str = None,
-        image_size=224,
-        one_hot_classes=None
+            stage: str = None,
+            mode: str = None,
+            image_size=224,
+            one_hot_classes=None
     ):
         pre_transform_fn = pre_transforms(image_size=image_size)
 
         if mode == "train":
-            post_transform_fn = Compose([hard_transform(), post_transforms()])
+            post_transform_fn = Compose([
+                hard_transform(image_size=image_size),
+                post_transforms()
+            ])
         elif mode in ["valid", "infer"]:
             post_transform_fn = post_transforms()
         else:
             raise NotImplementedError()
 
         if mode in ["train", "valid"]:
-            result = MixinAdapter(
-                mixin=RotateMixin(
+            result = DictTransformCompose([
+                Augmentor(
+                    dict_key="image",
+                    augment_fn=lambda x: pre_transform_fn(image=x)["image"]
+                ),
+                FlareMixin(
+                    input_key="image",
+                    output_key="flare_factor",
+                    sunflare_params={
+                        "flare_roi": (0, 0, 1, 1),
+                        "num_flare_circles_lower": 1,
+                        "num_flare_circles_upper": 4,
+                        "src_radius": image_size // 4,
+                        "p": 0.5
+                    }
+                ),
+                RotateMixin(
                     input_key="image",
                     output_key="rotation_factor",
                     targets_key="targets",
                     one_hot_classes=one_hot_classes
                 ),
-                pre_transforms=Augmentor(
-                    dict_key="image",
-                    augment_fn=lambda x: pre_transform_fn(image=x)["image"]
+                BlurMixin(
+                    input_key="image",
+                    output_key="blur_factor",
+                    blur_min=3,
+                    blur_max=9,
+                    blur=["Blur", ]
                 ),
-                post_transforms=Augmentor(
+                Augmentor(
                     dict_key="image",
                     augment_fn=lambda x: post_transform_fn(image=x)["image"]
                 )
-            )
+            ])
         elif mode in ["infer"]:
             result_fn = Compose([pre_transform_fn, post_transform_fn])
             result = Augmentor(

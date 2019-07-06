@@ -1,5 +1,4 @@
 model_params:
-  fp16: false
   model: MultiHeadNet
   encoder_params:
     arch: resnet18
@@ -56,7 +55,7 @@ stages:
 
     callbacks_params: &callbacks
       loss:
-        callback: EmbeddingsLossCallback
+        callback: EmbeddingsCriterionCallback
         emb_l2_reg: -1
         input_key: targets_one_hot
         embeddings_key: embeddings

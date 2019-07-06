@@ -11,26 +11,36 @@ matrix:
     - python: 3.6
 
 stages:
-  - Codestyle
-  - Pipeline Tests
+  - Tests
+  - Examples
 
 install: &requirements
   pip install -r requirements.txt
 
 jobs:
   include:
-    - stage: Codestyle
-      install: pip install flake8 yapf
+    - stage: Tests
+      install:
+        - *requirements
+        - pip install flake8 flake8-quotes yapf
       script:
         # stop the build if there are any unexpected flake8 issues
-        - flake8 . --count --ignore=E126,E226,E704,E731,W503,W504 --max-complexity=16
+        - flake8 . --count --ignore=E126,E226,E704,E731,W503,W504
+          --max-complexity=16
+          --inline-quotes "double"
+          --multiline-quotes "double"
+          --docstring-quotes "double"
           --show-source --statistics
         # exit-zero treats all errors as warnings.
-        - flake8 . --count --exit-zero --max-complexity=10 --statistics
+        - flake8 . --count --exit-zero
+          --max-complexity=10
+          --inline-quotes "double"
+          --multiline-quotes "double"
+          --docstring-quotes "double"
+          --statistics
         # test to make sure the code is yapf compliant
         - ./yapf.sh --all
-    - stage: Pipeline Tests
-      name: "Pipeline Tests"
+    - stage: Examples
       install: *requirements
       script:
         - wget -P ./data https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz
