@@ -40,19 +40,20 @@ make classification
 
 Get the [data](https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz) and unpack it to `data` folder:
 ```bash
-wget -P ./data/ https://www.dropbox.com/s/9438wx9ku9ke1pt/ants_bees.tar.gz
-tar -xvf ./data/ants_bees.tar.gz -C ./data
-mv ./data/ants_bees ./data/dataset
+wget -P ./data/ https://www.kaggle.com/scolianni/mnistasjpg/downloads/trainingSet.tar.gz/1
+tar -xvf ./data/trainingSet.tar.gz -C ./data
+mv ./data/trainingSet ./data/dataset
 
 ```
 Final folder structure with training data:
 ```bash
 catalyst.classification/data/
     dataset/
-        ants/
+        0/
             ...
-        bees/
+        1/
             ...
+        .../
 ```
 
 #### For your dataset
@@ -117,7 +118,7 @@ We will perform the following experiments using pre-trained model ResNet-18:
 - Two stages traininig classification using `Softmax` 
 - Two stages training "Multilabel" classification using `BCEWithLogitsLoss`
 - Two stages training "Multilabel" classification using `FocalLossMultiClass` 
-- Two stages training MultiHeadNet classification using `CrossEntropyLoss` and with rotation factor prediction 
+- Two stages training classification  and augmentations prediction using `CrossEntropyLoss` and with rotation factor prediction 
 
 #### Config training
 The config allows you to define:
@@ -126,6 +127,7 @@ The config allows you to define:
     - detailed architecture description
     - using or not pretrained model 
 - `stages` you can configure training in several stages with different hyperparameters, optimizers, callbacks and loss-functions. In our example:
+     - using pretrained model
      - first learn the head(s)
      - then train the whole network  
      - produce predictions  
@@ -148,9 +150,9 @@ catalyst-dl run --config=configs/exp_splits_bce.yml
 catalyst-dl run --config=configs/exp_splits_focal.yml
 ```
 
-- Two stages trained MultiHeadNet classification using `CrossEntropyLoss` and with rotation factor prediction :
+- Two stages trained MultiHeadNet classification using `CrossEntropyLoss` and with augmentations prediction :
 ```bash
-catalyst-dl run --config=configs/exp_splits_rotation.yml
+catalyst-dl run --config=configs/exp_splits_augs.yml
 ```
 
 #### Run in docker:
