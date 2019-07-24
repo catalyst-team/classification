@@ -217,7 +217,7 @@ logs/classification/checkpoints//stage2.28.pth	54.6875
 
 #### Create KNN Index model
 
-Factor-based model PCA reduce dimenshionality of embeddins space, then KNN model is used to calculate the average distance to the k nearest neighbors in score space and transform data into a fast indexing structure. 
+Factor-based model PCA reduce dimenshionality of embeddins space, then KNN model is used to calculate the score distance in score space and transform data into a fast indexing structure. 
 As a result, we have index model which allow as to implement fast similarity search on a large number of high-dimensional vectors. 
 
 ```bash
