@@ -274,7 +274,7 @@ docker run -it --rm --shm-size 8G \
 export LOGDIR=$(pwd)/logs/projector
 docker run -it --rm --shm-size 8G \
    -v $(pwd):/workspace/ \
-   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
+   -v $LOGDIR:/logdir  \
    -e "LOGDIR=/logdir" \
    catalyst-classification bash ./bin/run_projector.sh
 ```
@@ -283,7 +283,7 @@ docker run -it --rm --shm-size 8G \
 
 ```bash
 export LOGDIR=$(pwd)/logs/projector
-tensorboard --logdir=$LOGDIR/projector
+tensorboard --logdir=$LOGDIR
 ```
 
 ### 1.6 Finding best start LR with LrFinder
