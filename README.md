@@ -218,7 +218,8 @@ logs/classification/checkpoints//stage2.28.pth	54.6875
 #### Create KNN Index model
 
 Factor-based model PCA reduce dimenshionality of embeddins space, then KNN model is used to calculate the score distance in score space and transform data into a fast indexing structure. 
-As a result, we have index model which allow as to implement fast similarity search on a large number of high-dimensional vectors. 
+
+As a result, we have index model which allow as to implement fast similarity search on a large number of high-dimensional vectors. KNN Index model also allow fast and easy handle out-of-class predictions.
 
 ```bash
 export LOGDIR=$(pwd)/logs/classification
@@ -247,7 +248,7 @@ index model testing...
 [==      Recall@10: 100.0%      ==]
 ```
 
-The result of the work are the following files^
+The result of the work are the following files:
 ```bash
 ${LOGDIR}/knn.embeddings.bin
 ${LOGDIR}/predictions/infer.embeddings.pca.npy 
