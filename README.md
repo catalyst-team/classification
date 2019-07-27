@@ -284,7 +284,7 @@ docker run -it --rm --shm-size 8G \
 
 ```bash
 export LOGDIR=$(pwd)/logs/projector
-tensorboard --logdir=$LOGDIR
+tensorboard --logdir=$LOGDIR/projector
 ```
 <img src="/images/projector_2d.png" width="500" title="projector">
 
