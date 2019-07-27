@@ -283,7 +283,7 @@ docker run -it --rm --shm-size 8G \
 
 ```bash
 export LOGDIR=$(pwd)/logs/projector
-CUDA_VISIBLE_DEVICE="" tensorboard --logdir=$LOGDIR/projector
+tensorboard --logdir=$LOGDIR/projector
 ```
 
 ### 1.6 Finding best start LR with LrFinder
