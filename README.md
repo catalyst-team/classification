@@ -286,6 +286,7 @@ docker run -it --rm --shm-size 8G \
 export LOGDIR=$(pwd)/logs/projector
 tensorboard --logdir=$LOGDIR
 ```
+<img src="/images/projector_2d.png" width="500" title="projector">
 
 ### 1.6 Finding best start LR with LrFinder
 Rut trainig with callback LRFinder to find the optimal learning rate range for your model and dataset.
