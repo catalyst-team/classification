@@ -386,3 +386,13 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
     --n-trials 10 \
     --threshold 0.8
 ```
+
+### 2.3 Results of autolabeling
+Out:
+```
+Predicted: 23 (100.00%)
+...
+Pseudo Lgabeling done. Nothing more to label.
+```
+Logs for trainings visualisation can be found here: `./logs/autolabel` 
+Labeled raw data can be found here: `/data/data_clean/dataset.csv`
