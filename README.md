@@ -364,7 +364,7 @@ To run the iteration process we need to specify number of iterations `n-trials` 
 ```bash
 catalyst.classification/data/
     data_raw/
-        raw/
+        all/
             ...
     data_clean/
         0/
