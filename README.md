@@ -289,8 +289,11 @@ tensorboard --logdir=$LOGDIR/projector
 <img src="/images/projector_2d.png" width="500" title="projector">
 
 ### 1.6 Finding best start LR with LrFinder
-Rut trainig with callback LRFinder to find the optimal learning rate range for your model and dataset.
-Learning rate is increased in linear or log scale, depending on user input.  
+Put trainig with callback LRFinder to find the optimal learning rate range for your model and dataset.
+In the kofig there are:
+- the scale in which the Learning rate increases:  linear or log 
+- final learning rate
+- num steps
 
 ```bash
 export LOGDIR=$(pwd)/logs/lrfinder
@@ -300,7 +303,13 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -e "LOGDIR=/logdir" \
    catalyst-classification bash ./bin/run_lrfinder.sh
 ```
+#### Tensorboard metrics visualization  
 
+```bash
+export LOGDIR=$(pwd)/logs
+tensorboard --logdir=$LOGDIR
+```
+<img src="/images/LrFinder.png" width="500" title="LrFinder">
 
 ### 1.7 Grid search visualization
 
