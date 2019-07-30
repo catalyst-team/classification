@@ -309,7 +309,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 export LOGDIR=$(pwd)/logs
 tensorboard --logdir=$LOGDIR
 ```
-<img src="/images/LrFinder.png" width="500" title="LrFinder">
+<img src="/images/LRFinder.png" width="500" title="LrFinder">
 
 ### 1.7 Grid search visualization
 
