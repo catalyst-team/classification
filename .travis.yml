@@ -66,4 +66,4 @@ jobs:
         - catalyst-dl run --config=configs/exp_splits_focal.yml --check --stages/stage2=None:str --stages/infer=None:str
         - python -c "data = open('./logs/classification_focal/metrics.txt', 'r').readlines(); assert float(data[8].rsplit('loss=', 1)[-1][:6]) < float(data[1].rsplit('loss=', 1)[-1][:6]); assert float(data[8].rsplit('loss=', 1)[-1][:6]) < 0.5"
         - catalyst-dl run --config=configs/exp_splits_augs.yml --check  --stages/stage2=None:str --stages/infer=None:str
-        - python -c "data = open('./logs/classification_augs/metrics.txt', 'r').readlines(); assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < float(data[1].rsplit('loss_class_rotation=', 1)[-1][:6]); assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < 4.2"
+        - python -c "data = open('./logs/classification_augs/metrics.txt', 'r').readlines(); assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < float(data[1].rsplit('loss_class_rotation=', 1)[-1][:6]); assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < 4.4"
