@@ -93,7 +93,7 @@ for ((i=0; i < N_TRIALS; ++i)); do
         --in-csv-train="${DATAPATH_CLEAN}"/dataset.csv \
         --in-tag2cls="${DATAPATH_CLEAN}"/tag2cls.json \
         --in-dir="${DATAPATH_RAW}" \
-        --out-dir="${DATAPATH_CLEAN}"/ \
+        --out-dir="${DATAPATH_CLEAN}" \
         --threshold="${THRESHOLD}"
 done
 

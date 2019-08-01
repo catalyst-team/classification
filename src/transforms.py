@@ -20,7 +20,6 @@ class RotateMixin:
     """
     Calculates rotation factor for augmented image
     """
-
     def __init__(
         self,
         input_key: str = "image",
@@ -77,7 +76,6 @@ class BlurMixin:
     """
     Calculates blur factor for augmented image
     """
-
     def __init__(
         self,
         input_key: str = "image",
@@ -125,7 +123,6 @@ class FlareMixin:
     """
     Calculates blur factor for augmented image
     """
-
     def __init__(
         self,
         input_key: str = "image",

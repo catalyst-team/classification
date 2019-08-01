@@ -22,7 +22,7 @@ args:
 stages:
 
   state_params:
-    main_metric: &reduce_metric loss
+    main_metric: &reduce_metric embeddings_loss
     minimize_metric: True
     valid_loader: train
 
