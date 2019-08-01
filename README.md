@@ -2,7 +2,7 @@
 
 Framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
 
-The also framework provide tools to:
+The framework also provide tools to:
  - create KNN index model
  - create and visualize embeddings
  - find best starting learning rate
@@ -406,4 +406,5 @@ Predicted: 23 (100.00%)
 Pseudo Lgabeling done. Nothing more to label.
 ```
 Logs for trainings visualisation can be found here: `./logs/autolabel` 
+
 Labeled raw data can be found here: `/data/data_clean/dataset.csv`
