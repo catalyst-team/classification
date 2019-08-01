@@ -38,7 +38,7 @@ make classification
 ### 1.2 Get Dataset
 ![MNIST dataset example](/images/dataset_sample.png "Mnist dataset example")
 
-Get the [data](https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz) and unpack it to `data` folder:
+Get the [dataset example](https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz) and unpack it to `data` folder:
 ```bash
 wget -P ./data/ https://www.dropbox.com/s/wviqz4g55kl4zft/trainingSet.tar.gz
 tar -xvf ./data/trainingSet.tar.gz -C ./data
