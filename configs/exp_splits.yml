@@ -64,7 +64,7 @@ stages:
         output_key: logits
       accuracy:
         callback: AccuracyCallback
-        accuracy_args: [1]
+        num_classes: *num_classes
       cm:
         callback: ConfusionMatrixCallback
         input_key: targets
