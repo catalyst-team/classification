@@ -62,7 +62,7 @@ stages:
         output_key: logits
       accuracy:
         callback: AccuracyCallback
-        accuracy_args: [1]
+        num_classes: *num_classes
       auc:
         callback: AUCCallback
         input_key: targets_one_hot

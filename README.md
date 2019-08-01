@@ -149,22 +149,22 @@ The config allows you to define:
 #### Run in local environment: 
 - Classification using `Softmax`:
 ```bash
-catalyst-dl run --config=configs/exp_splits.yml
+catalyst-dl run --config=configs/exp_splits.yml --verbose
 ```
 
 - "Multilabel" classification using `BCEWithLogitsLoss`:
 ```bash
-catalyst-dl run --config=configs/exp_splits_bce.yml
+catalyst-dl run --config=configs/exp_splits_bce.yml --verbose
 ```
 
 -  "Multilabel" classification using `FocalLossMultiClass`:
 ```bash
-catalyst-dl run --config=configs/exp_splits_focal.yml
+catalyst-dl run --config=configs/exp_splits_focal.yml --verbose
 ```
 
 - Two stages trained MultiHeadNet classification using `CrossEntropyLoss` and with augmentations prediction:
 ```bash
-catalyst-dl run --config=configs/exp_splits_augs.yml
+catalyst-dl run --config=configs/exp_splits_augs.yml --verbose
 ```
 
 #### Run in docker:

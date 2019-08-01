@@ -108,31 +108,31 @@ stages:
         input_key: targets
         output_key: logits
         prefix: accuracy_class
-        accuracy_args: [1]
+        num_classes: *num_classes
       accuracy_rotation:
         callback: AccuracyCallback
         input_key: rotation_factor
         output_key: rotation_logits
         prefix: accuracy_rotation
-        accuracy_args: [1]
+        num_classes: *num_rotations
       accuracy_class_rotation:
         callback: AccuracyCallback
         input_key: class_rotation_targets
         output_key: class_rotation_logits
         prefix: accuracy_class_rotations
-        accuracy_args: [1]
+        num_classes: *num_class_rotations
       accuracy_flare:
         callback: AccuracyCallback
         input_key: flare_factor
         output_key: flare_logits
         prefix: accuracy_flare
-        accuracy_args: [1]
+        num_classes: *num_flares
       accuracy_blur:
         callback: AccuracyCallback
         input_key: blur_factor
         output_key: blur_logits
         prefix: accuracy_blur
-        accuracy_args: [1]
+        num_classes: *num_blures
 
       cm_class:
         callback: ConfusionMatrixCallback
