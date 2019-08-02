@@ -290,7 +290,7 @@ tensorboard --logdir=$LOGDIR/projector
 
 ### 1.6 Finding best start LR with LrFinder
 Put trainig with callback LRFinder to find the optimal learning rate range for your model and dataset.
-In the kofig there are:
+In the config there are:
 - the scale in which the Learning rate increases:  linear or log 
 - final learning rate
 - num steps
