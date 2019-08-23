@@ -1,0 +1,46 @@
+model_params:
+  model: MultiHeadNet
+  encoder_params:
+    arch: resnet18
+    pretrained: True
+    frozen: True
+    pooling: MaxPool2d
+    pooling_kwargs:
+      kernel_size: 7      # [14, 7]
+      stride: 7           # [14, 7]
+  embedding_net_params:
+    hiddens: [512, 256]  # 224 -> [512, 256]; 448 -> [2048, 512]
+    activation_fn: ReLU
+    norm_fn: BatchNorm1d
+    bias: false
+    dropout: 0.5
+
+stages:
+  # train head
+  stage1:
+    state_params:
+      num_epochs: 16
+
+    optimizer_params:
+      optimizer: Adam
+      lr: 0.0003
+      weight_decay: 0.0001
+
+    scheduler_params:
+      scheduler: MultiStepLR
+      milestones: [8]
+      gamma: 0.3
+
+  # tune whole network
+  stage2:
+    state_params:
+      num_epochs: 32
+
+    optimizer_params:
+      optimizer: Adam
+      lr: 0.0003
+
+    scheduler_params:
+      scheduler: MultiStepLR
+      milestones: [8, 20]
+      gamma: 0.3
