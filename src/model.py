@@ -37,6 +37,7 @@ class MultiHeadNet(nn.Module):
     @classmethod
     def get_from_params(
         cls,
+        image_size: int = None,
         encoder_params: Dict = None,
         embedding_net_params: Dict = None,
         heads_params: Dict = None,
@@ -47,10 +48,12 @@ class MultiHeadNet(nn.Module):
         heads_params_ = deepcopy(heads_params)
 
         encoder_net = ResnetEncoder(**encoder_params_)
-        enc_size = encoder_net.out_features
 
-        if enc_size is not None:
-            embedding_net_params_["hiddens"].insert(0, enc_size)
+        encoder_input_shape: tuple = (3, image_size, image_size)
+        encoder_input = torch.Tensor(torch.randn((1,) + encoder_input_shape))
+        encoder_output = encoder_net(encoder_input)
+        enc_size = encoder_output.nelement()
+        embedding_net_params_["hiddens"].insert(0, enc_size)
 
         embedding_net = SequentialNet(**embedding_net_params_)
         emb_size = embedding_net_params_["hiddens"][-1]

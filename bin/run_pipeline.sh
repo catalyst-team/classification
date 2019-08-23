@@ -15,13 +15,7 @@ export DATADIR=./data/origin
 export NUM_WORKERS=4
 export BATCH_SIZE=64
 export MAX_IMAGE_SIZE=224
-
-SKIPDATA=""
-while getopts ":s" flag; do
-  case "${flag}" in
-    s) SKIPDATA="true" ;;
-  esac
-done
+export BALANCE_STRATEGY="null"
 
 if [[ -z "$NUM_WORKERS" ]]; then
       NUM_WORKERS=4
@@ -30,6 +24,13 @@ fi
 if [[ -z "$MAX_IMAGE_SIZE" ]]; then
       MAX_IMAGE_SIZE=224
 fi
+
+SKIPDATA=""
+while getopts ":s" flag; do
+  case "${flag}" in
+    s) SKIPDATA="true" ;;
+  esac
+done
 
 date=$(date +%y%m%d-%H%M%S-%3N)
 export WORKDIR=./logs
@@ -76,9 +77,10 @@ python ./scripts/prepare_config.py \
     --out-config=$CONFIG_DIR/config.yml \
     --expdir=./src \
     --dataset-path=$DATASET_DIR \
-    --max-image-size=$MAX_IMAGE_SIZE \
     --num-workers=$NUM_WORKERS \
-    --batch-size=$BATCH_SIZE
+    --batch-size=$BATCH_SIZE \
+    --max-image-size=$MAX_IMAGE_SIZE \
+    --balance-strategy=$BALANCE_STRATEGY
 
 cp -r ./configs/_common.yml $CONFIG_DIR/_common.yml
 
@@ -106,4 +108,4 @@ EOF
 )
 
 cp $LOGDIR/traced.pth $SERVING_DIR/model.pth
-cp TAG2CLS_PATH $SERVING_DIR
+cp $TAG2CLS_PATH $SERVING_DIR

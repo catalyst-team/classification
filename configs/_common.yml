@@ -9,13 +9,15 @@ model_params:
       kernel_size: 7      # [14, 7]
       stride: 7           # [14, 7]
   embedding_net_params:
-    hiddens: [512, 256]  # 224 -> [512, 256]; 448 -> [2048, 512]
+    hiddens: [256, 256]
     activation_fn: ReLU
     norm_fn: BatchNorm1d
     bias: false
     dropout: 0.5
+    residual: "soft"
 
 stages:
+
   # train head
   stage1:
     state_params:
@@ -42,5 +44,5 @@ stages:
 
     scheduler_params:
       scheduler: MultiStepLR
-      milestones: [8, 20]
+      milestones: [8, 24]
       gamma: 0.3

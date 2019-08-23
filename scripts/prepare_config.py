@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # usage:
-# python prepare_config.py \
+# python scripts/prepare_config.py \
 #     --in-template=./configs/templates/class.yml \
 #     --out-config=./configs/_class.yml \
 #     --expdir=./src \
 #     --dataset-path=./data \
-#     --max-image-size=224 \
 #     --num-workers=4 \
-#     --batch-size=64
+#     --batch-size=64 \
+#     --max-image-size=224 \
+#     --balance-strategy=1024
 
+
+from typing import Union
 import json
 import argparse
 from pathlib import Path
@@ -22,9 +25,10 @@ def build_args(parser):
     parser.add_argument("--expdir", type=Path, required=True)
     parser.add_argument("--dataset-path", type=Path, required=True)
 
-    parser.add_argument("--max-image-size", default=224, type=int)
     parser.add_argument("--num-workers", default=4, type=int)
     parser.add_argument("--batch-size", default=64, type=int)
+    parser.add_argument("--max-image-size", default=224, type=int)
+    parser.add_argument("--balance-strategy", default="null", type=str)
 
     return parser
 
@@ -41,9 +45,10 @@ def render_config(
     out_config: Path,
     expdir: Path,
     dataset_path: Path,
-    max_image_size: int,
     num_workers: int,
     batch_size: int,
+    max_image_size: int,
+    balance_strategy: str,
 ):
     _template_path = in_template.absolute().parent
 
@@ -64,9 +69,10 @@ def render_config(
         expdir=str(expdir),
         dataset_path=str(dataset_path),
         num_classes=num_classes,
-        max_image_size=max_image_size,
         num_workers=num_workers,
         batch_size=batch_size,
+        max_image_size=max_image_size,
+        balance_strategy=balance_strategy,
     ))
 
 
