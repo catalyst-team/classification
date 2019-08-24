@@ -10,8 +10,6 @@
 #     --max-image-size=224 \
 #     --balance-strategy=1024
 
-
-from typing import Union
 import json
 import argparse
 from pathlib import Path
@@ -53,10 +51,9 @@ def render_config(
     _template_path = in_template.absolute().parent
 
     _env = Environment(
-        loader=FileSystemLoader(
-            [str(_template_path)]
-        ),
-        trim_blocks=True, lstrip_blocks=True
+        loader=FileSystemLoader([str(_template_path)]),
+        trim_blocks=True,
+        lstrip_blocks=True
     )
 
     template = _env.get_template(in_template.name)
@@ -65,15 +62,17 @@ def render_config(
 
     out_config.parent.mkdir(parents=True, exist_ok=True)
 
-    out_config.write_text(template.render(
-        expdir=str(expdir),
-        dataset_path=str(dataset_path),
-        num_classes=num_classes,
-        num_workers=num_workers,
-        batch_size=batch_size,
-        max_image_size=max_image_size,
-        balance_strategy=balance_strategy,
-    ))
+    out_config.write_text(
+        template.render(
+            expdir=str(expdir),
+            dataset_path=str(dataset_path),
+            num_classes=num_classes,
+            num_workers=num_workers,
+            batch_size=batch_size,
+            max_image_size=max_image_size,
+            balance_strategy=balance_strategy,
+        )
+    )
 
 
 def main(args, _=None):

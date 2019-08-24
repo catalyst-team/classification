@@ -165,21 +165,24 @@ class Experiment(ConfigExperiment):
         open_fn = ReaderCompose(readers=open_fn)
 
         for source, mode in zip(
-                (df_train, df_valid, df_infer), ("train", "valid", "infer")
+            (df_train, df_valid, df_infer), ("train", "valid", "infer")
         ):
             if len(source) > 0:
                 dataset = ListDataset(
                     source,
                     open_fn=open_fn,
                     dict_transform=self.get_transforms(
-                        stage=stage, mode=mode,
+                        stage=stage,
+                        mode=mode,
                         image_size=image_size,
                         one_hot_classes=one_hot_classes
                     ),
                 )
                 if mode == "train":
                     labels = [x["class"] for x in source]
-                    sampler = BalanceClassSampler(labels, mode=balance_strategy)
+                    sampler = BalanceClassSampler(
+                        labels, mode=balance_strategy
+                    )
                     dataset = {"dataset": dataset, "sampler": sampler}
                 datasets[mode] = dataset
 

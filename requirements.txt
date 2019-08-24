@@ -1,7 +1,7 @@
-catalyst==19.08.7
+git+http://github.com/catalyst-team/catalyst.git@979a03bf82cab5dc4d816ba47cdd586882dbfa7f
 albumentations==0.3.0
-nmslib==1.7.3.6
+# nmslib==1.7.3.6
 seaborn==0.9.0
 opencv-python==4.0.0.21
-tensorflow==1.13.1
+# tensorflow==1.13.1
 jinja2

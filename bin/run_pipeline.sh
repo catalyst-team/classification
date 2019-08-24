@@ -13,16 +13,24 @@ set -e
 export CONFIG_TEMPLATE=./configs/templates/class.yml
 export DATADIR=./data/origin
 export NUM_WORKERS=4
-export BATCH_SIZE=64
+export BATCH_SIZE=32
 export MAX_IMAGE_SIZE=224
-export BALANCE_STRATEGY="null"
+export BALANCE_STRATEGY=512
 
 if [[ -z "$NUM_WORKERS" ]]; then
       NUM_WORKERS=4
 fi
 
+if [[ -z "$BATCH_SIZE" ]]; then
+      BATCH_SIZE=64
+fi
+
 if [[ -z "$MAX_IMAGE_SIZE" ]]; then
       MAX_IMAGE_SIZE=224
+fi
+
+if [[ -z "$BALANCE_STRATEGY" ]]; then
+      BALANCE_STRATEGY="null"
 fi
 
 SKIPDATA=""
@@ -89,11 +97,11 @@ cp -r ./configs/_common.yml $CONFIG_DIR/_common.yml
 
 catalyst-dl run \
     -C $CONFIG_DIR/config.yml $CONFIG_DIR/_common.yml \
-    --logdir $LOGDIR --check
+    --logdir $LOGDIR
 
 # ---- model tracing
 
-catalyst-dl trace $LOGDIR -m forward_embeddings
+#catalyst-dl trace $LOGDIR -m forward_embeddings --out-model $LOGDIR/traced.pth
 
 # ---- model serving
 
