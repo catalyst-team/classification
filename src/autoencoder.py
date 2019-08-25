@@ -114,15 +114,13 @@ class AEEncoder(nn.Module):
         self.z_dim = z_dim
         self.filters = encoder.filters
         bottleneck_reduce = nn.Conv2d(self.filters[3], z_dim, 1)
-        # st()
         enc_modules = list(encoder.children())
         enc_modules += [bottleneck_reduce]
-        # st()
         self.encoder = nn.Sequential(*enc_modules)
 
-    def forward(self, x):
+    def forward(self, x, deterministic=None):
         z = self.encoder(x)
-        return z
+        return z, None, None
 
 
 class VAEEncoder(AEEncoder):
@@ -142,7 +140,7 @@ class VAEEncoder(AEEncoder):
         deterministic = deterministic or self.training
         x = loc if deterministic else normal_sample(loc, scale)
         x = x.view(bs, z_dim, nf, nf)
-        return x
+        return x, loc, log_scale
 
 
 class AEDecoder(nn.Module):

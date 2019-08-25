@@ -38,11 +38,14 @@ stages:
       prefix: loss_class
       criterion_key: class
     loss_vae:
-      callback: CriterionCallback
+      callback: AECriterionCallback
       input_key: image
       output_key: decoder
       prefix: loss_ae
       criterion_key: ae
+      loc_key: embeddings_loc
+      log_scale_key: embeddings_log_scale
+      kld_regularization: 0.01
 
     accuracy_class:
       callback: AccuracyCallback

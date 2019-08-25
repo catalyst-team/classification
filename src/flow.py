@@ -2,8 +2,36 @@ import torch
 import torch.nn as nn
 
 from catalyst.contrib.models import SequentialNet
-from catalyst.utils import create_optimal_inner_init, outer_init
+from catalyst.utils import create_optimal_inner_init, outer_init, log1p_exp
 from catalyst.contrib.registry import MODULES
+
+
+class SquashingLayer(nn.Module):
+    def __init__(self, squashing_fn=nn.Tanh):
+        """
+        Layer that squashes samples from some distribution to be bounded.
+        """
+        super().__init__()
+
+        self.squashing_fn = MODULES.get_if_str(squashing_fn)()
+
+    def forward(self, x, x_logprob=None):
+        # compute log det jacobian of squashing transformation
+        if isinstance(self.squashing_fn, nn.Tanh):
+            log2 = torch.log(torch.tensor(2.0).to(x.device))
+            log_det_jacobian = 2 * (log2 + x - log1p_exp(2 * x))
+            log_det_jacobian = torch.sum(log_det_jacobian, dim=-1)
+        elif isinstance(self.squashing_fn, nn.Sigmoid):
+            log_det_jacobian = -x - 2 * log1p_exp(-x)
+            log_det_jacobian = torch.sum(log_det_jacobian, dim=-1)
+        elif self.squashing_fn is None:
+            return x, x_logprob
+        else:
+            raise NotImplementedError
+        x = self.squashing_fn.forward(x)
+        if x_logprob is not None:
+            x_logprob = x_logprob - log_det_jacobian
+        return x, x_logprob
 
 
 class CouplingLayer(nn.Module):
@@ -76,7 +104,7 @@ class CouplingLayer(nn.Module):
         self.translation_prenet.apply(inner_init)
         self.translation_net.apply(outer_init)
 
-    def forward(self, x):  # , x_logprob):
+    def forward(self, x, x_logprob=None):
         if self.parity == "odd":
             x_copy = x[:, :self.copy_size]
             x_transform = x[:, self.copy_size:]
@@ -98,19 +126,20 @@ class CouplingLayer(nn.Module):
         else:
             x = torch.cat((out_transform, x_copy), dim=1)
 
-        # log_det_jacobian = s.sum(dim=1)
-        # x_logprob = x_logprob - log_det_jacobian
+        if x_logprob is not None:
+            log_det_jacobian = s.sum(dim=1)
+            x_logprob = x_logprob - log_det_jacobian
 
-        return x  # , x_logprob
+        return x, x_logprob
 
 
 class RealNVP(nn.Module):
     def __init__(
         self,
         emb_size,
-        # layer_fn,
         activation_fn=nn.ReLU,
-        bias=False
+        bias=False,
+        squashing_fn=nn.Tanh,
     ):
         super().__init__()
         layer_fn = nn.Linear
@@ -131,11 +160,13 @@ class RealNVP(nn.Module):
             bias=bias,
             parity="even"
         )
+        self.squashing_layer = SquashingLayer(squashing_fn)
 
-    def forward(self, x):
+    def forward(self, x, x_logprob=None):
         bs, nc, nf, _ = x.shape
         x = x.view(bs, -1)
-        x = self.coupling1.forward(x)
-        x = self.coupling2.forward(x)
+        x, x_logprob = self.coupling1.forward(x, x_logprob)
+        x, x_logprob = self.coupling2.forward(x, x_logprob)
+        x, x_logprob = self.squashing_layer.forward(x, x_logprob)
         x = x.view(bs, nc, nf, nf)
-        return x
+        return x, x_logprob
