@@ -8,19 +8,19 @@ from catalyst.contrib.models import SequentialNet
 from catalyst.contrib.models.encoder import ResnetEncoder
 
 from .autoencoder import AEEncoder, AEDecoder, VAEEncoder
-
-LOG_SIG_MAX = 2
-LOG_SIG_MIN = -10
+from .flow import RealNVP
 
 
 class MultiHeadNet(nn.Module):
     def __init__(
-        self, encoder_net: nn.Module, embedding_net: nn.Module,
-        head_nets: nn.ModuleList
+        self,
+        encoder_net: nn.Module,
+        head_nets: nn.ModuleList,
+        embedding_net: nn.Module = None,
     ):
         super().__init__()
         self.encoder_net = encoder_net
-        self.embedding_net = embedding_net
+        self.embedding_net = embedding_net or (lambda x: x)
         self.head_nets = head_nets
 
     def forward_embeddings(self, x: torch.Tensor):
@@ -76,14 +76,10 @@ class MultiHeadNet(nn.Module):
         return net
 
 
-class MultiHeadNetAE(nn.Module):
-    def __init__(self, encoder_net: nn.Module, head_nets: nn.ModuleList):
-        super().__init__()
-        self.encoder_net = encoder_net
-        self.head_nets = head_nets
-
+class MultiHeadNetAE(MultiHeadNet):
     def forward(self, x: torch.Tensor, deterministic=None):
         embeddings = self.encoder_net(x)
+        embeddings = self.embedding_net(embeddings)
         result = {"embeddings": embeddings}
 
         for key, head_net in self.head_nets.items():
@@ -95,20 +91,30 @@ class MultiHeadNetAE(nn.Module):
     def get_from_params(
         cls,
         image_size: int = None,
+        mode: str = None,
         encoder_params: Dict = None,
+        embedding_net_params: Dict = None,
         decoder_params: Dict = None,
         heads_params: Dict = None,
-    ) -> "MultiHeadNet":
+    ) -> "MultiHeadNetAE":
+
+        assert mode in ["ae", "vae", "ae_nf", "vae_nf"]
 
         encoder_params_ = deepcopy(encoder_params)
         heads_params_ = deepcopy(heads_params)
 
-        encoder_net = AEEncoder(**encoder_params_)
+        encoder_net = AEEncoder(**encoder_params_) \
+            if mode in ["ae", "ae_nf"] \
+            else VAEEncoder(**encoder_params)
 
         input_shape = (3, image_size, image_size)
         input_t = torch.Tensor(torch.randn((1,) + input_shape))
         output_t = encoder_net(input_t)
         emb_size = output_t.nelement()
+
+        embedding_net = RealNVP(emb_size=emb_size) \
+            if mode in ["ae_nf", "vae_nf"] \
+            else None
 
         head_kwargs_ = {
             "decoder": AEDecoder(filters=encoder_net.filters, **decoder_params)
@@ -120,55 +126,10 @@ class MultiHeadNetAE(nn.Module):
             )
         head_nets = nn.ModuleDict(head_kwargs_)
 
-        net = cls(encoder_net=encoder_net, head_nets=head_nets)
-
-        return net
-
-
-class MultiHeadNetVAE(nn.Module):
-    def __init__(self, encoder_net: nn.Module, head_nets: nn.ModuleList):
-        super().__init__()
-        self.encoder_net = encoder_net
-        self.head_nets = head_nets
-
-    def forward(self, x: torch.Tensor, deterministic=None):
-        embeddings = self.encoder_net(x)
-        result = {"embeddings": embeddings}
-
-        for key, head_net in self.head_nets.items():
-            result[key] = head_net(embeddings)
-
-        return result
-
-    @classmethod
-    def get_from_params(
-        cls,
-        image_size: int = None,
-        encoder_params: Dict = None,
-        decoder_params: Dict = None,
-        heads_params: Dict = None,
-    ) -> "MultiHeadNet":
-
-        encoder_params_ = deepcopy(encoder_params)
-        heads_params_ = deepcopy(heads_params)
-
-        encoder_net = VAEEncoder(**encoder_params_)
-
-        input_shape = (3, image_size, image_size)
-        input_t = torch.Tensor(torch.randn((1,) + input_shape))
-        output_t = encoder_net(input_t)
-        emb_size = output_t.nelement()
-
-        head_kwargs_ = {
-            "decoder": AEDecoder(filters=encoder_net.filters, **decoder_params)
-        }
-        for key, value in heads_params_.items():
-            head_kwargs_[key] = nn.Sequential(
-                Flatten(),
-                nn.Linear(emb_size, value, bias=True)
-            )
-        head_nets = nn.ModuleDict(head_kwargs_)
-
-        net = cls(encoder_net=encoder_net, head_nets=head_nets)
+        net = cls(
+            encoder_net=encoder_net,
+            embedding_net=embedding_net,
+            head_nets=head_nets
+        )
 
         return net

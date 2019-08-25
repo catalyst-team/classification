@@ -1,5 +1,6 @@
 model_params:
-  model: MultiHeadNetVAE
+  model: MultiHeadNetAE
+  mode: "vae_nf"
   encoder_params:
     z_dim: &z_dim 16
   decoder_params:

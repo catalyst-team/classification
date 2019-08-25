@@ -27,7 +27,7 @@ stages:
 
     class:
       criterion: FocalLossMultiClass
-    vae:
+    ae:
       criterion: MSELoss
 
   callbacks_params:
@@ -41,8 +41,8 @@ stages:
       callback: CriterionCallback
       input_key: image
       output_key: decoder
-      prefix: loss_vae
-      criterion_key: vae
+      prefix: loss_ae
+      criterion_key: ae
 
     accuracy_class:
       callback: AccuracyCallback

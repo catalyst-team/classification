@@ -10,9 +10,12 @@ set -e
 
 # ---- environment variables
 
+export CUDNN_BENCHMARK="True"
+export CUDNN_DETERMINISTIC="True"
+
 export CONFIG_TEMPLATE=./configs/templates/class.yml
 export DATADIR=./data/origin
-export NUM_WORKERS=4
+export NUM_WORKERS=6
 export BATCH_SIZE=32
 export MAX_IMAGE_SIZE=224
 export BALANCE_STRATEGY=512
@@ -96,24 +99,24 @@ cp -r ./configs/_common.yml $CONFIG_DIR/_common.yml
 # ---- model training
 
 catalyst-dl run \
-    -C $CONFIG_DIR/config.yml $CONFIG_DIR/_common.yml \
+    -C $CONFIG_DIR/_common.yml $CONFIG_DIR/config.yml \
     --logdir $LOGDIR
 
-# ---- model tracing
-
+## ---- model tracing
+#
 #catalyst-dl trace $LOGDIR -m forward_embeddings --out-model $LOGDIR/traced.pth
-
-# ---- model serving
-
-TAG2CLS_PATH=$(python << EOF
-import json
-with open("${LOGDIR}/configs/_config.json") as f:
-    conf = json.load(f)
-    path = conf["stages"]["data_params"]["datapath"].replace("images", "") \
-        + "tag2class.json"
-    print(path)
-EOF
-)
-
-cp $LOGDIR/traced.pth $SERVING_DIR/model.pth
-cp $TAG2CLS_PATH $SERVING_DIR
+#
+## ---- model serving
+#
+#TAG2CLS_PATH=$(python << EOF
+#import json
+#with open("${LOGDIR}/configs/_config.json") as f:
+#    conf = json.load(f)
+#    path = conf["stages"]["data_params"]["datapath"].replace("images", "") \
+#        + "tag2class.json"
+#    print(path)
+#EOF
+#)
+#
+#cp $LOGDIR/traced.pth $SERVING_DIR/model.pth
+#cp $TAG2CLS_PATH $SERVING_DIR
