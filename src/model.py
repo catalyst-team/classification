@@ -79,17 +79,14 @@ class MultiHeadNet(nn.Module):
 
 class MultiHeadNetAE(MultiHeadNet):
     def forward(self, x: torch.Tensor, deterministic=None):
-        x, loc, log_scale = \
+        x, x_logprob, loc, log_scale = \
             self.encoder_net(x, deterministic=deterministic)
-
-        x_logprob = \
-            normal_logprob(loc, log_scale.exp(), x.view(x.shape[0], -1))
         x, x_logprob = self.embedding_net(x, x_logprob)
         result = {
             "embeddings": x,
             "embeddings_loc": loc,
             "embeddings_log_scale": log_scale,
-            "embeddings_logprob": x_logprob
+            "embeddings_logprob": x_logprob,
         }
 
         for key, head_net in self.head_nets.items():

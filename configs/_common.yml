@@ -1,6 +1,6 @@
 model_params:
   model: MultiHeadNetAE
-  mode: "vae"
+  mode: "ae"
   encoder_params:
     z_dim: &z_dim 16
   decoder_params:
@@ -24,30 +24,30 @@ model_params:
 stages:
 
   # train head
-  stage1:
-    state_params:
-      num_epochs: 16
-
-    optimizer_params:
-      optimizer: Adam
-      lr: 0.001
-      weight_decay: 0.0001
-
-    scheduler_params:
-      scheduler: MultiStepLR
-      milestones: [8]
-      gamma: 0.3
+#  stage1:
+#    state_params:
+#      num_epochs: 16
+#
+#    optimizer_params:
+#      optimizer: Adam
+#      lr: 0.001
+#      weight_decay: 0.0001
+#
+#    scheduler_params:
+#      scheduler: MultiStepLR
+#      milestones: [8]
+#      gamma: 0.3
 
   # tune whole network
   stage2:
     state_params:
-      num_epochs: 32
+      num_epochs: 120
 
     optimizer_params:
       optimizer: Adam
-      lr: 0.0003
+      lr: 0.001
 
     scheduler_params:
       scheduler: MultiStepLR
-      milestones: [8, 24]
+      milestones: [30, 75, 105]
       gamma: 0.3

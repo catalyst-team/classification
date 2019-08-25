@@ -45,7 +45,9 @@ stages:
       criterion_key: ae
       loc_key: embeddings_loc
       log_scale_key: embeddings_log_scale
-      kld_regularization: 0.01
+      kld_regularization: 1.0
+      logprob_key: embeddings_logprob
+      logprob_regularization: 0.001
 
     accuracy_class:
       callback: AccuracyCallback

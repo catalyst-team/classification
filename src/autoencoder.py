@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 import torchvision
 
-from catalyst.utils import normal_sample
+from catalyst.utils import normal_sample, normal_logprob
 
-LOG_SIG_MAX = 2
-LOG_SIG_MIN = -10
+LOG_SCALE_MAX = 2
+LOG_SCALE_MIN = -10
 
 
 class ResnetEncoderAE(nn.Module):
@@ -120,7 +120,7 @@ class AEEncoder(nn.Module):
 
     def forward(self, x, deterministic=None):
         z = self.encoder(x)
-        return z, None, None
+        return z, None, None, None
 
 
 class VAEEncoder(AEEncoder):
@@ -135,12 +135,13 @@ class VAEEncoder(AEEncoder):
         x = x.view(bs, -1)
         z_dim_ = x.shape[1]
         loc, log_scale = x[:, :z_dim_ // 2], x[:, z_dim_ // 2:]
-        log_scale = torch.clamp(log_scale, LOG_SIG_MIN, LOG_SIG_MAX)
+        log_scale = torch.clamp(log_scale, LOG_SCALE_MIN, LOG_SCALE_MAX)
         scale = torch.exp(log_scale)
         deterministic = deterministic or self.training
         x = loc if deterministic else normal_sample(loc, scale)
+        x_logprob = normal_logprob(loc, scale, x)
         x = x.view(bs, z_dim, nf, nf)
-        return x, loc, log_scale
+        return x, x_logprob, loc, log_scale
 
 
 class AEDecoder(nn.Module):

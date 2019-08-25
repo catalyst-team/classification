@@ -16,7 +16,7 @@ export CUDNN_DETERMINISTIC="True"
 export CONFIG_TEMPLATE=./configs/templates/class.yml
 export DATADIR=./data/origin
 export NUM_WORKERS=6
-export BATCH_SIZE=32
+export BATCH_SIZE=64
 export MAX_IMAGE_SIZE=224
 export BALANCE_STRATEGY=512
 

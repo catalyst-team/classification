@@ -48,6 +48,8 @@ class AECriterionCallback(CriterionCallback):
         loc_key: str = "embeddings_loc",
         log_scale_key: str = "embeddings_log_scale",
         kld_regularization: float = 1,
+        logprob_key: str = "embeddings_logprob",
+        logprob_regularization: float = 1,
     ):
         super().__init__(
             input_key=input_key,
@@ -59,18 +61,23 @@ class AECriterionCallback(CriterionCallback):
         self.loc_key = loc_key
         self.log_scale_key = log_scale_key
         self.kld_regularization = kld_regularization
+        self.logprob_key = logprob_key
+        self.logprob_regularization = logprob_regularization
 
     def _compute_loss(self, state: RunnerState, criterion):
         logits = state.output[self.output_key]
         targets = state.input[self.input_key]
-        embeddings_loc = state.output[self.loc_key]
-        embeddings_log_scale = state.output[self.log_scale_key]
-
         loss = criterion(logits, targets)
 
-        if embeddings_loc is not None and embeddings_log_scale is not None:
-            mu = embeddings_loc
-            logvar = embeddings_log_scale
-            kld = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        loc = state.output[self.loc_key]
+        log_scale = state.output[self.log_scale_key]
+        if loc is not None and log_scale is not None:
+            kld = -0.5 * torch.mean(
+                1 + log_scale - loc.pow(2) - log_scale.exp())
             loss += kld * self.kld_regularization
+
+        logprob = state.output[self.logprob_key]
+        if logprob is not None:
+            loss += torch.mean(logprob) * self.logprob_regularization
+
         return loss
