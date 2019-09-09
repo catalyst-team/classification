@@ -26,7 +26,10 @@ You will learn how to build image classification pipeline with transfer learning
 ### 1.1 Install requirements
 
 #### Using local environment: 
-```pip install -r requirements.txt```
+```bash
+pip install -r requirements/requirements_min.txt  # catalyst only
+pip install -r requirements/requirements_all.txt  # for knn model and tensorflow supoprt
+```
 
 #### Using docker:
 
@@ -66,6 +69,21 @@ catalyst.classification/data/
 #### For your dataset
 ```bash
 ln -s /path/to/your_dataset $(pwd)/data/dataset
+```
+
+##### Fast&Furious: raw data → production-ready model
+```bash
+CUDA_VISIBLE_DEVICES=0 \
+CUDNN_BENCHMARK="True" \
+CUDNN_DETERMINISTIC="True" \
+WORKDIR=./logs \
+DATADIR=./data/dataset \
+MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
+BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
+CONFIG_TEMPLATE=./configs/templates/class.yml \
+NUM_WORKERS=4 \
+BATCH_SIZE=256 \
+bash ./bin/catalyst-classification-pipeline.sh
 ```
 
 ### 1.3 Process the data

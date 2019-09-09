@@ -1,5 +1,9 @@
 from typing import Mapping, Any
-from catalyst.dl import Runner
+
+try:
+    from catalyst.dl import WandbRunner as Runner
+except ImportError:
+    from catalyst.dl import Runner
 
 
 class ModelRunner(Runner):

@@ -85,8 +85,9 @@ class Experiment(ConfigExperiment):
                     ),
                     Augmentor(
                         dict_key="image",
-                        augment_fn=lambda x: post_transform_fn(image=x)["image"
-                                                                        ]
+                        augment_fn=(
+                            lambda x: post_transform_fn(image=x)["image"]
+                        )
                     )
                 ]
             )

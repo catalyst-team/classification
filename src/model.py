@@ -6,7 +6,7 @@ import torch.nn as nn
 from catalyst.contrib.modules import Flatten
 from catalyst.contrib.models import SequentialNet
 from catalyst.contrib.models.encoder import ResnetEncoder
-from catalyst.utils import normal_logprob
+from catalyst import utils
 
 from .autoencoder import AEEncoder, AEDecoder, VAEEncoder
 from .flow import RealNVP
@@ -24,10 +24,16 @@ class MultiHeadNet(nn.Module):
         self.embedding_net = embedding_net or (lambda *args: args)
         self.head_nets = head_nets
 
-    def forward_embeddings(self, x: torch.Tensor):
+    def forward_embedding(self, x: torch.Tensor):
         features = self.encoder_net(x)
         embeddings = self.embedding_net(features)
         return embeddings
+
+    def forward_class(self, x: torch.Tensor):
+        features = self.encoder_net(x)
+        embeddings = self.embedding_net(features)
+        logits = self.head_nets["logits"](embeddings)
+        return logits
 
     def forward(self, x: torch.Tensor):
         features = self.encoder_net(x)
@@ -53,13 +59,11 @@ class MultiHeadNet(nn.Module):
         heads_params_ = deepcopy(heads_params)
 
         encoder_net = ResnetEncoder(**encoder_params_)
-
-        encoder_input_shape: tuple = (3, image_size, image_size)
-        encoder_input = torch.Tensor(torch.randn((1, ) + encoder_input_shape))
-        encoder_output = encoder_net(encoder_input)
+        encoder_input_shape = (3, image_size, image_size)
+        encoder_output = \
+            utils.get_network_output(encoder_net, encoder_input_shape)
         enc_size = encoder_output.nelement()
         embedding_net_params_["hiddens"].insert(0, enc_size)
-
         embedding_net = SequentialNet(**embedding_net_params_)
         emb_size = embedding_net_params_["hiddens"][-1]
 
@@ -78,6 +82,19 @@ class MultiHeadNet(nn.Module):
 
 
 class MultiHeadNetAE(MultiHeadNet):
+    def forward_embedding(self, x: torch.Tensor, deterministic=None):
+        x, x_logprob, loc, log_scale = \
+            self.encoder_net(x, deterministic=deterministic)
+        x, x_logprob = self.embedding_net(x, x_logprob)
+        return x
+
+    def forward_class(self, x: torch.Tensor, deterministic=None):
+        x, x_logprob, loc, log_scale = \
+            self.encoder_net(x, deterministic=deterministic)
+        x, x_logprob = self.embedding_net(x, x_logprob)
+        logits = self.head_nets["logits"](x)
+        return logits
+
     def forward(self, x: torch.Tensor, deterministic=None):
         x, x_logprob, loc, log_scale = \
             self.encoder_net(x, deterministic=deterministic)
@@ -113,23 +130,23 @@ class MultiHeadNetAE(MultiHeadNet):
         encoder_net = AEEncoder(**encoder_params_) \
             if mode in ["ae", "ae_nf"] \
             else VAEEncoder(**encoder_params)
-
-        input_shape = (3, image_size, image_size)
-        input_t = torch.Tensor(torch.randn((1,) + input_shape))
-        output_t = encoder_net(input_t)[0]
-        emb_size = output_t.nelement()
+        encoder_input_shape = (3, image_size, image_size)
+        encoder_output = \
+            utils.get_network_output(encoder_net, encoder_input_shape)
+        emb_size = encoder_output[0].nelement()
 
         embedding_net = RealNVP(emb_size=emb_size) \
             if mode in ["ae_nf", "vae_nf"] \
             else None
 
         head_kwargs_ = {
-            "decoder": AEDecoder(filters=encoder_net.filters, **decoder_params)
+            "decoder": AEDecoder(
+                filters=encoder_net.filters, **decoder_params
+            )
         }
         for key, value in heads_params_.items():
             head_kwargs_[key] = nn.Sequential(
-                Flatten(),
-                nn.Linear(emb_size, value, bias=True)
+                Flatten(), nn.Linear(emb_size, value, bias=True)
             )
         head_nets = nn.ModuleDict(head_kwargs_)
 

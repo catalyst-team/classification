@@ -73,7 +73,8 @@ class AECriterionCallback(CriterionCallback):
         log_scale = state.output[self.log_scale_key]
         if loc is not None and log_scale is not None:
             kld = -0.5 * torch.mean(
-                1 + log_scale - loc.pow(2) - log_scale.exp())
+                1 + log_scale - loc.pow(2) - log_scale.exp()
+            )
             loss += kld * self.kld_regularization
 
         logprob = state.output[self.logprob_key]
