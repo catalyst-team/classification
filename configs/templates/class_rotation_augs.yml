@@ -1,0 +1,148 @@
+model_params:
+  image_size: &image_size {{ max_image_size }}
+  heads_params:
+    logits: &num_classes {{ num_classes }}
+    rotation_logits: &num_rotations 8
+    class_rotation_logits: &num_class_rotations {{ num_classes * 8 }}
+    flare_logits: &num_flares 2
+    blur_logits: &num_blures 8  #  9 - 3 + 1 + 1
+
+args:
+  expdir: {{ expdir }}
+
+stages:
+  state_params:
+    main_metric: &reduce_metric  auc_class/_mean
+    minimize_metric: False
+
+  data_params:
+    num_workers: {{ num_workers }}
+    batch_size: {{ batch_size }}
+    per_gpu_scaling: True
+    image_size: *image_size
+    one_hot_classes: *num_classes
+    balance_strategy: {{ balance_strategy }}
+    in_csv_train: {{ dataset_path }}/dataset_train.csv
+    in_csv_valid: {{ dataset_path }}/dataset_valid.csv
+    datapath: {{ dataset_path }}/images
+
+  criterion_params:
+    _key_value: True
+
+    class:
+      criterion: FocalLossMultiClass
+#    ae:
+#      criterion: MSELoss
+    rotation:
+      criterion: CrossEntropyLoss
+    class_rotation:
+      criterion: CrossEntropyLoss  # FocalLossMultiClass
+    flare:
+      criterion: CrossEntropyLoss
+    blur:
+      criterion: CrossEntropyLoss
+
+  callbacks_params:
+    loss_class:
+      callback: CriterionCallback
+      input_key: targets
+      output_key: logits
+      prefix: loss_class
+      criterion_key: class
+#    loss_ae:
+#      callback: AECriterionCallback
+#      input_key: image
+#      output_key: decoder
+#      prefix: loss_ae
+#      criterion_key: ae
+#      loc_key: embeddings_loc
+#      log_scale_key: embeddings_log_scale
+#      kld_regularization: 1.0
+#      logprob_key: embeddings_logprob
+#      logprob_regularization: 0.001
+    loss_rotation:
+      callback: CriterionCallback
+      input_key: rotation_factor
+      output_key: rotation_logits
+      prefix: loss_rotation
+      criterion_key: rotation
+    loss_class_rotation:
+      callback: CriterionCallback
+      input_key: class_rotation_targets
+      output_key: class_rotation_logits
+      prefix: loss_class_rotation
+      criterion_key: class_rotation
+    loss_flare:
+      callback: CriterionCallback
+      input_key: flare_factor
+      output_key: flare_logits
+      prefix: loss_flare
+      criterion_key: flare
+    loss_blur:
+      callback: CriterionCallback
+      input_key: blur_factor
+      output_key: blur_logits
+      prefix: loss_blur
+      criterion_key: blur
+
+    accuracy_class:
+      callback: AccuracyCallback
+      input_key: targets
+      output_key: logits
+      prefix: accuracy_class
+      num_classes: *num_classes
+    auc_class:
+      callback: AUCCallback
+      input_key: targets_one_hot
+      output_key: logits
+      prefix: auc_class
+      num_classes: *num_classes
+    cm_class:
+      callback: ConfusionMatrixCallback
+      input_key: targets
+      output_key: logits
+      prefix: cm_class
+      num_classes: *num_classes
+
+    accuracy_rotation:
+      callback: AccuracyCallback
+      input_key: rotation_factor
+      output_key: rotation_logits
+      prefix: accuracy_rotation
+      accuracy_args: [1]
+    cm_rotation:
+      callback: ConfusionMatrixCallback
+      input_key: rotation_factor
+      output_key: rotation_logits
+      prefix: cm_rotation
+      num_classes: *num_rotations
+
+    accuracy_class_rotation:
+      callback: AccuracyCallback
+      input_key: class_rotation_targets
+      output_key: class_rotation_logits
+      prefix: accuracy_class_rotation
+      accuracy_args: *num_class_rotations
+
+
+    accuracy_flare:
+      callback: AccuracyCallback
+      input_key: flare_factor
+      output_key: flare_logits
+      prefix: accuracy_flare
+      accuracy_args: [1]
+
+    accuracy_blur:
+      callback: AccuracyCallback
+      input_key: blur_factor
+      output_key: blur_logits
+      prefix: accuracy_blur
+      accuracy_args: [1]
+
+    optimizer:
+      callback: OptimizerCallback
+    scheduler:
+      callback: SchedulerCallback
+      reduce_metric: *reduce_metric
+    saver:
+      callback: CheckpointCallback

@@ -35,8 +35,8 @@ class Experiment(ConfigExperiment):
     def get_transforms(
         stage: str = None,
         mode: str = None,
-        image_size=224,
-        one_hot_classes=None
+        image_size: int = 224,
+        one_hot_classes: int = None
     ):
         pre_transform_fn = pre_transforms(image_size=image_size)
 
@@ -85,8 +85,9 @@ class Experiment(ConfigExperiment):
                     ),
                     Augmentor(
                         dict_key="image",
-                        augment_fn=lambda x: post_transform_fn(image=x)["image"
-                                                                        ]
+                        augment_fn=(
+                            lambda x: post_transform_fn(image=x)["image"]
+                        )
                     )
                 ]
             )
@@ -117,7 +118,8 @@ class Experiment(ConfigExperiment):
         folds_seed: int = 42,
         n_folds: int = 5,
         one_hot_classes: int = None,
-        image_size: int = 224
+        image_size: int = 224,
+        balance_strategy: str = "upsample"
     ):
         datasets = collections.OrderedDict()
         tag2class = json.load(open(tag2class)) \
@@ -179,7 +181,9 @@ class Experiment(ConfigExperiment):
                 )
                 if mode == "train":
                     labels = [x["class"] for x in source]
-                    sampler = BalanceClassSampler(labels, mode="upsampling")
+                    sampler = BalanceClassSampler(
+                        labels, mode=balance_strategy
+                    )
                     dataset = {"dataset": dataset, "sampler": sampler}
                 datasets[mode] = dataset
 
