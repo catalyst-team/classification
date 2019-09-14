@@ -54,11 +54,11 @@ class Experiment(ConfigExperiment):
             result = DictTransformCompose(
                 [
                     Augmentor(
-                        dict_key="features",
+                        dict_key="image",
                         augment_fn=lambda x: pre_transform_fn(image=x)["image"]
                     ),
                     FlareMixin(
-                        input_key="features",
+                        input_key="image",
                         output_key="flare_factor",
                         sunflare_params={
                             "flare_roi": (0, 0, 1, 1),
@@ -69,13 +69,13 @@ class Experiment(ConfigExperiment):
                         }
                     ),
                     RotateMixin(
-                        input_key="features",
+                        input_key="image",
                         output_key="rotation_factor",
                         targets_key="targets",
                         one_hot_classes=one_hot_classes
                     ),
                     BlurMixin(
-                        input_key="features",
+                        input_key="image",
                         output_key="blur_factor",
                         blur_min=3,
                         blur_max=9,
@@ -84,7 +84,7 @@ class Experiment(ConfigExperiment):
                         ]
                     ),
                     Augmentor(
-                        dict_key="features",
+                        dict_key="image",
                         augment_fn=(
                             lambda x: post_transform_fn(image=x)["image"]
                         )
@@ -94,7 +94,7 @@ class Experiment(ConfigExperiment):
         elif mode in ["infer"]:
             result_fn = Compose([pre_transform_fn, post_transform_fn])
             result = Augmentor(
-                dict_key="features",
+                dict_key="image",
                 augment_fn=lambda x: result_fn(image=x)["image"]
             )
         else:
@@ -142,7 +142,7 @@ class Experiment(ConfigExperiment):
 
         open_fn = [
             ImageReader(
-                input_key="filepath", output_key="features", datapath=datapath
+                input_key="filepath", output_key="image", datapath=datapath
             ),
             ScalarReader(
                 input_key="class",

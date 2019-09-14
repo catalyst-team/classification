@@ -11,4 +11,4 @@ except ImportError:
 
 class ModelRunner(Runner):
     def __init__(self):
-        super().__init__(output_key=None)
+        super().__init__(input_key="image", output_key=None)
