@@ -10,7 +10,6 @@ class EmbeddingsCriterionCallback(CriterionCallback):
         output_key: str = "logits",
         prefix: str = "embeddings_loss",
         criterion_key: str = None,
-        loss_key: str = None,
         embeddings_key: str = "embeddings",
         emb_l2_reg: int = -1,
     ):
@@ -19,7 +18,6 @@ class EmbeddingsCriterionCallback(CriterionCallback):
             output_key=output_key,
             prefix=prefix,
             criterion_key=criterion_key,
-            loss_key=loss_key
         )
         self.embeddings_key = embeddings_key
         self.emb_l2_reg = emb_l2_reg
@@ -44,7 +42,6 @@ class AECriterionCallback(CriterionCallback):
         output_key: str = "logits",
         prefix: str = "embeddings_loss",
         criterion_key: str = None,
-        loss_key: str = None,
         loc_key: str = "embeddings_loc",
         log_scale_key: str = "embeddings_log_scale",
         kld_regularization: float = 1,
@@ -56,7 +53,6 @@ class AECriterionCallback(CriterionCallback):
             output_key=output_key,
             prefix=prefix,
             criterion_key=criterion_key,
-            loss_key=loss_key
         )
         self.loc_key = loc_key
         self.log_scale_key = log_scale_key

@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.com/catalyst-team/classification.svg?branch=master)](https://travis-ci.com/catalyst-team/classification)
+[![Telegram](./pics/telegram.svg)](https://t.me/catalyst_team)
+[![Gitter](https://badges.gitter.im/catalyst-team/community.svg)](https://gitter.im/catalyst-team/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Slack](./pics/slack.svg)](https://opendatascience.slack.com/messages/CGK4KQBHD)
+[![Donate](https://raw.githubusercontent.com/catalyst-team/catalyst-pics/master/third_party_pics/patreon.png)](https://www.patreon.com/catalyst_team)
+
 # Catalyst.Classification & Autolabel
 
 Framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
@@ -185,6 +191,11 @@ catalyst-dl run --config=configs/exp_splits_focal.yml --verbose
 catalyst-dl run --config=configs/exp_splits_augs.yml --verbose
 ```
 
+To use WandbRunner instead of usual runner add `USE_WANDB=1`, like
+```bash
+USE_WANDB=1 catalyst-dl run --config=<you choose> --verbose
+```
+
 #### Run in docker:
 In docker run config of experiment is setting by `-e "RUN_CONFIG=exp_splits.yml"`:
 ```bash
@@ -192,6 +203,7 @@ export LOGDIR=$(pwd)/logs/classification
 docker run -it --rm --shm-size 8G --runtime=nvidia \
    -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
    -e "CUDA_VISIBLE_DEVICES=0" \
+   -e "USE_WANDB=1" \
    -e "LOGDIR=/logdir" \
    -e "RUN_CONFIG=exp_splits.yml"
    catalyst-classification bash bin/run_model.sh

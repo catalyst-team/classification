@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 wget -P ./data https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz
 tar -xvf ./data/mnist.tar.gz -C ./data
