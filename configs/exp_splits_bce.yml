@@ -1,5 +1,6 @@
 model_params:
   model: MultiHeadNet
+  image_size: 224
   encoder_params:
     arch: resnet18
     pretrained: True

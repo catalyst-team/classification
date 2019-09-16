@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 wget -P ./data https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz
 tar -xvf ./data/mnist.tar.gz -C ./data
@@ -24,7 +25,7 @@ catalyst-dl run \
     --stages/stage2=None:str \
     --stages/infer=None:str
 python -c """
-data = open('./logs/classification/metrics.txt', 'r').readlines()
+data = open('./logs/classification/log.txt', 'r').readlines()
 assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < float(data[1].rsplit('embeddings_loss=', 1)[-1][:6])
 assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < 2.2
 """
@@ -34,7 +35,7 @@ catalyst-dl run \
     --stages/stage2=None:str \
     --stages/infer=None:str
 python -c """
-data = open('./logs/classification_bce/metrics.txt', 'r').readlines()
+data = open('./logs/classification_bce/log.txt', 'r').readlines()
 assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < float(data[1].rsplit('embeddings_loss=', 1)[-1][:6])
 assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < 0.55
 """
@@ -44,7 +45,7 @@ catalyst-dl run \
     --stages/stage2=None:str \
     --stages/infer=None:str
 python -c """
-data = open('./logs/classification_focal/metrics.txt', 'r').readlines()
+data = open('./logs/classification_focal/log.txt', 'r').readlines()
 assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < float(data[1].rsplit('embeddings_loss=', 1)[-1][:6])
 assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < 0.55
 """
@@ -54,7 +55,7 @@ catalyst-dl run \
     --stages/stage2=None:str \
     --stages/infer=None:str
 python -c """
-data = open('./logs/classification_augs/metrics.txt', 'r').readlines()
+data = open('./logs/classification_augs/log.txt', 'r').readlines()
 assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < float(data[1].rsplit('loss_class_rotation=', 1)[-1][:6])
 assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < 4.4
 """

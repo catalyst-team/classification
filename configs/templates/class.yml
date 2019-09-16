@@ -49,6 +49,13 @@ stages:
 #      logprob_key: embeddings_logprob
 #      logprob_regularization: 0.001
 
+## uncomment `loss_aggregator` if you use several losses
+#    loss_aggregator:
+#      callback: CriterionAggregatorCallback
+#      prefix: loss
+#      loss_aggregate_fn: "mean" # or "sum"
+#      multiplier: 1.0 # scale factor for the aggregated loss
+
     accuracy_class:
       callback: AccuracyCallback
       input_key: targets

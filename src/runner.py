@@ -1,12 +1,14 @@
-from typing import Mapping, Any
-
 try:
-    from catalyst.dl import WandbRunner as Runner
+    import os
+
+    if os.environ.get("USE_WANDB", "1") == "1":
+        from catalyst.dl import SupervisedWandbRunner as Runner
+    else:
+        from catalyst.dl import SupervisedRunner as Runner
 except ImportError:
-    from catalyst.dl import Runner
+    from catalyst.dl import SupervisedRunner as Runner
 
 
 class ModelRunner(Runner):
-    def predict_batch(self, batch: Mapping[str, Any]):
-        output = self.model(batch["image"])
-        return output
+    def __init__(self):
+        super().__init__(input_key="image", output_key=None)

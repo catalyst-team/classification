@@ -49,6 +49,7 @@ stages:
       output_key: logits
       prefix: loss_class
       criterion_key: class
+      multiplier: 1.0 # scale factor for this loss
 #    loss_ae:
 #      callback: AECriterionCallback
 #      input_key: image
@@ -60,30 +61,41 @@ stages:
 #      kld_regularization: 1.0
 #      logprob_key: embeddings_logprob
 #      logprob_regularization: 0.001
+#      multiplier: 1.0 # scale factor for this loss
     loss_rotation:
       callback: CriterionCallback
       input_key: rotation_factor
       output_key: rotation_logits
       prefix: loss_rotation
       criterion_key: rotation
+      multiplier: 1.0 # scale factor for this loss
     loss_class_rotation:
       callback: CriterionCallback
       input_key: class_rotation_targets
       output_key: class_rotation_logits
       prefix: loss_class_rotation
       criterion_key: class_rotation
+      multiplier: 1.0 # scale factor for this loss
     loss_flare:
       callback: CriterionCallback
       input_key: flare_factor
       output_key: flare_logits
       prefix: loss_flare
       criterion_key: flare
+      multiplier: 1.0 # scale factor for this loss
     loss_blur:
       callback: CriterionCallback
       input_key: blur_factor
       output_key: blur_logits
       prefix: loss_blur
       criterion_key: blur
+      multiplier: 1.0 # scale factor for this loss
+
+    loss_aggregator:
+      callback: CriterionAggregatorCallback
+      prefix: &aggregated_loss loss
+      loss_aggregate_fn: "mean" # or "sum"
+      multiplier: 1.0 # scale factor for the aggregated loss
 
     accuracy_class:
       callback: AccuracyCallback
@@ -141,6 +153,7 @@ stages:
 
     optimizer:
       callback: OptimizerCallback
+      loss_key: *aggregated_loss
     scheduler:
       callback: SchedulerCallback
       reduce_metric: *reduce_metric
