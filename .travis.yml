@@ -25,7 +25,6 @@ jobs:
       install:
         - *requirements_dl
         - pip install flake8 flake8-quotes yapf
-        - pip install -U pytest
       script:
         - make check-style
 
