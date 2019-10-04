@@ -4,22 +4,12 @@
 [![Slack](./pics/slack.svg)](https://opendatascience.slack.com/messages/CGK4KQBHD)
 [![Donate](https://raw.githubusercontent.com/catalyst-team/catalyst-pics/master/third_party_pics/patreon.png)](https://www.patreon.com/catalyst_team)
 
-# Catalyst.Classification & Autolabel
+# Catalyst.Classification
 
-Framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
-
-The framework also provide tools to:
- - create KNN index model
- - create and visualize embeddings
- - find best starting learning rate
- - plot grid search metrics and compare different approaches
- - perform autolabel
-
-## 1. Classification
-
-You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework.
+You will learn how to build image classification pipeline with transfer learning using the Catalyst framework.
 
 ### Goals
+- 
 - FineTune ResnetEncoder
 - Train ResnetEncoder with different loss functions for image classification
 - Train MultiHeadNet for "multilabel" image classification with augmentations prediction
@@ -75,21 +65,6 @@ catalyst.classification/data/
 #### For your dataset
 ```bash
 ln -s /path/to/your_dataset $(pwd)/data/dataset
-```
-
-##### Fast&Furious: raw data → production-ready model
-```bash
-CUDA_VISIBLE_DEVICES=0 \
-CUDNN_BENCHMARK="True" \
-CUDNN_DETERMINISTIC="True" \
-WORKDIR=./logs \
-DATADIR=./data/dataset \
-MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
-BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
-CONFIG_TEMPLATE=./configs/templates/class.yml \
-NUM_WORKERS=4 \
-BATCH_SIZE=256 \
-bash ./bin/catalyst-classification-pipeline.sh
 ```
 
 ### 1.3 Process the data

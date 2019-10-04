@@ -1,0 +1,65 @@
+model_params:
+  image_size: &image_size {{ max_image_size }}
+  heads_params:
+    logits: &num_classes {{ num_classes }}
+
+args:
+  expdir: {{ expdir }}
+
+stages:
+  state_params:
+    main_metric: &reduce_metric  auc_class/_mean
+    minimize_metric: False
+
+  data_params:
+    num_workers: {{ num_workers }}
+    batch_size: {{ batch_size }}
+    per_gpu_scaling: True
+    image_size: *image_size
+    one_hot_classes: *num_classes
+    balance_strategy: {{ balance_strategy }}
+    in_csv_train: {{ dataset_path }}/dataset_train.csv
+    in_csv_valid: {{ dataset_path }}/dataset_valid.csv
+    datapath: {{ dataset_path }}/images
+
+  criterion_params:
+    _key_value: True
+
+    class:
+      criterion: BCEWithLogits
+
+  callbacks_params:
+    loss_class:
+      callback: CriterionCallback
+      input_key: targets
+      output_key: logits
+      prefix: loss_class
+      criterion_key: class
+
+    accuracy_class:
+      callback: AccuracyCallback
+      input_key: targets
+      output_key: logits
+      prefix: accuracy_class
+      num_classes: *num_classes
+    auc_class:
+      callback: AUCCallback
+      input_key: targets_one_hot
+      output_key: logits
+      prefix: auc_class
+      num_classes: *num_classes
+    cm_class:
+      callback: ConfusionMatrixCallback
+      input_key: targets
+      output_key: logits
+      prefix: cm_class
+      num_classes: *num_classes
+
+    optimizer:
+      callback: OptimizerCallback
+      loss_key: loss_class
+    scheduler:
+      callback: SchedulerCallback
+      reduce_metric: *reduce_metric
+    saver:
+      callback: CheckpointCallback

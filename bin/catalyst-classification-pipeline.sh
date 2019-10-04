@@ -150,7 +150,7 @@ cp -r ./configs/_common.yml $CONFIG_DIR/_common.yml
 
 catalyst-dl run \
     -C $CONFIG_DIR/_common.yml $CONFIG_DIR/config.yml \
-    --logdir $LOGDIR
+    --logdir $LOGDIR $*
 
 
 # ---- model tracing

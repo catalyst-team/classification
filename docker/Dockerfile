@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY requirements/requirements_all.txt /workspace/requirements.txt
+COPY requirements/requirements_min.txt /workspace/requirements.txt
 
 RUN pip install -r /workspace/requirements.txt --no-cache-dir
 
