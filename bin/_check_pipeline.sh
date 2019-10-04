@@ -26,8 +26,17 @@ import pathlib
 from safitty import Safict
 
 folder = list(pathlib.Path('./logs/').glob('logdir-*'))[0]
-metrics = metrics=Safict.load(f'{folder}/checkpoints/_metrics.json')
-assert metrics.get('best', 'loss_class') < 0.5
-assert metrics.get('best', 'auc_class/_mean') > 0.85
-assert metrics.get('best', 'accuracy_class01') > 80
+metrics = metrics = Safict.load(f'{folder}/checkpoints/_metrics.json')
+
+loss_class = metrics.get('best', 'loss_class')
+auc_class = metrics.get('best', 'auc_class/_mean')
+accuracy_class01 = metrics.get('best', 'accuracy_class01')
+
+print(loss_class)
+print(auc_class)
+print(accuracy_class01)
+
+assert loss_class < 0.5
+assert auc_class > 0.85
+assert accuracy_class01 > 80
 """
