@@ -38,5 +38,5 @@ print(accuracy_class01)
 
 assert loss_class < 0.5
 assert auc_class > 0.85
-assert accuracy_class01 > 80
+assert accuracy_class01 > 75
 """
