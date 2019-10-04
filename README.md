@@ -30,24 +30,31 @@ make classification
 ```
 
 ### 1.2 Get Dataset
-![MNIST dataset example](/images/dataset_sample.png "Mnist dataset example")
 
-Get the [dataset example](https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz) and unpack it to `data` folder:
 ```bash
-wget -P ./data/ https://www.dropbox.com/s/wviqz4g55kl4zft/trainingSet.tar.gz
-tar -xvf ./data/trainingSet.tar.gz -C ./data
-mv ./data/trainingSet ./data/dataset
-```
-Or get the full MNIST dataset (4200 jpgs) from [kaggle competition.](https://www.kaggle.com/scolianni/mnistasjpg) 
-```bash
-wget -P ./data/ https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz
-tar -xvf ./data/mnist.tar.gz -C ./data
-mv ./data/mnist ./data/dataset
+if dataset == "ants_bees":
+    wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
+    tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
+    mv ants_bees_cleared_190806 ./data/origin
+elif dataset == "flowers":
+    # https://www.kaggle.com/alxmamaev/flowers-recognition
+    wget https://www.dropbox.com/s/lwcvy4eb68drvs3/flowers.tar.gz
+    tar -xf flowers.tar.gz &>/dev/null
+    mv flowers ./data/origin
+elif dataset == "dogs":
+    # https://www.kaggle.com/jessicali9530/stanford-dogs-dataset
+    wget http://vision.stanford.edu/aditya86/ImageNetDogs/images.tar
+    tar -xf images.tar &>/dev/null
+elif dataset == "artworks":
+    # https://www.kaggle.com/ikarus777/best-artworks-of-all-time
+    wget https://www.dropbox.com/s/ln4ot1fu2sgtgvg/artworks.tar.gz
+    tar -xf artworks.tar.gz &>/dev/null
+    mv artworks ./data/origin
 ```
 Final folder structure with training data:
 ```bash
 catalyst.classification/data/
-    dataset/
+    origin/
         0/
             ...
         1/
@@ -59,7 +66,7 @@ catalyst.classification/data/
 
 #### For your dataset
 ```bash
-ln -s /path/to/your_dataset $(pwd)/data/dataset
+ln -s /path/to/your_dataset $(pwd)/data/origin
 ```
 
 ### 1.3 Process the data

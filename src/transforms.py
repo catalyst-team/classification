@@ -1,10 +1,9 @@
 import cv2
 
 from albumentations import (
-    Compose, LongestMaxSize, PadIfNeeded,
-    Normalize, HueSaturationValue, ShiftScaleRotate, RandomGamma,
-    IAAPerspective, JpegCompression, ToGray, ChannelShuffle, RGBShift, CLAHE,
-    RandomBrightnessContrast, Cutout, OneOf
+    Compose, LongestMaxSize, PadIfNeeded, Normalize, HueSaturationValue,
+    ShiftScaleRotate, RandomGamma, IAAPerspective, JpegCompression, ToGray,
+    ChannelShuffle, RGBShift, CLAHE, RandomBrightnessContrast, Cutout, OneOf
 )
 from albumentations.torch import ToTensor
 

@@ -3,26 +3,14 @@
 # Cause the script to exit if a single command fails
 set -eo pipefail
 
-is_submodule() {
-    (cd "$(git rev-parse --show-toplevel)/.." && git rev-parse --is-inside-work-tree) | grep -q true
-}
-
 # this stops git rev-parse from failing if we run this from the .git directory
 builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
 
 ROOT="$(git rev-parse --show-toplevel)"
 builtin cd "$ROOT" || exit 1
 
-if is_submodule; then
-    # Add the upstream branch if it doesn't exist
-    if ! [[ -e "$ROOT/../.git/modules/catalyst/refs/remotes/upstream" ]]; then
-        git remote add 'upstream' 'https://github.com/catalyst-team/classification'
-    fi
-else
-    # Add the upstream branch if it doesn't exist
-    if ! [[ -e "$ROOT/.git/refs/remotes/upstream" ]]; then
-        git remote add 'upstream' 'https://github.com/catalyst-team/classification'
-    fi
+if ! [[ -e "$ROOT/.git/refs/remotes/upstream" ]]; then
+    git remote add 'upstream' 'https://github.com/catalyst-team/classification'
 fi
 
 
@@ -63,11 +51,11 @@ format_changed() {
 
 # Format all files, and print the diff to stdout for travis.
 format_all() {
-    yapf --diff "${YAPF_FLAGS[@]}" "${YAPF_EXCLUDES[@]}" ./**/**/*.py
+    yapf --diff "${YAPF_FLAGS[@]}" "${YAPF_EXCLUDES[@]}" ./**/*.py
 }
 
 format_all_in_place() {
-    yapf --in-place "${YAPF_FLAGS[@]}" "${YAPF_EXCLUDES[@]}" ./**/**/*.py
+    yapf --in-place "${YAPF_FLAGS[@]}" "${YAPF_EXCLUDES[@]}" ./**/*.py
 }
 
 # This flag formats individual files. --files *must* be the first command line

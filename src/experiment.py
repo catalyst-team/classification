@@ -40,10 +40,10 @@ class Experiment(ConfigExperiment):
         pre_transform_fn = pre_transforms(image_size=image_size)
 
         if mode == "train":
-            post_transform_fn = Compose([
-                hard_transform(image_size=image_size),
-                post_transforms()
-            ])
+            post_transform_fn = Compose(
+                [hard_transform(image_size=image_size),
+                 post_transforms()]
+            )
         elif mode in ["valid", "infer"]:
             post_transform_fn = post_transforms()
         else:
@@ -51,8 +51,7 @@ class Experiment(ConfigExperiment):
 
         result_fn = Compose([pre_transform_fn, post_transform_fn])
         result = Augmentor(
-            dict_key="image",
-            augment_fn=lambda x: result_fn(image=x)["image"]
+            dict_key="image", augment_fn=lambda x: result_fn(image=x)["image"]
         )
 
         return result
