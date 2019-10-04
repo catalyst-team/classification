@@ -1,11 +1,13 @@
 group: travis_latest
 language: python
 cache: pip
-dist: xenial
+
+branches:
+  only:
+  - master
 
 python:
   - 3.6
-  # - 3.7
 matrix:
   include:
     - python: 3.6
@@ -14,19 +16,21 @@ stages:
   - Tests
   - Examples
 
-install: &requirements
+install_dl: &requirements_dl
   pip install -r requirements/requirements_min.txt
 
 jobs:
   include:
     - stage: Tests
       install:
-        - *requirements
+        - *requirements_dl
         - pip install flake8 flake8-quotes yapf
         - pip install -U pytest
-        script:
-          - make check-style
+      script:
+        - make check-style
+
     - stage: Examples
-      install: *requirements
+      name: "Examples DL"
+      install: *requirements_dl
       script:
         - bash ./bin/_check_pipeline.sh
