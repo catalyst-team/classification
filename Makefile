@@ -6,9 +6,9 @@ check-style:
 codestyle:
 	bash ./bin/_check_codestyle.sh
 
-classification: requirements.txt
+docker-build: ./requirements/requirements_min.txt
 	docker build -t catalyst-classification:latest . -f docker/Dockerfile
 
-clean:
+docker-clean:
 	rm -rf build/
 	docker rmi -f catalyst-classification:latest

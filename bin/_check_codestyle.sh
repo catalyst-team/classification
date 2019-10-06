@@ -32,5 +32,3 @@ if [[ -f ${skip_inplace} ]]; then
 else
     bash ./bin/yapf.sh --all-in-place
 fi
-
-pytest

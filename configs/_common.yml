@@ -1,11 +1,4 @@
 model_params:
-#  model: MultiHeadNetAE
-#  mode: "ae"
-#  encoder_params:
-#    z_dim: &z_dim 16
-#  decoder_params:
-#    z_dim: *z_dim
-
   model: MultiHeadNet
   encoder_params:
     arch: resnet18
@@ -17,10 +10,10 @@ model_params:
       stride: 7           # [14, 7]
   embedding_net_params:
     hiddens: [512]
-    activation_fn: ReLU
+    layer_fn: {"module": "Linear", "bias": False}
     norm_fn: BatchNorm1d
-    bias: false
-    dropout: 0.5
+    activation_fn: ReLU
+    dropout_fn: Dropout
     residual: "soft"
 
 stages:

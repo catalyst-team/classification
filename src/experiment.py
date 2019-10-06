@@ -13,8 +13,7 @@ from catalyst.dl import ConfigExperiment
 from catalyst.utils.pandas import read_csv_data
 
 from .transforms import pre_transforms, post_transforms, hard_transform, \
-    RotateMixin, BlurMixin, FlareMixin, \
-    DictTransformCompose, Compose
+    Compose
 
 
 class Experiment(ConfigExperiment):
@@ -50,55 +49,10 @@ class Experiment(ConfigExperiment):
         else:
             raise NotImplementedError()
 
-        if mode in ["train", "valid"]:
-            result = DictTransformCompose(
-                [
-                    Augmentor(
-                        dict_key="image",
-                        augment_fn=lambda x: pre_transform_fn(image=x)["image"]
-                    ),
-                    FlareMixin(
-                        input_key="image",
-                        output_key="flare_factor",
-                        sunflare_params={
-                            "flare_roi": (0, 0, 1, 1),
-                            "num_flare_circles_lower": 1,
-                            "num_flare_circles_upper": 4,
-                            "src_radius": image_size // 4,
-                            "p": 0.5
-                        }
-                    ),
-                    RotateMixin(
-                        input_key="image",
-                        output_key="rotation_factor",
-                        targets_key="targets",
-                        one_hot_classes=one_hot_classes
-                    ),
-                    BlurMixin(
-                        input_key="image",
-                        output_key="blur_factor",
-                        blur_min=3,
-                        blur_max=9,
-                        blur=[
-                            "Blur",
-                        ]
-                    ),
-                    Augmentor(
-                        dict_key="image",
-                        augment_fn=(
-                            lambda x: post_transform_fn(image=x)["image"]
-                        )
-                    )
-                ]
-            )
-        elif mode in ["infer"]:
-            result_fn = Compose([pre_transform_fn, post_transform_fn])
-            result = Augmentor(
-                dict_key="image",
-                augment_fn=lambda x: result_fn(image=x)["image"]
-            )
-        else:
-            raise NotImplementedError()
+        result_fn = Compose([pre_transform_fn, post_transform_fn])
+        result = Augmentor(
+            dict_key="image", augment_fn=lambda x: result_fn(image=x)["image"]
+        )
 
         return result
 

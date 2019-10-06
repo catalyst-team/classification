@@ -1,61 +1,42 @@
 #!/usr/bin/env bash
 set -e
 
-wget -P ./data https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz
-tar -xvf ./data/mnist.tar.gz -C ./data
-mv ./data/mnist ./data/dataset
+mkdir -p data
 
-catalyst-data tag2label \
-  --in-dir=./data/dataset \
-  --out-dataset=./data/dataset_raw.csv \
-  --out-labeling=./data/tag2cls.json
-catalyst-data split-dataframe \
-  --in-csv=./data/dataset_raw.csv \
-  --tag2class=./data/tag2cls.json \
-  --tag-column=tag \
-  --class-column=class \
-  --n-folds=5 \
-  --train-folds=0,1,2,3 \
-  --out-csv=./data/dataset.csv
+wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
+tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
+mv ants_bees_cleared_190806 ./data/origin
 
-export NUM_CLASSES=10; bash ./bin/prepare_configs.sh
+USE_WANDB=0 \
+CUDA_VISIBLE_DEVICES="" \
+CUDNN_BENCHMARK="True" \
+CUDNN_DETERMINISTIC="True" \
+WORKDIR=./logs \
+DATADIR=./data/origin \
+MAX_IMAGE_SIZE=224 \
+BALANCE_STRATEGY=64 \
+CONFIG_TEMPLATE=./configs/templates/ce.yml \
+NUM_WORKERS=0 \
+BATCH_SIZE=64 \
+./bin/catalyst-classification-pipeline.sh --check
 
-catalyst-dl run \
-    --config=configs/exp_splits.yml --check \
-    --stages/stage2=None:str \
-    --stages/infer=None:str
+
 python -c """
-data = open('./logs/classification/log.txt', 'r').readlines()
-assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < float(data[1].rsplit('embeddings_loss=', 1)[-1][:6])
-assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < 2.2
-"""
+import pathlib
+from safitty import Safict
 
-catalyst-dl run \
-    --config=configs/exp_splits_bce.yml --check \
-    --stages/stage2=None:str \
-    --stages/infer=None:str
-python -c """
-data = open('./logs/classification_bce/log.txt', 'r').readlines()
-assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < float(data[1].rsplit('embeddings_loss=', 1)[-1][:6])
-assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < 0.55
-"""
+folder = list(pathlib.Path('./logs/').glob('logdir-*'))[0]
+metrics = metrics = Safict.load(f'{folder}/checkpoints/_metrics.json')
 
-catalyst-dl run \
-    --config=configs/exp_splits_focal.yml --check \
-    --stages/stage2=None:str \
-    --stages/infer=None:str
-python -c """
-data = open('./logs/classification_focal/log.txt', 'r').readlines()
-assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < float(data[1].rsplit('embeddings_loss=', 1)[-1][:6])
-assert float(data[8].rsplit('embeddings_loss=', 1)[-1][:6]) < 0.55
-"""
+loss_class = metrics.get('best', 'loss_class')
+auc_class = metrics.get('best', 'auc_class/_mean')
+accuracy_class01 = metrics.get('best', 'accuracy_class01')
 
-catalyst-dl run \
-    --config=configs/exp_splits_augs.yml --check  \
-    --stages/stage2=None:str \
-    --stages/infer=None:str
-python -c """
-data = open('./logs/classification_augs/log.txt', 'r').readlines()
-assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < float(data[1].rsplit('loss_class_rotation=', 1)[-1][:6])
-assert float(data[8].rsplit('loss_class_rotation=', 1)[-1][:6]) < 4.4
+print(loss_class)
+print(auc_class)
+print(accuracy_class01)
+
+assert loss_class < 0.5
+assert auc_class > 0.85
+assert accuracy_class01 > 75
 """

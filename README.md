@@ -4,37 +4,22 @@
 [![Slack](./pics/slack.svg)](https://opendatascience.slack.com/messages/CGK4KQBHD)
 [![Donate](https://raw.githubusercontent.com/catalyst-team/catalyst-pics/master/third_party_pics/patreon.png)](https://www.patreon.com/catalyst_team)
 
-# Catalyst.Classification & Autolabel
+# Catalyst.Classification
 
-Framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
-
-The framework also provide tools to:
- - create KNN index model
- - create and visualize embeddings
- - find best starting learning rate
- - plot grid search metrics and compare different approaches
- - perform autolabel
-
-## 1. Classification
-
-You will learn how to build image classification pipeline with transfer learning using the "Catalyst" framework.
+You will learn how to build image classification pipeline with transfer learning using the Catalyst framework.
 
 ### Goals
-- FineTune ResnetEncoder
+- Install requirements
+- Get Dataset
+- Process the data with Catalyst.Data
+- FineTune ResnetEncoder with Catalyst Config API
 - Train ResnetEncoder with different loss functions for image classification
-- Train MultiHeadNet for "multilabel" image classification with augmentations prediction
-- Learn embeddings representation
-- Create KNN index model
-- Visualize embeddings with TF.Projector
-- Find best starting lr with LRFinder
-- Plot grid search metrics and compare different approaches
 
 ### 1.1 Install requirements
 
 #### Using local environment: 
 ```bash
-pip install -r requirements/requirements_min.txt  # catalyst only
-pip install -r requirements/requirements_all.txt  # for knn model and tensorflow supoprt
+pip install -r requirements/requirements_min.txt
 ```
 
 #### Using docker:
@@ -45,24 +30,31 @@ make classification
 ```
 
 ### 1.2 Get Dataset
-![MNIST dataset example](/images/dataset_sample.png "Mnist dataset example")
 
-Get the [dataset example](https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz) and unpack it to `data` folder:
 ```bash
-wget -P ./data/ https://www.dropbox.com/s/wviqz4g55kl4zft/trainingSet.tar.gz
-tar -xvf ./data/trainingSet.tar.gz -C ./data
-mv ./data/trainingSet ./data/dataset
-```
-Or get the full MNIST dataset (4200 jpgs) from [kaggle competition.](https://www.kaggle.com/scolianni/mnistasjpg) 
-```bash
-wget -P ./data/ https://www.dropbox.com/s/eeme52kwnvz255d/mnist.tar.gz
-tar -xvf ./data/mnist.tar.gz -C ./data
-mv ./data/mnist ./data/dataset
+if dataset == "ants_bees":
+    wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
+    tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
+    mv ants_bees_cleared_190806 ./data/origin
+elif dataset == "flowers":
+    # https://www.kaggle.com/alxmamaev/flowers-recognition
+    wget https://www.dropbox.com/s/lwcvy4eb68drvs3/flowers.tar.gz
+    tar -xf flowers.tar.gz &>/dev/null
+    mv flowers ./data/origin
+elif dataset == "dogs":
+    # https://www.kaggle.com/jessicali9530/stanford-dogs-dataset
+    wget http://vision.stanford.edu/aditya86/ImageNetDogs/images.tar
+    tar -xf images.tar &>/dev/null
+elif dataset == "artworks":
+    # https://www.kaggle.com/ikarus777/best-artworks-of-all-time
+    wget https://www.dropbox.com/s/ln4ot1fu2sgtgvg/artworks.tar.gz
+    tar -xf artworks.tar.gz &>/dev/null
+    mv artworks ./data/origin
 ```
 Final folder structure with training data:
 ```bash
 catalyst.classification/data/
-    dataset/
+    origin/
         0/
             ...
         1/
@@ -74,22 +66,7 @@ catalyst.classification/data/
 
 #### For your dataset
 ```bash
-ln -s /path/to/your_dataset $(pwd)/data/dataset
-```
-
-##### Fast&Furious: raw data → production-ready model
-```bash
-CUDA_VISIBLE_DEVICES=0 \
-CUDNN_BENCHMARK="True" \
-CUDNN_DETERMINISTIC="True" \
-WORKDIR=./logs \
-DATADIR=./data/dataset \
-MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
-BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
-CONFIG_TEMPLATE=./configs/templates/class.yml \
-NUM_WORKERS=4 \
-BATCH_SIZE=256 \
-bash ./bin/catalyst-classification-pipeline.sh
+ln -s /path/to/your_dataset $(pwd)/data/origin
 ```
 
 ### 1.3 Process the data
@@ -154,7 +131,6 @@ We will perform the following experiments using pre-trained model ResNet-18:
 - Two stages traininig classification using `Softmax`
 - Two stages training "Multilabel" classification using `BCEWithLogitsLoss`
 - Two stages training "Multilabel" classification using `FocalLossMultiClass`
-- Two stages training classification using `CrossEntropyLoss` and with augmentations prediction
 
 #### Config training
 The config allows you to define:
@@ -209,20 +185,6 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification bash bin/run_model.sh
 ```
 
-#### Tensorboard metrics visualization 
-```bash
-CUDA_VISIBLE_DEVICE="" tensorboard --logdir=./logs
-```
-Classification metrics during learning:
-
-<img src="/images/classification_metrics.png" title="classificaton" align="left">
-
-Confusion matrices:
-
-<img src="/images/cm_classes.png" width="350" title="labels confusion matrix" align="left">
-<img src="/images/cm_rotation.png" width="350" title="rotation confusion matrix" align="middle">
-
-
 #### Checkpoints
 Checkpoins of all stages can be found in directory `./logs/classification/checkpoints`
 
@@ -244,197 +206,3 @@ logs/classification/checkpoints//stage2.23.pth	60.4911
 logs/classification/checkpoints//stage2.26.pth	56.6964
 logs/classification/checkpoints//stage2.28.pth	54.6875
 ```
-
-#### Create KNN Index model
-
-Factor-based model PCA reduce dimenshionality of embeddins space, then KNN model is used to calculate the score distance in score space and transform data into a fast indexing structure. 
-
-As a result, we have index model which allow as to implement fast similarity search on a large number of high-dimensional vectors. KNN Index model also allow fast and easy handle out-of-class predictions.
-
-```bash
-export LOGDIR=$(pwd)/logs/classification
-docker run -it --rm --shm-size 8G \
-   -v $(pwd):/workspace/ \
-   -v $LOGDIR:/logdir \
-   -e "LOGDIR=/logdir" \
-   catalyst-classification bash ./bin/run_index.sh
-```
-Out:
-```
-index model creating...
-[==       Loading features       ==]
-[==     Transforming features    ==]
-[ Explained variance ratio: 0.9602 ]
-[==        Saving pipeline       ==]
-[==  Adding features to indexer  ==]
-[==        Creating index        ==]
-[==         Saving index         ==]
-index model testing...
-[==       Loading features       ==]
-[==        Loading index         ==]
-[==      Recall@ 1: 97.44%      ==]
-[==      Recall@ 3: 98.72%      ==]
-[==      Recall@ 5: 100.0%      ==]
-[==      Recall@10: 100.0%      ==]
-```
-
-The result of the work are the following files:
-```bash
-${LOGDIR}/knn.embeddings.bin
-${LOGDIR}/predictions/infer.embeddings.pca.npy 
-${LOGDIR}/pipeline.embeddings.pkl 
-```
-
-### 1.5 TF.Projector and embeddings visualization
-
-#### Embeddings creation
-
-Embeds images from dataset with specified neural net architecture
-```bash
-export LOGDIR=$(pwd)/logs/projector
-docker run -it --rm --shm-size 8G \
-   -v $(pwd):/workspace/ \
-   -v $LOGDIR/embeddings/:/logdir/embeddings/ \
-   -e "LOGDIR=/logdir" \
-   catalyst-classification bash ./bin/run_embeddings.sh
-```
-
-#### Embeddings projection
-
-```bash
-export LOGDIR=$(pwd)/logs/projector
-docker run -it --rm --shm-size 8G \
-   -v $(pwd):/workspace/ \
-   -v $LOGDIR:/logdir  \
-   -e "LOGDIR=/logdir" \
-   catalyst-classification bash ./bin/run_projector.sh
-```
-
-#### Embeddings visualization 
-
-```bash
-export LOGDIR=$(pwd)/logs/projector
-tensorboard --logdir=$LOGDIR/projector
-```
-<img src="/images/projector_2d.png" width="500" title="projector">
-
-### 1.6 Finding best start LR with LrFinder
-Put trainig with callback LRFinder to find the optimal learning rate range for your model and dataset.
-In the config there are:
-- the scale in which the Learning rate increases:  linear or log 
-- final learning rate
-- num steps
-
-```bash
-export LOGDIR=$(pwd)/logs/lrfinder
-docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
-   -e "CUDA_VISIBLE_DEVICES=0" \
-   -e "LOGDIR=/logdir" \
-   catalyst-classification bash ./bin/run_lrfinder.sh
-```
-#### Tensorboard metrics visualization  
-
-```bash
-export LOGDIR=$(pwd)/logs
-tensorboard --logdir=$LOGDIR
-```
-![LRFinder](/images/LRFinder.png "LrFinder")
-
-### 1.7 Grid search visualization
-
-#### Hyperparameters grid search training
-Specifying parameters of trainings including hyperparametres and model parametres you can by one file `./bin/run_grid.sh` configurate and run the sequence of experiments with logging.
-
-```bash
-export BASELOGDIR=$(pwd)/logs/grid
-docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
-   -e "CUDA_VISIBLE_DEVICES=0" \
-   -e "BASELOGDIR=/logdir" \
-   catalyst-classification bash ./bin/run_grid.sh
-```
-
-#### Tensorboard metrics visualization 
-```bash
-tensorboard --logdir=./logs
-```
-Classification metrics during learning:
-
-![grid search](/images/grid_search.png "grid search")
-
-Configs of experiments can be found in directory `./logs/grid/`
-
-
-#### KFold training
-You can by one file `./bin/run_kfold.sh` configurate and run the sequence of kfold trainings.
-
-```bash
-export BASELOGDIR=$(pwd)/logs/classification/kfold
-docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ -v $BASELOGDIR:/logdir/ \
-   -e "CUDA_VISIBLE_DEVICES=0" \
-   -e "BASELOGDIR=/logdir" \
-   catalyst-classification bash ./bin/run_kfold.sh
-```
-#### Tensorboard metrics visualization 
-```bash
-tensorboard --logdir=./logs
-```
-Classification metrics during learning:
-
-![KFold training](/images/kfold.png "KFold training")
-
-## 2. Autolabel
-
-### Goals
-
-The classical way to reduce the amount of unlabeled data by having a trained model would be to run unlabeled dataset through the model and automatically label images with confidence of label prediction above the threshold. Then automatically labeled data pushing in the training process so as to optimize prediction accuracy.
-
-To run the iteration process we need to specify number of iterations `n-trials` and `threshold` of confidence to label image.
-
-- tune ResnetEncoder
-- train MultiHeadNet for image classification
-- predict unlabelled dataset
-- use most confident predictions as true labels
-- repeat
-
-
-### 2.1 Preparation
-
-```bash
-catalyst.classification/data/
-    data_raw/
-        all/
-            ...
-    data_clean/
-        0/
-            ...
-        1/
-            ...
-```
-
-### 2.2 Model training
-
-```bash
-docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ \
-   -e "CUDA_VISIBLE_DEVICES=0" \
-      catalyst-classification bash ./bin/run_autolabel.sh \
-    --data-raw ./data/data_raw/ \
-    --data-clean ./data/data_clean/ \
-    --baselogdir ./logs/autolabel \
-    --n-trials 10 \
-    --threshold 0.8
-```
-
-### 2.3 Results of autolabeling
-Out:
-```
-Predicted: 23 (100.00%)
-...
-Pseudo Lgabeling done. Nothing more to label.
-```
-Logs for trainings visualisation can be found here: `./logs/autolabel` 
-
-Labeled raw data can be found here: `/data/data_clean/dataset.csv`

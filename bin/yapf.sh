@@ -9,7 +9,6 @@ builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
 ROOT="$(git rev-parse --show-toplevel)"
 builtin cd "$ROOT" || exit 1
 
-# Add the upstream branch if it doesn't exist
 if ! [[ -e "$ROOT/.git/refs/remotes/upstream" ]]; then
     git remote add 'upstream' 'https://github.com/catalyst-team/classification'
 fi
