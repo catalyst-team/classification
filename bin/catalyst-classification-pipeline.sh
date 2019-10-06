@@ -23,7 +23,7 @@
 # DATADIR=./data/origin \
 # MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
 # BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
-# CONFIG_TEMPLATE=./configs/templates/class.yml \
+# CONFIG_TEMPLATE=./configs/templates/focal.yml \
 # NUM_WORKERS=4 \
 # BATCH_SIZE=256 \
 # ./bin/catalyst-classification-pipeline.sh
@@ -41,7 +41,7 @@ set -e
 #export CUDNN_BENCHMARK="True"
 #export CUDNN_DETERMINISTIC="True"
 #
-#export CONFIG_TEMPLATE=./configs/templates/class.yml
+#export CONFIG_TEMPLATE=./configs/templates/focal.yml
 #export WORKDIR=./logs
 #export DATADIR=./data/origin
 #export NUM_WORKERS=4
@@ -73,7 +73,7 @@ if [[ -z "$TRACED_METHOD" ]]; then
 fi
 
 if [[ -z "$CONFIG_TEMPLATE" ]]; then
-      CONFIG_TEMPLATE="./configs/templates/class.yml"
+      CONFIG_TEMPLATE="./configs/templates/focal.yml"
 fi
 
 if [[ -z "$DATADIR" ]]; then
