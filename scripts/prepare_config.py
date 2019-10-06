@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # usage:
 # python scripts/prepare_config.py \
-#     --in-template=./configs/templates/class.yml \
+#     --in-template=./configs/templates/focal.yml \
 #     --out-config=./configs/_class.yml \
 #     --expdir=./src \
 #     --dataset-path=./data \
