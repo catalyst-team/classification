@@ -89,8 +89,7 @@ Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start 
 You need to set:
 
 ```bash
-   -v /path/to/your_dataset:/data \ 
-   -e "DATADIR=/data" \ #instead default "DATADIR=./data/origin" 
+   -v /path/to/your_dataset:/data \ #instead default  $(pwd)/data/origin:/data
  ```
  in the script below to start the pipeline.
 
@@ -128,14 +127,14 @@ wandb: (3) Don't visualize my results
 ```bash
 export LOGDIR=$(pwd)/logs
 docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
+   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/  $(pwd)/data/origin:/data \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "USE_WANDB=1" \
    -e "LOGDIR=/logdir" \
    -e "CUDNN_BENCHMARK='True'" \	
    -e "CUDNN_DETERMINISTIC='True'" \	
    -e "WORKDIR=/logdir" \	
-   -e "DATADIR=./data/origin" \	
+   -e "DATADIR=/data" \	
    -e "MAX_IMAGE_SIZE=224" \  	
    -e "BALANCE_STRATEGY=256" \ 	
    -e "CONFIG_TEMPLATE=./configs/templates/ce.yml" \	
