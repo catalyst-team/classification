@@ -83,8 +83,8 @@ or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start 
 You need to set 
 
 ```bash
-   -v /path/to/your_dataset:/data/origin \ 
-   -e "DATADIR=/data/origin" \
+   -v /path/to/your_dataset:/data \ 
+   -e "DATADIR=/data" \ #instead default "DATADIR=./data/origin" 
  ```
  in the script below to start the pipeline.
 
