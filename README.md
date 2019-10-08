@@ -70,17 +70,23 @@ Make sure, that final folder structure with training data:
         class_name_100500/
             ...
 ```
+The easiest way is to move your data:
+```bash
+mv /path/to/your_dataset/* /catalyst.classification/data/origin 
+``` 
+In that way you can run pipeline with defaul settings. 
 
+##### If you still leave data in `/path/to/your_dataset/` 
 ##### In local environment:
 
 ```bash
 ln -s /path/to/your_dataset $(pwd)/data/origin
 ```
-or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
+Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
 
 ##### Using docker
 
-You need to set 
+You need to set:
 
 ```bash
    -v /path/to/your_dataset:/data \ 
