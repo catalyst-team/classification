@@ -22,7 +22,7 @@ pip install -r requirements/requirements_min.txt
 
 #### Using docker:
 
-This creates a build `catalyst-classification` with all needed libraries:
+This creates a build `catalyst-classification` with the necessary libraries:
 ```bash
 make docker-build
 ```
@@ -57,13 +57,10 @@ You can use one of the following datasets
 ```
 
 #### For your dataset
-```bash
-ln -s /path/to/your_dataset $(pwd)/data/origin
-```
+
 Make sure, that final folder structure with training data:
 ```bash
-catalyst.classification/data/
-    origin/
+/path/to/your_dataset/
         class_name_1/
             images
         class_name_2/
@@ -72,6 +69,28 @@ catalyst.classification/data/
         class_name_100500/
             ...
 ```
+The easiest way is to move your data:
+```bash
+mv /path/to/your_dataset/* /catalyst.classification/data/origin 
+``` 
+In that way you can run pipeline with defaul settings. 
+
+##### If you still leave data in `/path/to/your_dataset/` 
+##### In local environment:
+
+```bash
+ln -s /path/to/your_dataset $(pwd)/data/origin
+```
+Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
+
+##### Using docker
+
+You need to set:
+
+```bash
+   -v /path/to/your_dataset:/data \ #instead default  $(pwd)/data/origin:/data
+ ```
+ in the script below to start the pipeline.
 
 ### 1.3 Classification pipeline
 #### Fast&Furious: raw data → production-ready model
@@ -107,14 +126,14 @@ wandb: (3) Don't visualize my results
 ```bash
 export LOGDIR=$(pwd)/logs
 docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ \
+   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/  $(pwd)/data/origin:/data \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "USE_WANDB=1" \
    -e "LOGDIR=/logdir" \
    -e "CUDNN_BENCHMARK='True'" \	
    -e "CUDNN_DETERMINISTIC='True'" \	
    -e "WORKDIR=/logdir" \	
-   -e "DATADIR=./data/origin" \	
+   -e "DATADIR=/data" \	
    -e "MAX_IMAGE_SIZE=224" \  	
    -e "BALANCE_STRATEGY=256" \ 	
    -e "CONFIG_TEMPLATE=./configs/templates/ce.yml" \	
