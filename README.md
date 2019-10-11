@@ -82,7 +82,7 @@ Make sure, that final folder with data has stucture:
 
 * If you still leave data in `/path/to/your_dataset/` 
     * In local environment:
-        * Link
+        * link directory
             ```bash
             ln -s /path/to/your_dataset $(pwd)/data/origin
             ```
