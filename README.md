@@ -62,7 +62,7 @@ You can use one of the following datasets:
 
 ### For your dataset
 
-1. Make sure, that final folder structure with training data:
+1. **Make sure, that final folder structure with training data**:
 ```bash
 /path/to/your_dataset/
         class_name_1/
@@ -73,13 +73,13 @@ You can use one of the following datasets:
         class_name_100500/
             ...
 ```
-2. Location of your data
+2. **Location of your data**
 
 * The easiest way is to move your data:
-```bash
-mv /path/to/your_dataset/* /catalyst.classification/data/origin 
-``` 
-In that way you can run pipeline with default settings. 
+    ```bash
+    mv /path/to/your_dataset/* /catalyst.classification/data/origin 
+    ``` 
+    In that way you can run pipeline with default settings. 
 
 * If you still leave data in `/path/to/your_dataset/` 
     * In local environment:
