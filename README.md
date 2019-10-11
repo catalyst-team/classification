@@ -114,13 +114,6 @@ NUM_WORKERS=4 \
 BATCH_SIZE=256 \	
 bash ./bin/catalyst-classification-pipeline.sh	
 ```
-You can use [W&B](https://www.wandb.com/) account for viaualisation:
-
-```
-wandb: (1) Create a W&B account
-wandb: (2) Use an existing W&B account
-wandb: (3) Don't visualize my results
-```
 
 #### Run in docker:
 
@@ -143,6 +136,27 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    catalyst-classification ./bin/catalyst-classification-pipeline.sh
 ```
 
+#### Visualization of the learning process
+
+You can use [W&B](https://www.wandb.com/) account for viaualisation:
+
+```
+wandb: (1) Create a W&B account
+wandb: (2) Use an existing W&B account
+wandb: (3) Don't visualize my results
+```
+<img src="/pics/w&B_metrics.png" title="w&b classification metrics"  align="left">
+
+
+Also tensorboard can be used for visualisation:
+
+```bash	
+tensorboard --logdir=/catalyst.classification/logs
+```
+<img src="/pics/tf_metrics.png" title="tf classification metrics"  align="left">
+
+#### Configuration
+
 During the pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously.
 Experiments can be performed using pre-trained model ResNet-18 with with the following configs:
 - `ce.yml`  using `CrossEntropyLoss`
@@ -150,13 +164,13 @@ Experiments can be performed using pre-trained model ResNet-18 with with the fol
 - `focal.yml` using `FocalLossMultiClass` Loss
 
 
+
 ## Results
 All results of all experiments can be found locally in logir, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
 
 #### logs 
-* The directory contains all logs of experiment.
-* Metrics also logs can be displayed in the corresponding experiment in your W&B account:
-<img src="/pics/metrics.png" title="classification metrics"  align="left">
+* The directory contains all logs of experiment. 
+* Metrics also logs can be displayed in the corresponding experiment in your W&B account.
 
 #### checkpoints
 *  The directory contains all logs of experiment all checkpoints: best, last, also of all stages.
@@ -166,4 +180,4 @@ All results of all experiments can be found locally in logir, by default `cataly
 *  The directory contains code on which calculations were performed. This is necessary for full complete reproducibility.
 
 #### configs
-*  The directory contains configs on which calculations were performed. This is necessary for full complete reproducibility.
+*  The directory contains configs on which calculations were performed. 
