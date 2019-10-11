@@ -163,21 +163,21 @@ Experiments can be performed using pre-trained model ResNet-18 with with the fol
 - `bce.yml` using `BCEWithLogits` Loss
 - `focal.yml` using `FocalLossMultiClass` Loss
 
-
-
 ## Results
 All results of all experiments can be found locally in logir, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
+
+#### checkpoints
+*  The directory contains all checkpoints: best, last, also of all stages.
+* `best.pth` and `last.pht` can be also found in the corresponding experiment in your W&B account.
+
+#### configs
+*  The directory contains experiment configs for reproducibility.
 
 #### logs 
 * The directory contains all logs of experiment. 
 * Metrics also logs can be displayed in the corresponding experiment in your W&B account.
 
-#### checkpoints
-*  The directory contains all logs of experiment all checkpoints: best, last, also of all stages.
-* `best.pth` and `last.pht` can be also found in the corresponding experiment in your W&B account.
- 
 #### code
 *  The directory contains code on which calculations were performed. This is necessary for full complete reproducibility.
 
-#### configs
-*  The directory contains configs on which calculations were performed. 
+
