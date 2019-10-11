@@ -82,10 +82,11 @@ Make sure, that final folder with data has stucture:
 
 * If you still leave data in `/path/to/your_dataset/` 
     * In local environment:
-        ```bash
-        ln -s /path/to/your_dataset $(pwd)/data/origin
-        ```
-        Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
+        * Link
+            ```bash
+            ln -s /path/to/your_dataset $(pwd)/data/origin
+            ```
+         * Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
 
     * Using docker
 
