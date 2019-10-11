@@ -145,7 +145,7 @@ wandb: (1) Create a W&B account
 wandb: (2) Use an existing W&B account
 wandb: (3) Don't visualize my results
 ```
-<img src="/pics/w&B_metrics.png" title="w&b classification metrics"  align="left">
+<img src="/pics/wandb_metrics.png" title="w&b classification metrics"  align="left">
 
 
 Also tensorboard can be used for visualisation:
