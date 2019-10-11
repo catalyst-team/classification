@@ -33,7 +33,7 @@ make docker-build
 ```bash
 mkdir data
 ```
-You can use one of the following datasets
+You can use one of the following datasets:
 
 * Ant and Bees
 ```bash
