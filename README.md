@@ -174,7 +174,7 @@ Experiments can be performed using pre-trained model ResNet-18 with with the fol
 
 
 ## 4. Results
-All results of all experiments can be found locally in `WORKDIR`, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
+All results of all experiments can be found locally in `WORKDIR`, by default `catalyst.classification/logs`. Results of experiment, for instance `catalyst.classification/logs/logdir-191010-141450-c30c8b84`, contain:
 
 #### checkpoints
 *  The directory contains all checkpoints: best, last, also of all stages.
