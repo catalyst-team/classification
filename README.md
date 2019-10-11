@@ -62,7 +62,7 @@ You can use one of the following datasets:
 
 ###  Prepare your dataset
 
-1. **Data structure**:
+#### Data structure
 Make sure, that final folder with data has stucture:
 ```bash
 /path/to/your_dataset/
@@ -74,7 +74,7 @@ Make sure, that final folder with data has stucture:
         class_name_100500/
             ...
 ```
-2. **Data location**
+#### Data location
 
 * The easiest way is to move your data:
     ```bash
