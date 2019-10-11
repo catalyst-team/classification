@@ -9,10 +9,10 @@
 You will learn how to build image classification pipeline with transfer learning using the Catalyst framework.
 
 ## Goals
-- 1. Install requirements
-- 2. Prepare data
-- 3. Run classification pipeline: raw data → production-ready model
-- 4. Get reproducible results
+1. Install requirements
+2. Prepare data
+3. Run classification pipeline: raw data → production-ready model
+4. Get reproducible results
 
 ## 1 Install requirements
 
