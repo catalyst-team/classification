@@ -80,7 +80,7 @@ Make sure, that final folder with data has stucture:
     ``` 
     In that way you can run pipeline with default settings. 
 
-* If you still leave data in `/path/to/your_dataset/` 
+* If you prefer leave data in `/path/to/your_dataset/` 
     * In local environment:
         * Link directory
             ```bash
