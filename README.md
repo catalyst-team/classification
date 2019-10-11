@@ -12,6 +12,7 @@ You will learn how to build image classification pipeline with transfer learning
 - Install requirements
 - Get Dataset
 - Run classification pipeline: raw data → production-ready model
+- Get reproducible results
 
 ## 1.1 Install requirements
 
@@ -163,7 +164,7 @@ Experiments can be performed using pre-trained model ResNet-18 with with the fol
 - `bce.yml` using `BCEWithLogits` Loss
 - `focal.yml` using `FocalLossMultiClass` Loss
 
-## Results
+## 1.4 Results
 All results of all experiments can be found locally in logir, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
 
 #### checkpoints
