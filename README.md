@@ -31,6 +31,8 @@ make docker-build
 
 ## 1.2 Get Dataset
 
+### Try on open datasets
+
 ```bash
 mkdir data
 ```
@@ -60,7 +62,7 @@ You can use one of the following datasets:
 
 ### For your dataset
 
-Make sure, that final folder structure with training data:
+1. Make sure, that final folder structure with training data:
 ```bash
 /path/to/your_dataset/
         class_name_1/
@@ -71,28 +73,28 @@ Make sure, that final folder structure with training data:
         class_name_100500/
             ...
 ```
-The easiest way is to move your data:
+2. Location of your data
+
+* The easiest way is to move your data:
 ```bash
 mv /path/to/your_dataset/* /catalyst.classification/data/origin 
 ``` 
 In that way you can run pipeline with default settings. 
 
-#### If you still leave data in `/path/to/your_dataset/` 
-#### In local environment:
+* If you still leave data in `/path/to/your_dataset/` 
+    * In local environment:
+    ```bash
+    ln -s /path/to/your_dataset $(pwd)/data/origin
+    ```
+    Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
 
-```bash
-ln -s /path/to/your_dataset $(pwd)/data/origin
-```
-Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
+    * Using docker
 
-#### Using docker
-
-You need to set:
-
-```bash
-   -v /path/to/your_dataset:/data \ #instead default  $(pwd)/data/origin:/data
- ```
- in the script below to start the pipeline.
+    You need to set:
+    ```bash
+       -v /path/to/your_dataset:/data \ #instead default  $(pwd)/data/origin:/data
+     ```
+     in the script below to start the pipeline.
 
 ## 1.3 Classification pipeline
 ### Fast&Furious: raw data → production-ready model
