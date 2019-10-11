@@ -156,7 +156,7 @@ All results of all experiments can be found locally in logir, by default `cataly
 #### logs 
 * The directory contains all logs of experiment.
 * Metrics also logs can be displayed in the corresponding experiment in your W&B account:
-<img src="/pics/metrics.png" width=350 title="classification metrics"  align="left">
+<img src="/pics/metrics.png" title="classification metrics"  align="left">
 
 #### checkpoints
 *  The directory contains all logs of experiment all checkpoints: best, last, also of all stages.
