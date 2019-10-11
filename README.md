@@ -8,27 +8,27 @@
 
 You will learn how to build image classification pipeline with transfer learning using the Catalyst framework.
 
-### Goals
+## Goals
 - Install requirements
 - Get Dataset
 - Run classification pipeline: raw data → production-ready model
 
-### 1.1 Install requirements
+## 1.1 Install requirements
 
-#### Using local environment: 
+### Using local environment: 
 
 ```bash
 pip install -r requirements/requirements_min.txt
 ```
 
-#### Using docker:
+### Using docker:
 
 This creates a build `catalyst-classification` with the necessary libraries:
 ```bash
 make docker-build
 ```
 
-### 1.2 Get Dataset
+## 1.2 Get Dataset
 
 ```bash
 mkdir data
@@ -57,7 +57,7 @@ You can use one of the following datasets
     mv artworks ./data/origin
 ```
 
-#### For your dataset
+### For your dataset
 
 Make sure, that final folder structure with training data:
 ```bash
@@ -76,15 +76,15 @@ mv /path/to/your_dataset/* /catalyst.classification/data/origin
 ``` 
 In that way you can run pipeline with defaul settings. 
 
-##### If you still leave data in `/path/to/your_dataset/` 
-##### In local environment:
+#### If you still leave data in `/path/to/your_dataset/` 
+#### In local environment:
 
 ```bash
 ln -s /path/to/your_dataset $(pwd)/data/origin
 ```
 Or just set path to your dataset `DATADIR=/path/to/your_dataset` when you start the pipeline.
 
-##### Using docker
+#### Using docker
 
 You need to set:
 
@@ -93,13 +93,13 @@ You need to set:
  ```
  in the script below to start the pipeline.
 
-### 1.3 Classification pipeline
-#### Fast&Furious: raw data → production-ready model
+## 1.3 Classification pipeline
+### Fast&Furious: raw data → production-ready model
 
 The pipeline will automatically guide you from raw data to the production-ready model. 
 
 All you need is to make a couple of settings.
-##### Run in local environment: 
+#### Run in local environment: 
 
 ```bash	
 CUDA_VISIBLE_DEVICES=0 \	
@@ -122,7 +122,7 @@ wandb: (2) Use an existing W&B account
 wandb: (3) Don't visualize my results
 ```
 
-##### Run in docker:
+#### Run in docker:
 
 ```bash
 export LOGDIR=$(pwd)/logs
@@ -150,7 +150,7 @@ Experiments can be performed using pre-trained model ResNet-18 with with the fol
 - `focal.yml` using `FocalLossMultiClass` Loss
 
 
-### Results
+## Results
 All results of all experiments can be found locally in logir, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
 
 #### logs 
