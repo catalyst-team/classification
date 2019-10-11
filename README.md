@@ -35,13 +35,13 @@ mkdir data
 ```
 You can use one of the following datasets
 
-1. Ant and Bees
+* Ant and Bees
 ```bash
     wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
     tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
     mv ants_bees_cleared_190806 ./data/origin
  ```
-2. Flowers
+* Flowers
 ```bash
     # https://www.kaggle.com/alxmamaev/flowers-recognition
     wget https://www.dropbox.com/s/lwcvy4eb68drvs3/flowers.tar.gz
@@ -49,7 +49,7 @@ You can use one of the following datasets
     mv flowers ./data/origin
  ```
 
-3. Artworks:
+* Artworks:
  ```bash
     # https://www.kaggle.com/ikarus777/best-artworks-of-all-time
     wget https://www.dropbox.com/s/ln4ot1fu2sgtgvg/artworks.tar.gz
@@ -151,4 +151,19 @@ Experiments can be performed using pre-trained model ResNet-18 with with the fol
 
 
 ### Results
-Configs of all experiments, configurations of data for experiments, logs and checkpoins can be found in directory `./logs`
+All results of all experiments can be found locally in logir, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
+
+#### logs 
+* The directory contains all logs of experiment.
+* Metrics also logs can be displayed in the corresponding experiment in your W&B account:
+<img src="/pics/metrics.png" width=350 title="classification metrics"  align="left">
+
+#### checkpoints
+*  The directory contains all logs of experiment all checkpoints: best, last, also of all stages.
+* `best.pth` and `last.pht` can be also found in the corresponding experiment in your W&B account.
+ 
+#### code
+*  The directory contains code on which calculations were performed. This is necessary for full complete reproducibility.
+
+#### configs
+*  The directory contains configs on which calculations were performed. This is necessary for full complete reproducibility.
