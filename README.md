@@ -9,12 +9,12 @@
 You will learn how to build image classification pipeline with transfer learning using the Catalyst framework.
 
 ## Goals
-- Install requirements
-- Get Dataset
-- Run classification pipeline: raw data → production-ready model
-- Get reproducible results
+- 1. Install requirements
+- 2. Prepare data
+- 3. Run classification pipeline: raw data → production-ready model
+- 4. Get reproducible results
 
-## 1.1 Install requirements
+## 1 Install requirements
 
 ### Using local environment: 
 
@@ -29,7 +29,7 @@ This creates a build `catalyst-classification` with the necessary libraries:
 make docker-build
 ```
 
-## 1.2 Get Dataset
+## 2. Get Dataset
 
 ### Try on open datasets
 
@@ -60,9 +60,10 @@ You can use one of the following datasets:
     mv artworks ./data/origin
 ```
 
-### For your dataset
+###  Prepare your dataset
 
-1. **Make sure, that final folder structure with training data**:
+1. **Data structure**:
+Make sure, that final folder with data has stucture:
 ```bash
 /path/to/your_dataset/
         class_name_1/
@@ -73,7 +74,7 @@ You can use one of the following datasets:
         class_name_100500/
             ...
 ```
-2. **Location of your data**
+2. **Data location**
 
 * The easiest way is to move your data:
     ```bash
@@ -96,7 +97,7 @@ You can use one of the following datasets:
          ```
         in the script below to start the pipeline.
 
-## 1.3 Classification pipeline
+## 3 Classification pipeline
 ### Fast&Furious: raw data → production-ready model
 
 The pipeline will automatically guide you from raw data to the production-ready model. 
@@ -166,7 +167,7 @@ Experiments can be performed using pre-trained model ResNet-18 with with the fol
 - `bce.yml` using `BCEWithLogits` Loss
 - `focal.yml` using `FocalLossMultiClass` Loss
 
-## 1.4 Results
+## 4 Results
 All results of all experiments can be found locally in logir, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
 
 #### checkpoints
