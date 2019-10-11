@@ -101,8 +101,6 @@ Make sure, that final folder with data has stucture:
 
 The pipeline will automatically guide you from raw data to the production-ready model. 
 
-All you need is to make a couple of settings.
-
 #### Run in local environment: 
 
 ```bash	
