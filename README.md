@@ -74,7 +74,7 @@ The easiest way is to move your data:
 ```bash
 mv /path/to/your_dataset/* /catalyst.classification/data/origin 
 ``` 
-In that way you can run pipeline with defaul settings. 
+In that way you can run pipeline with default settings. 
 
 #### If you still leave data in `/path/to/your_dataset/` 
 #### In local environment:
