@@ -141,7 +141,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 
 #### Visualization of the learning process
 
-You can use [W&B](https://www.wandb.com/) account for viaualisation:
+You can use [W&B](https://www.wandb.com/) account for visualisation:
 
 ```
 wandb: (1) Create a W&B account
