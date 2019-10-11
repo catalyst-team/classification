@@ -158,11 +158,26 @@ tensorboard --logdir=/catalyst.classification/logs
 
 #### Configuration
 
-During the pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously.
-Experiments can be performed using pre-trained model ResNet-18 with with the following configs:
+During the pipeline model was trained sequentially in two stages, also in the first stage we will train several heads simultaneously.
+Experiments can be performed using pre-trained model ResNet-18 with with the following `CONFIG_TEMPLATE`:
 - `ce.yml`  using `CrossEntropyLoss`
 - `bce.yml` using `BCEWithLogits` Loss
 - `focal.yml` using `FocalLossMultiClass` Loss
+
+The configs `catalyst.classification/configs/_common.yml`  `catalyst.classification/configs/templates/`  allows you to define:
+- `stages` you can configure training or inference in several stages with different hyperparameters, optimizers, callbacks and loss-functions. In our example:
+     - using pretrained model
+     - first learn the head(s)
+     - then train the whole network
+     - produce predictions
+- `data_params` path, batch size, num of workers and so on.
+- `model_params` detailed configuration of models, including:
+    - detailed architecture description
+    - using or not pretrained model
+- `optimizer_params`
+- `callbacks_params`
+- other experiment hyperparameters
+
 
 ## 1.4 Results
 All results of all experiments can be found locally in logir, by default `catalyst.classification/logs`. For example results of experiment `catalyst.classification/logs/logdir-191010-141450-c30c8b84` contain:
