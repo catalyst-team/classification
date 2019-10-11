@@ -161,7 +161,7 @@ tensorboard --logdir=/catalyst.classification/logs
 
 The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
 
-During current pipeline model was trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates with other experiment\`s hyperparameters 
+During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
 are here: `catalyst.classification/configs/templates/`.
 
 Experiments can be performed using pre-trained model ResNet-18 with with the following `CONFIG_TEMPLATE`:
