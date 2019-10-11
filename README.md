@@ -38,23 +38,21 @@ mkdir data
 ```
 You can use one of the following datasets:
 
-* Ant and Bees
+* [Ant and Bees](https://www.kaggle.com/ajayrana/hymenoptera-data)
 ```bash
     wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
     tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
     mv ants_bees_cleared_190806 ./data/origin
  ```
-* Flowers
+* [Flowers](https://www.kaggle.com/alxmamaev/flowers-recognition)
 ```bash
-    # https://www.kaggle.com/alxmamaev/flowers-recognition
     wget https://www.dropbox.com/s/lwcvy4eb68drvs3/flowers.tar.gz
     tar -xf flowers.tar.gz &>/dev/null
     mv flowers ./data/origin
  ```
 
-* Artworks:
+* [Artworks](https://www.kaggle.com/ikarus777/best-artworks-of-all-time)
  ```bash
-    # https://www.kaggle.com/ikarus777/best-artworks-of-all-time
     wget https://www.dropbox.com/s/ln4ot1fu2sgtgvg/artworks.tar.gz
     tar -xf artworks.tar.gz &>/dev/null
     mv artworks ./data/origin
