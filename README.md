@@ -189,6 +189,6 @@ All results of all experiments can be found locally in logir, by default `cataly
 * Metrics also logs can be displayed in the corresponding experiment in your W&B account.
 
 #### code
-*  The directory contains code on which calculations were performed. This is necessary for full complete reproducibility.
+*  The directory contains code on which calculations were performed. This is necessary for complete reproducibility.
 
 
