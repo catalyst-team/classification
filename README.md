@@ -31,7 +31,6 @@ make docker-build
 
 ## 2. Get Dataset
 
-
 ### Try on open datasets.
 <details>
 <summary>You can use one of the open datasets </summary>
@@ -64,7 +63,11 @@ mkdir data
 </p>
 </details>
 
-###  Prepare your dataset
+### Use your own dataset
+
+<details>
+<summary>Prepare your dataset</summary>
+<p>
 
 #### Data structure
 Make sure, that final folder with data has the required structure:
@@ -101,6 +104,8 @@ Make sure, that final folder with data has the required structure:
            -v /path/to/your_dataset:/data \ #instead default  $(pwd)/data/origin:/data
          ```
         in the script below to start the pipeline.
+</p>
+</summary>
 
 ## 3. Classification pipeline
 ### Fast&Furious: raw data → production-ready model
