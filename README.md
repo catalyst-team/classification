@@ -32,12 +32,10 @@ make docker-build
 ## 2. Get Dataset
 
 
-
+### Try on open datasets.
 <details>
-<summary>### Try on open datasets. </summary>
+<summary>You can use one of the open datasets </summary>
 <p>
-    
-You can use one of the open datasets
 
 ```bash
 mkdir data
