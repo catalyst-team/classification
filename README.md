@@ -31,7 +31,7 @@ make docker-build
 
 ## 2. Get Dataset
 
-### Try on open datasets.
+### Try on open datasets
 
 <details>
 <summary>You can use one of the open datasets </summary>
