@@ -151,6 +151,25 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -e "BATCH_SIZE=256" \	
    catalyst-classification ./bin/catalyst-classification-pipeline.sh
 ```
+The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
+
+### Customize own pipeline
+<details> 
+<summary>Configutre your experiments</summary>
+<p>
+
+During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
+are here: `catalyst.classification/configs/templates/`.
+
+Experiments can be performed using pre-trained model ResNet-18 with with the following `CONFIG_TEMPLATE`:
+- `ce.yml`  using `CrossEntropyLoss`
+- `bce.yml` using `BCEWithLogits` Loss
+- `focal.yml` using `FocalLossMultiClass` Loss
+
+For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
+
+</p>
+</details>
 
 #### Visualization of the learning process
 
@@ -170,20 +189,6 @@ Also tensorboard can be used for visualisation:
 tensorboard --logdir=/catalyst.classification/logs
 ```
 <img src="/pics/tf_metrics.png" title="tf classification metrics"  align="left">
-
-#### Configuration
-
-The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
-
-During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
-are here: `catalyst.classification/configs/templates/`.
-
-Experiments can be performed using pre-trained model ResNet-18 with with the following `CONFIG_TEMPLATE`:
-- `ce.yml`  using `CrossEntropyLoss`
-- `bce.yml` using `BCEWithLogits` Loss
-- `focal.yml` using `FocalLossMultiClass` Loss
-
-For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
 
 ## 4. Results
 All results of all experiments can be found locally in `WORKDIR`, by default `catalyst.classification/logs`. Results of experiment, for instance `catalyst.classification/logs/logdir-191010-141450-c30c8b84`, contain:
