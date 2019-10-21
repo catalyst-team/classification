@@ -105,7 +105,7 @@ Make sure, that final folder with data has the required structure:
          ```
         in the script below to start the pipeline.
 </p>
-</summary>
+</details>
 
 ## 3. Classification pipeline
 ### Fast&Furious: raw data → production-ready model
