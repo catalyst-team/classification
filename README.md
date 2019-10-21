@@ -39,6 +39,7 @@ mkdir data
 <details>
 <summary>You can use one of the open datasets:</summary>
 <p>
+    
 * [Ant and Bees](https://www.kaggle.com/ajayrana/hymenoptera-data)
 ```bash
     wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
@@ -58,6 +59,7 @@ mkdir data
     tar -xf artworks.tar.gz &>/dev/null
     mv artworks ./data/origin
 ```
+
 </p>
 </details>
 
