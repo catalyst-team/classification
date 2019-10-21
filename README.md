@@ -33,7 +33,7 @@ make docker-build
 
 ### Try on open datasets.
 <details>
-<summary>You can use one of the open datasets </summary>
+    <summary>You can use one of the open datasets </summary>
 <p>
 
 ```bash
@@ -66,7 +66,7 @@ mkdir data
 ### Use your own dataset
 
 <details>
-<summary>Prepare your dataset</summary>
+<summary>   Prepare your dataset</summary>
 <p>
 
 #### Data structure
