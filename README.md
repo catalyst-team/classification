@@ -34,11 +34,7 @@ make docker-build
 
 
 <details>
-<summary>
-    
-### Try on open datasets.
-
- </summary>
+<summary>### Try on open datasets. </summary>
 <p>
     
 You can use one of the open datasets
