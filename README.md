@@ -153,7 +153,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 ```
 The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
 
-## Customize own pipeline
+### Customize own pipeline
 <details> 
 <summary>Configure your experiments</summary>
 <p>
