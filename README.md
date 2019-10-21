@@ -155,7 +155,7 @@ The pipeline is running and you don’t have to do anything else, it remains to 
 
 ### Customize own pipeline
 <details> 
-<summary>Configutre your experiments</summary>
+<summary>Configure your experiments</summary>
 <p>
 
 During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
