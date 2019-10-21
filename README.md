@@ -36,8 +36,9 @@ make docker-build
 ```bash
 mkdir data
 ```
-You can use one of the following datasets:
-
+<details>
+<summary>You can use one of the open datasets:</summary>
+<p>
 * [Ant and Bees](https://www.kaggle.com/ajayrana/hymenoptera-data)
 ```bash
     wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
@@ -57,11 +58,13 @@ You can use one of the following datasets:
     tar -xf artworks.tar.gz &>/dev/null
     mv artworks ./data/origin
 ```
+</p>
+</details>
 
 ###  Prepare your dataset
 
 #### Data structure
-Make sure, that final folder with data has stucture:
+Make sure, that final folder with data has the required structure:
 ```bash
 /path/to/your_dataset/
         class_name_1/
