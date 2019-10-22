@@ -1,3 +1,6 @@
+shared:
+  class_names: &class_names {{ class_names }}
+
 model_params:
   image_size: &image_size {{ max_image_size }}
   heads_params:
@@ -48,12 +51,19 @@ stages:
       output_key: logits
       prefix: auc_class
       num_classes: *num_classes
+      class_names: *class_names
+    f1_class:
+      callback: F1ScoreCallback
+      input_key: targets_one_hot
+      output_key: logits
+      activation: Softmax
     cm_class:
       callback: ConfusionMatrixCallback
       input_key: targets
       output_key: logits
       prefix: cm_class
       num_classes: *num_classes
+      class_names: *class_names
 
     optimizer:
       callback: OptimizerCallback
