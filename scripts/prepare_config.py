@@ -10,7 +10,6 @@
 #     --max-image-size=224 \
 #     --balance-strategy=1024
 
-import json
 import argparse
 from pathlib import Path
 
