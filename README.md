@@ -33,11 +33,14 @@ make docker-build
 
 ### Try on open datasets
 
+<details>
+<summary>You can use one of the open datasets </summary>
+<p>
+
 ```bash
 mkdir data
-```
-You can use one of the following datasets:
-
+```    
+    
 * [Ant and Bees](https://www.kaggle.com/ajayrana/hymenoptera-data)
 ```bash
     wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
@@ -58,10 +61,19 @@ You can use one of the following datasets:
     mv artworks ./data/origin
 ```
 
-###  Prepare your dataset
+</p>
+</details>
+
+
+### Use your own dataset
+
+
+<details>
+<summary>Prepare your dataset</summary>
+<p>
 
 #### Data structure
-Make sure, that final folder with data has stucture:
+Make sure, that final folder with data has the required structure:
 ```bash
 /path/to/your_dataset/
         class_name_1/
@@ -95,6 +107,8 @@ Make sure, that final folder with data has stucture:
            -v /path/to/your_dataset:/data \ #instead default  $(pwd)/data/origin:/data
          ```
         in the script below to start the pipeline.
+</p>
+</details>
 
 ## 3. Classification pipeline
 ### Fast&Furious: raw data → production-ready model
@@ -137,6 +151,25 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
    -e "BATCH_SIZE=256" \	
    catalyst-classification ./bin/catalyst-classification-pipeline.sh
 ```
+The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
+
+### Customize own pipeline
+<details> 
+<summary>Configure your experiments</summary>
+<p>
+
+During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
+are here: `catalyst.classification/configs/templates/`.
+
+Experiments can be performed using pre-trained model ResNet-18 with with the following `CONFIG_TEMPLATE`:
+- `ce.yml`  using `CrossEntropyLoss`
+- `bce.yml` using `BCEWithLogits` Loss
+- `focal.yml` using `FocalLossMultiClass` Loss
+
+For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
+
+</p>
+</details>
 
 #### Visualization of the learning process
 
@@ -156,20 +189,6 @@ Also tensorboard can be used for visualisation:
 tensorboard --logdir=/catalyst.classification/logs
 ```
 <img src="/pics/tf_metrics.png" title="tf classification metrics"  align="left">
-
-#### Configuration
-
-The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
-
-During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
-are here: `catalyst.classification/configs/templates/`.
-
-Experiments can be performed using pre-trained model ResNet-18 with with the following `CONFIG_TEMPLATE`:
-- `ce.yml`  using `CrossEntropyLoss`
-- `bce.yml` using `BCEWithLogits` Loss
-- `focal.yml` using `FocalLossMultiClass` Loss
-
-For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
 
 ## 4. Results
 All results of all experiments can be found locally in `WORKDIR`, by default `catalyst.classification/logs`. Results of experiment, for instance `catalyst.classification/logs/logdir-191010-141450-c30c8b84`, contain:
