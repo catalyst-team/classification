@@ -10,11 +10,11 @@
 #     --max-image-size=224 \
 #     --balance-strategy=1024
 
-import json
 import argparse
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
+import safitty
 
 
 def build_args(parser):
@@ -57,8 +57,12 @@ def render_config(
     )
 
     template = _env.get_template(in_template.name)
-    with (dataset_path / "tag2class.json").open() as f:
-        num_classes = len(json.load(f))
+
+    tag2class = safitty.load(dataset_path / "tag2class.json")
+    num_classes = len(tag2class)
+    class_names = [
+        key for key, _ in sorted(tag2class.items(), key=lambda x: x[1])
+    ]
 
     out_config.parent.mkdir(parents=True, exist_ok=True)
 
@@ -67,6 +71,7 @@ def render_config(
             expdir=str(expdir),
             dataset_path=str(dataset_path),
             num_classes=num_classes,
+            class_names=class_names,
             num_workers=num_workers,
             batch_size=batch_size,
             max_image_size=max_image_size,
