@@ -61,8 +61,7 @@ def render_config(
     tag2class = safitty.load(dataset_path / "tag2class.json")
     num_classes = len(tag2class)
     class_names = [
-        key
-        for key, _ in sorted(tag2class.items(), key=lambda x: x[1])
+        key for key, _ in sorted(tag2class.items(), key=lambda x: x[1])
     ]
 
     out_config.parent.mkdir(parents=True, exist_ok=True)
