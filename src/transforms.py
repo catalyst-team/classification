@@ -5,7 +5,7 @@ from albumentations import (
     ShiftScaleRotate, RandomGamma, IAAPerspective, JpegCompression, ToGray,
     ChannelShuffle, RGBShift, CLAHE, RandomBrightnessContrast, Cutout, OneOf
 )
-from albumentations.torch import ToTensor
+from albumentations.pytorch import ToTensor
 
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
