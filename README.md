@@ -118,17 +118,18 @@ The pipeline will automatically guide you from raw data to the production-ready 
 #### Run in local environment: 
 
 ```bash	
-CUDA_VISIBLE_DEVICES=0 \	
-CUDNN_BENCHMARK="True" \	
-CUDNN_DETERMINISTIC="True" \	
-WORKDIR=./logs \	
-DATADIR=./data/origin \	
+CUDA_VISIBLE_DEVICES=0 \
+CUDNN_BENCHMARK="True" \
+CUDNN_DETERMINISTIC="True" \
+WORKDIR=./logs \
+DATADIR=./data/origin \
 MAX_IMAGE_SIZE=224 \  # 224 or 448 works good	
 BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good	
-CONFIG_TEMPLATE=./configs/templates/ce.yml \	
-NUM_WORKERS=4 \	
-BATCH_SIZE=256 \	
-bash ./bin/catalyst-classification-pipeline.sh	
+CONFIG_TEMPLATE=./configs/templates/main.yml \
+NUM_WORKERS=4 \
+BATCH_SIZE=256 \
+CRITERION=CrossEntropyLoss \  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
+bash ./bin/catalyst-classification-pipeline.sh
 ```
 
 #### Run in docker:
@@ -136,19 +137,22 @@ bash ./bin/catalyst-classification-pipeline.sh
 ```bash
 export LOGDIR=$(pwd)/logs
 docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ -v $LOGDIR:/logdir/ -v $(pwd)/data/origin:/data \
+   -v $(pwd):/workspace/ \
+   -v $LOGDIR:/logdir/ \
+   -v $(pwd)/data/origin:/data \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "USE_WANDB=1" \
    -e "LOGDIR=/logdir" \
-   -e "CUDNN_BENCHMARK='True'" \	
-   -e "CUDNN_DETERMINISTIC='True'" \	
-   -e "WORKDIR=/logdir" \	
-   -e "DATADIR=/data" \	
-   -e "MAX_IMAGE_SIZE=224" \  	
-   -e "BALANCE_STRATEGY=256" \ 	
-   -e "CONFIG_TEMPLATE=./configs/templates/ce.yml" \	
-   -e "NUM_WORKERS=4" \	
-   -e "BATCH_SIZE=256" \	
+   -e "CUDNN_BENCHMARK='True'" \
+   -e "CUDNN_DETERMINISTIC='True'" \
+   -e "WORKDIR=/logdir" \
+   -e "DATADIR=/data" \
+   -e "MAX_IMAGE_SIZE=224" \
+   -e "BALANCE_STRATEGY=256" \
+   -e "CONFIG_TEMPLATE=./configs/templates/main.yml" \
+   -e "NUM_WORKERS=4" \
+   -e "BATCH_SIZE=256" \
+   -e "CRITERION=CrossEntropyLoss" \
    catalyst-classification ./bin/catalyst-classification-pipeline.sh
 ```
 The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
@@ -161,10 +165,7 @@ The pipeline is running and you don’t have to do anything else, it remains to 
 During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
 are here: `catalyst.classification/configs/templates/`.
 
-Experiments can be performed using pre-trained model ResNet-18 with with the following `CONFIG_TEMPLATE`:
-- `ce.yml`  using `CrossEntropyLoss`
-- `bce.yml` using `BCEWithLogits` Loss
-- `focal.yml` using `FocalLossMultiClass` Loss
+You can control the criterion for your experiment in template.
 
 For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
 

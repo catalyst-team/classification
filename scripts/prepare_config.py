@@ -27,6 +27,7 @@ def build_args(parser):
     parser.add_argument("--batch-size", default=64, type=int)
     parser.add_argument("--max-image-size", default=224, type=int)
     parser.add_argument("--balance-strategy", default="null", type=str)
+    parser.add_argument("--criterion", default="FocalLossMultiClass", type=str)
 
     return parser
 
@@ -47,6 +48,7 @@ def render_config(
     batch_size: int,
     max_image_size: int,
     balance_strategy: str,
+    criterion: str,
 ):
     _template_path = in_template.absolute().parent
 
@@ -76,6 +78,7 @@ def render_config(
             batch_size=batch_size,
             max_image_size=max_image_size,
             balance_strategy=balance_strategy,
+            criterion=criterion
         )
     )
 
