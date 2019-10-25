@@ -13,6 +13,7 @@
 # MAX_IMAGE_SIZE=... \  # 224 or 448 works good
 # BALANCE_STRATEGY=... \  # images in epoch per class, 1024 works good
 # CONFIG_TEMPLATE=... \ # model config to use
+# CRITERION=... \ # criterion
 # ./bin/catalyst-classification-pipeline.sh
 
 # example:
@@ -23,9 +24,10 @@
 # DATADIR=./data/origin \
 # MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
 # BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
-# CONFIG_TEMPLATE=./configs/templates/focal.yml \
+# CONFIG_TEMPLATE=./configs/templates/main.yml \
 # NUM_WORKERS=4 \
 # BATCH_SIZE=256 \
+# CRITERION=FocalLossMultiClass \
 # ./bin/catalyst-classification-pipeline.sh
 
 set -e
@@ -41,13 +43,14 @@ set -e
 #export CUDNN_BENCHMARK="True"
 #export CUDNN_DETERMINISTIC="True"
 #
-#export CONFIG_TEMPLATE=./configs/templates/focal.yml
+#export CONFIG_TEMPLATE=./configs/templates/main.yml
 #export WORKDIR=./logs
 #export DATADIR=./data/origin
 #export NUM_WORKERS=4
 #export BATCH_SIZE=64
 #export MAX_IMAGE_SIZE=128
 #export BALANCE_STRATEGY=128
+#export CRITERION=FocalLossMultiClass
 
 
 # ---- environment variables
@@ -73,7 +76,11 @@ if [[ -z "$TRACED_METHOD" ]]; then
 fi
 
 if [[ -z "$CONFIG_TEMPLATE" ]]; then
-      CONFIG_TEMPLATE="./configs/templates/focal.yml"
+      CONFIG_TEMPLATE="./configs/templates/main.yml"
+fi
+
+if [[ -z "$CRITERION" ]]; then
+        CRITERION="FocalLossMultiClass" # BCEWithLogits , CrossEntropyLoss
 fi
 
 if [[ -z "$DATADIR" ]]; then
@@ -141,7 +148,8 @@ python ./scripts/prepare_config.py \
     --num-workers=$NUM_WORKERS \
     --batch-size=$BATCH_SIZE \
     --max-image-size=$MAX_IMAGE_SIZE \
-    --balance-strategy=$BALANCE_STRATEGY
+    --balance-strategy=$BALANCE_STRATEGY \
+    --criterion=$CRITERION
 
 cp -r ./configs/_common.yml $CONFIG_DIR/_common.yml
 
@@ -162,11 +170,11 @@ catalyst-dl trace $LOGDIR -m $TRACED_METHOD --out-model $LOGDIR/traced.pth
 
 TAG2CLS_PATH=$(python << EOF
 import json
-with open("${LOGDIR}/configs/_config.json") as f:
-    conf = json.load(f)
-    path = conf["stages"]["data_params"]["datapath"].replace("images", "") \
-        + "tag2class.json"
-    print(path)
+from safitty import Safict
+path = Safict.load("${LOGDIR}/configs/_config.json").get(
+    "stages", "data_params", "datapath"
+).replace("images", "")
+print(path + "tag2class.json")
 EOF
 )
 

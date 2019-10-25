@@ -29,7 +29,7 @@ stages:
     _key_value: True
 
     class:
-      criterion: FocalLossMultiClass
+      criterion: {{ criterion }}
 
   callbacks_params:
     loss_class:

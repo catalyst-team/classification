@@ -15,9 +15,10 @@ WORKDIR=./logs \
 DATADIR=./data/origin \
 MAX_IMAGE_SIZE=224 \
 BALANCE_STRATEGY=64 \
-CONFIG_TEMPLATE=./configs/templates/ce.yml \
+CONFIG_TEMPLATE=./configs/templates/main.yml \
 NUM_WORKERS=0 \
 BATCH_SIZE=64 \
+CRITERION=CrossEntropyLoss \
 ./bin/catalyst-classification-pipeline.sh --check
 
 
