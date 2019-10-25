@@ -137,8 +137,8 @@ bash ./bin/catalyst-classification-pipeline.sh
 ```bash
 export LOGDIR=$(pwd)/logs
 docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/
-   -v $LOGDIR:/logdir/
+   -v $(pwd):/workspace/ \
+   -v $LOGDIR:/logdir/ \
    -v $(pwd)/data/origin:/data \
    -e "CUDA_VISIBLE_DEVICES=0" \
    -e "USE_WANDB=1" \
