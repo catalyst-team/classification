@@ -6,13 +6,14 @@
 
 # Catalyst.Classification
 
-You will learn how to build image classification pipeline with transfer learning using the Catalyst framework.
+You will learn how to build image classification pipeline with transfer learning using the Catalyst framework to get reproducible results.
 
 ## Goals
 1. Install requirements
 2. Prepare data
-3. Run classification pipeline: raw data → production-ready model
-4. Get reproducible results
+3. **Run: raw data → production-ready model**
+4. **Get results**
+5. Customize own pipeline
 
 ## 1. Install requirements
 
@@ -115,6 +116,8 @@ Make sure, that final folder with data has the required structure:
 
 The pipeline will automatically guide you from raw data to the production-ready model. 
 
+We will initialize ResNet-18 model with a pre-trained network. During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously.
+
 #### Run in local environment: 
 
 ```bash	
@@ -157,22 +160,9 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
 ```
 The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
 
-### Customize own pipeline
-<details> 
-<summary>Configure your experiments</summary>
-<p>
+#### Visualizations
 
-During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Template `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
-is here: `catalyst.classification/configs/templates/main.yml`.
-
-For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
-
-</p>
-</details>
-
-#### Visualization of the learning process
-
-You can use [W&B](https://www.wandb.com/) account for visualisation:
+You can use [W&B](https://www.wandb.com/) account for visualisation right after `pip install wandb`:
 
 ```
 wandb: (1) Create a W&B account
@@ -181,13 +171,19 @@ wandb: (3) Don't visualize my results
 ```
 <img src="/pics/wandb_metrics.png" title="w&b classification metrics"  align="left">
 
-
-Also tensorboard can be used for visualisation:
+Tensorboard also can be used for visualisation:
 
 ```bash	
 tensorboard --logdir=/catalyst.classification/logs
 ```
 <img src="/pics/tf_metrics.png" title="tf classification metrics"  align="left">
+
+<details> 
+<summary>Confusion matrix</summary>
+<p>
+<img src="/pics/cm.png" title="tf classification metrics" width="700">
+</p>
+</details>
 
 ## 4. Results
 All results of all experiments can be found locally in `WORKDIR`, by default `catalyst.classification/logs`. Results of experiment, for instance `catalyst.classification/logs/logdir-191010-141450-c30c8b84`, contain:
@@ -205,3 +201,30 @@ All results of all experiments can be found locally in `WORKDIR`, by default `ca
 
 #### code
 *  The directory contains code on which calculations were performed. This is necessary for complete reproducibility.
+
+## Customize own pipeline
+
+For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
+
+<details> 
+<summary>Configure your experiments</summary>
+<p>
+
+* Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`.
+    * `model_params`: detailed configuration of models, including:
+        * model, for instance `MultiHeadNet`
+        * detailed architecture description
+        * using pretrained model
+    * `stages`: you can configure training or inference in several stages with different hyperparameters. In our example:
+        * optimizer params
+        * first learn the head(s), then train the whole network
+
+* The `CONFIG_TEMPLATE` with other experiment\`s hyperparameters, such as data_params and is here: `catalyst.classification/configs/templates/main.yml`.  The config allows you to define:
+    * `data_params`: path, batch size, num of workers and so on
+    * `callbacks_params`: Callbacks are used to execute code during training, for example, to get metrics or save checkpoints. Catalyst provide wide variety of helpful callbacks also you can use custom. 
+
+
+You can find much more options for configuring experiments in [catalyst documentation.](https://catalyst-team.github.io/catalyst/)
+
+</p>
+</details>
