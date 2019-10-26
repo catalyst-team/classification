@@ -224,7 +224,7 @@ For your future experiments framework provides powerful configs allow to optimiz
     * `callbacks_params`. Callbacks are used to execute code during training, for example, to get metrics or save checkpoints. Catalyst provide wide variety of helpful callbacks also you can use custom. 
 
 
-This is just a small example. You can find more options for configuring experiments in [catalysta documentation.](https://catalyst-team.github.io/catalyst/)
+This is just a small example. You can find more options for configuring experiments in [catalyst documentation.](https://catalyst-team.github.io/catalyst/)
 
 </p>
 </details>
