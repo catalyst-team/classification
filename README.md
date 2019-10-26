@@ -215,7 +215,7 @@ For your future experiments framework provides powerful configs allow to optimiz
         * model, for instance `MultiHeadNet`
         * detailed architecture description
         * using pretrained model
-    * `stages`: you can configure training or inference in several stages with different hyperparameters, optimizers, callbacks and loss-functions. In our example:
+    * `stages`: you can configure training or inference in several stages with different hyperparameters. In our example:
         * optimizer params
         * first learn the head(s), then train the whole network
 
