@@ -189,6 +189,10 @@ tensorboard --logdir=/catalyst.classification/logs
 ```
 <img src="/pics/tf_metrics.png" title="tf classification metrics"  align="left">
 
+Confusion matrix
+
+<img src="/pics/cm.png" title="tf classification metrics"  align="left">
+
 ## 4. Results
 All results of all experiments can be found locally in `WORKDIR`, by default `catalyst.classification/logs`. Results of experiment, for instance `catalyst.classification/logs/logdir-191010-141450-c30c8b84`, contain:
 
