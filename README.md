@@ -211,17 +211,17 @@ For your future experiments framework provides powerful configs allow to optimiz
 <p>
 
 * Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`.
-    * `model_params` detailed configuration of models, including:
+    * `model_params`: detailed configuration of models, including:
         * model, for instance `MultiHeadNet`
         * detailed architecture description
         * using pretrained model
-    * `stages` you can configure training or inference in several stages with different hyperparameters, optimizers, callbacks and loss-functions. In our example:
+    * `stages`: you can configure training or inference in several stages with different hyperparameters, optimizers, callbacks and loss-functions. In our example:
         * optimizer params
         * first learn the head(s), then train the whole network
 
 * Template `CONFIG_TEMPLATE` with other experiment\`s hyperparameters, such as data_params and  are here: `catalyst.classification/configs/templates/main.yml`.  The config allows you to define:
-    * `data_params` path, batch size, num of workers and so on
-    * `callbacks_params`. Callbacks are used to execute code during training, for example, to get metrics or save checkpoints. Catalyst provide wide variety of helpful callbacks also you can use custom. 
+    * `data_params`: path, batch size, num of workers and so on
+    * `callbacks_params`: Callbacks are used to execute code during training, for example, to get metrics or save checkpoints. Catalyst provide wide variety of helpful callbacks also you can use custom. 
 
 
 This is just a small example. You can find more options for configuring experiments in [catalyst documentation.](https://catalyst-team.github.io/catalyst/)
