@@ -162,8 +162,8 @@ The pipeline is running and you don’t have to do anything else, it remains to 
 <summary>Configure your experiments</summary>
 <p>
 
-During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Templates `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
-are here: `catalyst.classification/configs/templates/main.yml`.
+During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously. Common settings of stages of training and model parameters can be found in `catalyst.classification/configs/_common.yml`. Template `CONFIG_TEMPLATE` with other experiment\`s hyperparameters 
+is here: `catalyst.classification/configs/templates/main.yml`.
 
 For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
 
