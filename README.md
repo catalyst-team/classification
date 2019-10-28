@@ -202,7 +202,7 @@ All results of all experiments can be found locally in `WORKDIR`, by default `ca
 #### code
 *  The directory contains code on which calculations were performed. This is necessary for complete reproducibility.
 
-## Customize own pipeline
+## 5. Customize own pipeline
 
 For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
 
