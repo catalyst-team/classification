@@ -17,7 +17,7 @@ stages:
   - Examples
 
 install_dl: &requirements_dl
-  pip install -r requirements/requirements_local.txt
+  pip install -r requirements/requirements_min.txt
 
 jobs:
   include:
