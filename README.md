@@ -39,29 +39,36 @@ make docker-build
 <p>
 
 ```bash
-mkdir data
-```    
-    
-* [Ant and Bees](https://www.kaggle.com/ajayrana/hymenoptera-data)
-```bash
-    wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
+export DATASET="artworks"
+
+function gdrive_download () {
+  CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$1" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
+  wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$1" -O $2
+  rm -rf /tmp/cookies.txt
+}
+
+rm -rf data/
+mkdir -p data
+
+if [[ "$DATASET" == "ants_bees" ]]; then
+    # https://www.kaggle.com/ajayrana/hymenoptera-data
+    gdrive_download 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
     tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
     mv ants_bees_cleared_190806 ./data/origin
- ```
-* [Flowers](https://www.kaggle.com/alxmamaev/flowers-recognition)
-```bash
-    wget https://www.dropbox.com/s/lwcvy4eb68drvs3/flowers.tar.gz
+elif [[ "$DATASET" == "flowers" ]]; then
+    # https://www.kaggle.com/alxmamaev/flowers-recognition
+    gdrive_download 1rvZGAkdLlbR_MEd4aDvXW11KnLaVRGFM flowers.tar.gz
     tar -xf flowers.tar.gz &>/dev/null
     mv flowers ./data/origin
- ```
-
-* [Artworks](https://www.kaggle.com/ikarus777/best-artworks-of-all-time)
- ```bash
-    wget https://www.dropbox.com/s/ln4ot1fu2sgtgvg/artworks.tar.gz
+elif [[ "$DATASET" == "artworks" ]]; then
+    # https://www.kaggle.com/ikarus777/best-artworks-of-all-time
+    gdrive_download 1eAk36MEMjKPKL5j9VWLvNTVKk4ube9Ml artworks.tar.gz
     tar -xf artworks.tar.gz &>/dev/null
     mv artworks ./data/origin
-```
+fi
 
+
+```
 </p>
 </details>
 
