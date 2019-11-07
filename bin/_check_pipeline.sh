@@ -1,15 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-function gdrive_download () {
-  CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$1" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
-  wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$1" -O $2
-  rm -rf /tmp/cookies.txt
-}
-
 mkdir -p data
 
-gdrive_download 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
+download-gdrive 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
 tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
 mv ants_bees_cleared_190806 ./data/origin
 

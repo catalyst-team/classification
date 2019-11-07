@@ -41,28 +41,22 @@ make docker-build
 ```bash
 export DATASET="artworks"
 
-function gdrive_download () {
-  CONFIRM=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate "https://docs.google.com/uc?export=download&id=$1" -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')
-  wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$CONFIRM&id=$1" -O $2
-  rm -rf /tmp/cookies.txt
-}
-
 rm -rf data/
 mkdir -p data
 
 if [[ "$DATASET" == "ants_bees" ]]; then
     # https://www.kaggle.com/ajayrana/hymenoptera-data
-    gdrive_download 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
+    download-gdrive 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
     tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
     mv ants_bees_cleared_190806 ./data/origin
 elif [[ "$DATASET" == "flowers" ]]; then
     # https://www.kaggle.com/alxmamaev/flowers-recognition
-    gdrive_download 1rvZGAkdLlbR_MEd4aDvXW11KnLaVRGFM flowers.tar.gz
+    download-gdrive 1rvZGAkdLlbR_MEd4aDvXW11KnLaVRGFM flowers.tar.gz
     tar -xf flowers.tar.gz &>/dev/null
     mv flowers ./data/origin
 elif [[ "$DATASET" == "artworks" ]]; then
     # https://www.kaggle.com/ikarus777/best-artworks-of-all-time
-    gdrive_download 1eAk36MEMjKPKL5j9VWLvNTVKk4ube9Ml artworks.tar.gz
+    download-gdrive 1eAk36MEMjKPKL5j9VWLvNTVKk4ube9Ml artworks.tar.gz
     tar -xf artworks.tar.gz &>/dev/null
     mv artworks ./data/origin
 fi
