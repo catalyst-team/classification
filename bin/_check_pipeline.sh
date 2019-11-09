@@ -3,7 +3,7 @@ set -e
 
 mkdir -p data
 
-wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
+download-gdrive 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
 tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
 mv ants_bees_cleared_190806 ./data/origin
 
@@ -27,7 +27,7 @@ import pathlib
 from safitty import Safict
 
 folder = list(pathlib.Path('./logs/').glob('logdir-*'))[0]
-metrics = metrics = Safict.load(f'{folder}/checkpoints/_metrics.json')
+metrics = Safict.load(f'{folder}/checkpoints/_metrics.json')
 
 loss_class = metrics.get('best', 'loss_class')
 auc_class = metrics.get('best', 'auc_class/_mean')

@@ -36,7 +36,7 @@ set -e
 # uncomment and run bash ./bin/catalyst-classification-pipeline.sh
 
 #mkdir -p ./data
-#wget https://www.dropbox.com/s/8aiufmo0yyq3cf3/ants_bees_cleared_190806.tar.gz
+#download-gdrive 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
 #tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
 #mv ants_bees_cleared_190806 ./data/origin
 #
