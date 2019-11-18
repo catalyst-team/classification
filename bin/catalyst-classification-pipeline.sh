@@ -23,6 +23,7 @@
 # WORKDIR=./logs \
 # DATADIR=./data/origin \
 # MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
+# IMG_EXTENSION=jpg \
 # BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
 # CONFIG_TEMPLATE=./configs/templates/main.yml \
 # NUM_WORKERS=4 \
@@ -65,6 +66,10 @@ fi
 
 if [[ -z "$MAX_IMAGE_SIZE" ]]; then
       MAX_IMAGE_SIZE=224
+fi
+
+if [[ -z "$IMG_EXTENSION" ]]; then
+      IMG_EXTENSION="jpg"
 fi
 
 if [[ -z "$BALANCE_STRATEGY" ]]; then
@@ -122,6 +127,7 @@ if [[ -z "${SKIPDATA}" ]]; then
         --out-dir $IMAGES_DIR \
         --num-workers $NUM_WORKERS \
         --max-size $MAX_IMAGE_SIZE \
+        --extension $IMG_EXTENSION \
         --clear-exif
 
     catalyst-data tag2label \
