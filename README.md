@@ -17,7 +17,7 @@ You will learn how to build image classification pipeline with transfer learning
 
 ## 1. Install requirements
 
-### Using local environment: 
+### Using local environment:
 
 ```bash
 pip install -r requirements/requirements_local.txt
@@ -90,11 +90,11 @@ Make sure, that final folder with data has the required structure:
 
 * The easiest way is to move your data:
     ```bash
-    mv /path/to/your_dataset/* /catalyst.classification/data/origin 
-    ``` 
-    In that way you can run pipeline with default settings. 
+    mv /path/to/your_dataset/* /catalyst.classification/data/origin
+    ```
+    In that way you can run pipeline with default settings.
 
-* If you prefer leave data in `/path/to/your_dataset/` 
+* If you prefer leave data in `/path/to/your_dataset/`
     * In local environment:
         * Link directory
             ```bash
@@ -115,20 +115,21 @@ Make sure, that final folder with data has the required structure:
 ## 3. Classification pipeline
 ### Fast&Furious: raw data → production-ready model
 
-The pipeline will automatically guide you from raw data to the production-ready model. 
+The pipeline will automatically guide you from raw data to the production-ready model.
 
 We will initialize ResNet-18 model with a pre-trained network. During current pipeline model will be trained sequentially in two stages, also in the first stage we will train several heads simultaneously.
 
-#### Run in local environment: 
+#### Run in local environment:
 
-```bash	
+```bash
 CUDA_VISIBLE_DEVICES=0 \
 CUDNN_BENCHMARK="True" \
 CUDNN_DETERMINISTIC="True" \
 WORKDIR=./logs \
 DATADIR=./data/origin \
-MAX_IMAGE_SIZE=224 \  # 224 or 448 works good	
-BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good	
+MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
+IMG_EXTENSION=png \
+BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
 CONFIG_TEMPLATE=./configs/templates/main.yml \
 NUM_WORKERS=4 \
 BATCH_SIZE=256 \
@@ -174,12 +175,12 @@ wandb: (3) Don't visualize my results
 
 Tensorboard also can be used for visualisation:
 
-```bash	
+```bash
 tensorboard --logdir=/catalyst.classification/logs
 ```
 <img src="/pics/tf_metrics.png" title="tf classification metrics"  align="left">
 
-<details> 
+<details>
 <summary>Confusion matrix</summary>
 <p>
 <img src="/pics/cm.png" title="tf classification metrics" width="700">
@@ -196,8 +197,8 @@ All results of all experiments can be found locally in `WORKDIR`, by default `ca
 #### configs
 *  The directory contains experiment\`s configs for reproducibility.
 
-#### logs 
-* The directory contains all logs of experiment. 
+#### logs
+* The directory contains all logs of experiment.
 * Metrics also logs can be displayed in the corresponding experiment in your W&B account.
 
 #### code
@@ -207,7 +208,7 @@ All results of all experiments can be found locally in `WORKDIR`, by default `ca
 
 For your future experiments framework provides powerful configs allow to optimize configuration of the whole pipeline of classification in a controlled and reproducible way.
 
-<details> 
+<details>
 <summary>Configure your experiments</summary>
 <p>
 
@@ -222,7 +223,7 @@ For your future experiments framework provides powerful configs allow to optimiz
 
 * The `CONFIG_TEMPLATE` with other experiment\`s hyperparameters, such as data_params and is here: `catalyst.classification/configs/templates/main.yml`.  The config allows you to define:
     * `data_params`: path, batch size, num of workers and so on
-    * `callbacks_params`: Callbacks are used to execute code during training, for example, to get metrics or save checkpoints. Catalyst provide wide variety of helpful callbacks also you can use custom. 
+    * `callbacks_params`: Callbacks are used to execute code during training, for example, to get metrics or save checkpoints. Catalyst provide wide variety of helpful callbacks also you can use custom.
 
 
 You can find much more options for configuring experiments in [catalyst documentation.](https://catalyst-team.github.io/catalyst/)
