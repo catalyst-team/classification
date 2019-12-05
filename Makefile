@@ -6,7 +6,7 @@ check-style:
 codestyle:
 	bash ./bin/_check_codestyle.sh
 
-docker-build: ./requirements/requirements_docker.txt
+docker-build: ./requirements/requirements-docker.txt
 	docker build -t catalyst-classification:latest . -f docker/Dockerfile
 
 docker-clean:

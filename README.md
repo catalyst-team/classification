@@ -21,7 +21,7 @@ You will learn how to build image classification pipeline with transfer learning
 ### Using local environment:
 
 ```bash
-pip install -r requirements/requirements_local.txt
+pip install -r requirements/requirements.txt
 ```
 
 ### Using docker:
