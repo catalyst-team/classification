@@ -17,14 +17,17 @@ stages:
   - Examples
 
 install_dl: &requirements_dl
-  pip install -r requirements/requirements_local.txt
+  pip install -r requirements/requirements.txt
+
+install_dev: &requirements_dev
+  pip install -r requirements/requirements-dev.txt
 
 jobs:
   include:
     - stage: Tests
       install:
         - *requirements_dl
-        - pip install flake8 flake8-quotes yapf
+        - *requirements_dev
       script:
         - make check-style
 
