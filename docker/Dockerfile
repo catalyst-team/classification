@@ -1,4 +1,4 @@
-FROM catalystteam/catalyst:19.12-fp16
+FROM catalystteam/catalyst:20.01-fp16
 
 # Set up locale to prevent bugs with encoding
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
