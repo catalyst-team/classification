@@ -1,4 +1,4 @@
-catalyst==19.12
+catalyst==20.1.3
 albumentations==0.4.0
 opencv-python==4.1.1.26
 jinja2
