@@ -28,11 +28,9 @@ jobs:
       install:
         - *requirements_dl
         - *requirements_dev
-      script:
-        - make check-style
+      script: make check-style
 
     - stage: Examples
       name: "Examples DL"
       install: *requirements_dl
-      script:
-        - bash ./bin/_check_pipeline.sh
+      script: bash ./bin/_check_pipeline.sh
