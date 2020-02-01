@@ -4,7 +4,7 @@ from copy import deepcopy
 import torch
 import torch.nn as nn
 from catalyst.contrib.models import SequentialNet
-from catalyst.contrib.models.encoder import ResnetEncoder
+from catalyst.contrib.models.cv.encoder import ResnetEncoder
 from catalyst import utils
 
 
