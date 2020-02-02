@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 
 # Cause the script to exit if a single command fails
-set -eo pipefail
+set -eo pipefail -v
 
 # this stops git rev-parse from failing if we run this from the .git directory
 builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
 
 ROOT="$(git rev-parse --show-toplevel)"
 builtin cd "$ROOT" || exit 1
+UPSTREAM=$(git remote| grep "upstream")
 
-git remote add 'upstream' 'https://github.com/catalyst-team/catalyst' || true
+git remote add 'upstream' 'https://github.com/catalyst-team/classification' || true
 
 # Only fetch master since that's the branch we're diffing against.
 git fetch upstream master
 
 YAPF_FLAGS=(
-    '--style' "$ROOT/.style.yapf"
+    '--style' "$ROOT/setup.cfg"
     '--recursive'
     '--parallel'
 )
@@ -71,11 +72,11 @@ else
 fi
 
 if ! git diff --quiet &>/dev/null; then
-    echo 'Reformatted changed files. Please review and stage the changes.'
-    echo 'Files updated:'
-    echo
+    echo 'Reformatted changed files. Please review and stage the changes.' 1>&2
+    echo 'Files updated:' 1>&2
+    echo 1>&2
 
-    git --no-pager diff --name-only
+    git --no-pager diff --name-only 1>&2
 
     exit 1
 fi

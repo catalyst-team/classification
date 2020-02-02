@@ -1,15 +1,16 @@
-import json
 import collections
+import json
+
 import numpy as np
 
 import torch
 import torch.nn as nn
 
-from catalyst.data.dataset import ListDataset
-from catalyst.data.reader import ScalarReader, ReaderCompose, ImageReader
-from catalyst.data.sampler import BalanceClassSampler
+from catalyst.data import (
+    BalanceClassSampler, ImageReader, ListDataset, ReaderCompose, ScalarReader
+)
 from catalyst.dl import ConfigExperiment
-from catalyst.utils.pandas import read_csv_data
+from catalyst.utils import read_csv_data
 
 
 class Experiment(ConfigExperiment):
