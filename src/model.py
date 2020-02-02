@@ -6,7 +6,7 @@ import torch.nn as nn
 
 from catalyst import utils
 from catalyst.contrib.models import SequentialNet
-from catalyst.contrib.models.cv.encoder import ResnetEncoder
+from catalyst.contrib.models.cv import ResnetEncoder
 
 
 class MultiHeadNet(nn.Module):
