@@ -2,7 +2,7 @@
 
 [![Catalyst logo](https://raw.githubusercontent.com/catalyst-team/catalyst-pics/master/pics/catalyst_logo.png)](https://github.com/catalyst-team/catalyst)
 
-**Accelerated DL & RL**
+**Accelerated DL & RL!**
 
 [![Build Status](http://66.248.205.49:8111/app/rest/builds/buildType:id:Classification_Tests/statusIcon.svg)](http://66.248.205.49:8111/project.html?projectId=Classification&tab=projectOverview&guest=1)
 [![Pipi version](https://img.shields.io/pypi/v/catalyst.svg)](https://pypi.org/project/catalyst/)
