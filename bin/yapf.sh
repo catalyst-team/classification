@@ -9,7 +9,7 @@ builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
 ROOT="$(git rev-parse --show-toplevel)"
 builtin cd "$ROOT" || exit 1
 
-git remote add 'upstream' 'https://github.com/catalyst-team/catalyst' || true
+git remote add 'upstream' 'https://github.com/catalyst-team/classification' || true
 
 # Only fetch master since that's the branch we're diffing against.
 git fetch upstream master
