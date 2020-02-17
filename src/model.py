@@ -1,11 +1,12 @@
-from typing import Dict
+from typing import Dict  # isort:skip
 from copy import deepcopy
 
 import torch
 import torch.nn as nn
-from catalyst.contrib.models import SequentialNet
-from catalyst.contrib.models.encoder import ResnetEncoder
+
 from catalyst import utils
+from catalyst.contrib.models import SequentialNet
+from catalyst.contrib.models.cv import ResnetEncoder
 
 
 class MultiHeadNet(nn.Module):

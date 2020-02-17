@@ -1,8 +1,12 @@
 try:
     import os
 
-    if os.environ.get("USE_WANDB", "1") == "1":
-        from catalyst.dl import SupervisedWandbRunner as Runner
+    if os.environ.get("USE_ALCHEMY", "0") == "1":
+        from catalyst.contrib.dl import SupervisedAlchemyRunner as Runner
+    elif os.environ.get("USE_NEPTUNE", "0") == "1":
+        from catalyst.contrib.dl import SupervisedNeptuneRunner as Runner
+    elif os.environ.get("USE_WANDB", "0") == "1":
+        from catalyst.contrib.dl import SupervisedWandbRunner as Runner
     else:
         from catalyst.dl import SupervisedRunner as Runner
 except ImportError:

@@ -1,8 +1,9 @@
 shared:
   class_names: &class_names {{ class_names }}
+  image_size: &image_size {{ max_image_size }}
 
 model_params:
-  image_size: &image_size {{ max_image_size }}
+  image_size: *image_size
   heads_params:
     logits: &num_classes {{ num_classes }}
 
@@ -18,12 +19,70 @@ stages:
     num_workers: {{ num_workers }}
     batch_size: {{ batch_size }}
     per_gpu_scaling: True
-    image_size: *image_size
     one_hot_classes: *num_classes
     balance_strategy: {{ balance_strategy }}
     in_csv_train: {{ dataset_path }}/dataset_train.csv
     in_csv_valid: {{ dataset_path }}/dataset_valid.csv
     datapath: {{ dataset_path }}/images
+
+  transform_params:
+    _key_value: True
+
+    train:
+      transform: A.Compose
+      transforms:
+        - &pre_transforms
+          transform: A.Compose
+          transforms:
+            - transform: A.LongestMaxSize
+              max_size: *image_size
+            - transform: A.PadIfNeeded
+              min_height: *image_size
+              min_width: *image_size
+              border_mode: 0  # cv2.BORDER_CONSTANT
+              value: 0
+        - &hard_transforms
+          transform: A.Compose
+          transforms:
+            - transform: A.Cutout
+              num_holes: 4
+              max_w_size: 56  # 224 // 4
+              max_h_size: 56  # 224 // 4
+            - transform: A.ShiftScaleRotate
+              shift_limit: 0.1
+              scale_limit: 0.1
+              rotate_limit: 15
+              border_mode: 2  # cv2.BORDER_REFLECT
+            - transform: A.IAAPerspective
+              scale: [0.02, 0.05]
+            - transform: A.OneOf
+              transforms:
+                - transform: A.HueSaturationValue
+                - transform: A.ToGray
+                - transform: A.RGBShift
+                - transform: A.ChannelShuffle
+            - transform: A.RandomBrightnessContrast
+              brightness_limit: 0.5
+              contrast_limit: 0.5
+            - transform: A.RandomGamma
+            - transform: A.CLAHE
+            - transform: A.JpegCompression
+              quality_lower: 50
+        - &post_transforms
+          transform: A.Compose
+          transforms:
+            - transform: A.Normalize
+            - transform: catalyst.ToTensor
+    valid:
+      transform: A.Compose
+      transforms:
+        - *pre_transforms
+        - *post_transforms
+    infer:
+      transform: A.Compose
+      transforms:
+        - *pre_transforms
+        - *post_transforms
 
   criterion_params:
     _key_value: True

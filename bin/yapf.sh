@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Cause the script to exit if a single command fails
-set -eo pipefail
+set -eo pipefail -v
 
 # this stops git rev-parse from failing if we run this from the .git directory
 builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
@@ -15,7 +15,7 @@ git remote add 'upstream' 'https://github.com/catalyst-team/classification' || t
 git fetch upstream master
 
 YAPF_FLAGS=(
-    '--style' "$ROOT/.style.yapf"
+    '--style' "$ROOT/setup.cfg"
     '--recursive'
     '--parallel'
 )
