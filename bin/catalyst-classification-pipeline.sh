@@ -7,10 +7,12 @@
 #version         :19.09.2
 #==============================================================================
 
+set -e
+
 usage()
 {
-    cat << USAGE >&2
-Usage: $(basename $0) [OPTION...] [catalyst-dl run args...]
+  cat << USAGE >&2
+Usage: $(basename "$0") [OPTION...] [catalyst-dl run args...]
 
   -s, --skipdata                       Skip data preparation
   -j, --num-workers NUM_WORKERS        Number of data loading/processing workers
@@ -38,30 +40,8 @@ Example:
     --batch-size 256 \\
     --criterion FocalLossMultiClass
 USAGE
-    exit 1
+  exit 1
 }
-
-set -e
-
-# --- test part
-# uncomment and run bash ./bin/catalyst-classification-pipeline.sh
-
-#mkdir -p ./data
-#download-gdrive 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
-#tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
-#mv ants_bees_cleared_190806 ./data/origin
-#
-#export CUDNN_BENCHMARK="True"
-#export CUDNN_DETERMINISTIC="True"
-#
-#export CONFIG_TEMPLATE=./configs/templates/main.yml
-#export WORKDIR=./logs
-#export DATADIR=./data/origin
-#export NUM_WORKERS=4
-#export BATCH_SIZE=64
-#export MAX_IMAGE_SIZE=128
-#export BALANCE_STRATEGY=128
-#export CRITERION=FocalLossMultiClass
 
 
 # ---- environment variables
@@ -76,18 +56,9 @@ CRITERION=${CRITERION:="FocalLossMultiClass"}  # BCEWithLogits , CrossEntropyLos
 DATADIR=${DATADIR:="./data/origin"}
 WORKDIR=${WORKDIR:="./logs"}
 SKIPDATA=""
-
-# bash argparse
-_parameters=""
+_run_args=""
 while (( "$#" )); do
-  case $1 in
-    -h|--help)
-      usage
-      ;;
-    -s|--skipdata)
-      SKIPDATA="true"
-      shift
-      ;;
+  case "$1" in
     -j|--num-workers)
       NUM_WORKERS=$2
       shift 2
@@ -124,8 +95,15 @@ while (( "$#" )); do
       WORKDIR=$2
       shift 2
       ;;
+    -s|--skipdata)
+      SKIPDATA="true"
+      shift
+      ;;
+    -h|--help)
+      usage
+      ;;
     *)
-      _parameters="${_parameters} $1"
+      _run_args="${_run_args} $1"
       shift
       ;;
   esac
@@ -133,70 +111,71 @@ done
 
 date=$(date +%y%m%d-%H%M%S)
 postfix=$(openssl rand -hex 4)
-logname="$date-$postfix"
-export DATASET_DIR=$WORKDIR/dataset
-export IMAGES_DIR=$DATASET_DIR/images
-export CONFIG_DIR=$WORKDIR/configs-${logname}
-export LOGDIR=$WORKDIR/logdir-${logname}
-export SERVING_DIR=$WORKDIR/serving-${logname}
+logname="${date}-${postfix}"
+export DATASET_DIR=${WORKDIR}/dataset
+export IMAGES_DIR=${DATASET_DIR}/images
+export CONFIG_DIR=${WORKDIR}/configs-${logname}
+export LOGDIR=${WORKDIR}/logdir-${logname}
+export SERVING_DIR=${WORKDIR}/serving-${logname}
 
-mkdir -p $WORKDIR
-mkdir -p $DATASET_DIR
-mkdir -p $IMAGES_DIR
-mkdir -p $CONFIG_DIR
-mkdir -p $LOGDIR
-mkdir -p $SERVING_DIR
+for dir in ${WORKDIR} ${DATASET_DIR} ${IMAGES_DIR} ${CONFIG_DIR} ${LOGDIR} ${SERVING_DIR}; do
+  mkdir -p ${dir}
+done
+
 
 # ---- data preparation
 
 if [[ -z "${SKIPDATA}" ]]; then
-    catalyst-data process-images \
-        --in-dir $DATADIR \
-        --out-dir $IMAGES_DIR \
-        --num-workers $NUM_WORKERS \
-        --max-size $MAX_IMAGE_SIZE \
-        --clear-exif
+  catalyst-data process-images \
+    --in-dir ${DATADIR} \
+    --out-dir ${IMAGES_DIR} \
+    --num-workers ${NUM_WORKERS} \
+    --max-size ${MAX_IMAGE_SIZE} \
+    --clear-exif
 
-    catalyst-data tag2label \
-        --in-dir $IMAGES_DIR \
-        --out-dataset $DATASET_DIR/dataset_raw.csv \
-        --out-labeling $DATASET_DIR/tag2class.json
+  catalyst-data tag2label \
+    --in-dir ${IMAGES_DIR} \
+    --out-dataset ${DATASET_DIR}/dataset_raw.csv \
+    --out-labeling ${DATASET_DIR}/tag2class.json
 
-    catalyst-data split-dataframe \
-        --in-csv $DATASET_DIR/dataset_raw.csv \
-        --tag2class $DATASET_DIR/tag2class.json \
-        --tag-column=tag --class-column=class \
-        --n-folds=5 --train-folds=0,1,2,3 \
-        --out-csv=$DATASET_DIR/dataset.csv
+  catalyst-data split-dataframe \
+    --in-csv ${DATASET_DIR}/dataset_raw.csv \
+    --tag2class ${DATASET_DIR}/tag2class.json \
+    --tag-column=tag --class-column=class \
+    --n-folds=5 --train-folds=0,1,2,3 \
+    --out-csv=${DATASET_DIR}/dataset.csv
 fi
 
 
 # ---- config preparation
 
 python ./scripts/prepare_config.py \
-    --in-template=$CONFIG_TEMPLATE \
-    --out-config=$CONFIG_DIR/config.yml \
-    --expdir=./src \
-    --dataset-path=$DATASET_DIR \
-    --num-workers=$NUM_WORKERS \
-    --batch-size=$BATCH_SIZE \
-    --max-image-size=$MAX_IMAGE_SIZE \
-    --balance-strategy=$BALANCE_STRATEGY \
-    --criterion=$CRITERION
+  --in-template=${CONFIG_TEMPLATE} \
+  --out-config=${CONFIG_DIR}/config.yml \
+  --expdir=./src \
+  --dataset-path=${DATASET_DIR} \
+  --num-workers=${NUM_WORKERS} \
+  --batch-size=${BATCH_SIZE} \
+  --max-image-size=${MAX_IMAGE_SIZE} \
+  --balance-strategy=${BALANCE_STRATEGY} \
+  --criterion=${CRITERION}
 
-cp -r ./configs/_common.yml $CONFIG_DIR/_common.yml
+cp -r ./configs/_common.yml ${CONFIG_DIR}/_common.yml
 
 
 # ---- model training
 
 catalyst-dl run \
-    -C $CONFIG_DIR/_common.yml $CONFIG_DIR/config.yml \
-    --logdir $LOGDIR ${_parameters}
+  -C ${CONFIG_DIR}/_common.yml ${CONFIG_DIR}/config.yml \
+  --logdir ${LOGDIR} ${_run_args}
 
 
 # ---- model tracing
 
-catalyst-dl trace $LOGDIR -m $TRACED_METHOD --out-model $LOGDIR/traced.pth
+catalyst-dl trace \
+  ${LOGDIR} \
+  --method ${TRACED_METHOD} \
+  --out-model ${LOGDIR}/traced.pth
 
 
 # ---- model serving
@@ -211,5 +190,5 @@ print(path + "tag2class.json")
 EOF
 )
 
-cp $LOGDIR/traced.pth $SERVING_DIR/model.pth
-cp $TAG2CLS_PATH $SERVING_DIR
+cp ${LOGDIR}/traced.pth ${SERVING_DIR}/model.pth
+cp ${TAG2CLS_PATH} ${SERVING_DIR}
