@@ -1,3 +1,2 @@
-albumentations==0.4.0
-opencv-python==4.1.1.26
+albumentations==0.4.3
 jinja2

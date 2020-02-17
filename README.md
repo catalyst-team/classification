@@ -2,9 +2,9 @@
 
 [![Catalyst logo](https://raw.githubusercontent.com/catalyst-team/catalyst-pics/master/pics/catalyst_logo.png)](https://github.com/catalyst-team/catalyst)
 
-**Accelerated DL & RL**
+**Accelerated DL & RL!**
 
-[![Build Status](http://66.248.205.49:8111/app/rest/builds/buildType:id:Catalyst_Deploy/statusIcon.svg)](http://66.248.205.49:8111/project.html?projectId=Catalyst&tab=projectOverview&guest=1)
+[![Build Status](http://66.248.205.49:8111/app/rest/builds/buildType:id:Classification_Tests/statusIcon.svg)](http://66.248.205.49:8111/project.html?projectId=Classification&tab=projectOverview&guest=1)
 [![Pipi version](https://img.shields.io/pypi/v/catalyst.svg)](https://pypi.org/project/catalyst/)
 [![Docs](https://img.shields.io/badge/dynamic/json.svg?label=docs&url=https%3A%2F%2Fpypi.org%2Fpypi%2Fcatalyst%2Fjson&query=%24.info.version&colorB=brightgreen&prefix=v)](https://catalyst-team.github.io/catalyst/index.html)
 [![PyPI Status](https://pepy.tech/badge/catalyst)](https://pepy.tech/project/catalyst)
@@ -29,7 +29,7 @@ Part of [PyTorch Ecosystem](https://pytorch.org/ecosystem/). Part of [Catalyst E
 
 ---
 
-# Catalyst.Classification [![Build Status](https://travis-ci.com/catalyst-team/classification.svg?branch=master)](https://travis-ci.com/catalyst-team/classification) [![Github contributors](https://img.shields.io/github/contributors/catalyst-team/classification.svg?logo=github&logoColor=white)](https://github.com/catalyst-team/classification/graphs/contributors)
+# Catalyst.Classification [![Build Status](http://66.248.205.49:8111/app/rest/builds/buildType:id:Classification_Tests/statusIcon.svg)](http://66.248.205.49:8111/project.html?projectId=Classification&tab=projectOverview&guest=1) [![Github contributors](https://img.shields.io/github/contributors/catalyst-team/classification.svg?logo=github&logoColor=white)](https://github.com/catalyst-team/classification/graphs/contributors)
 
 You will learn how to build image classification pipeline with transfer learning using the Catalyst framework to get reproducible results.
 

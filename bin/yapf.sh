@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Cause the script to exit if a single command fails
-set -eo pipefail
+set -eo pipefail -v
 
 # this stops git rev-parse from failing if we run this from the .git directory
 builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
@@ -9,16 +9,13 @@ builtin cd "$(dirname "${BASH_SOURCE:-$0}")"
 ROOT="$(git rev-parse --show-toplevel)"
 builtin cd "$ROOT" || exit 1
 
-if ! [[ -e "$ROOT/.git/refs/remotes/upstream" ]]; then
-    git remote add 'upstream' 'https://github.com/catalyst-team/classification'
-fi
-
+git remote add 'upstream' 'https://github.com/catalyst-team/classification' || true
 
 # Only fetch master since that's the branch we're diffing against.
 git fetch upstream master
 
 YAPF_FLAGS=(
-    '--style' "$ROOT/.style.yapf"
+    '--style' "$ROOT/setup.cfg"
     '--recursive'
     '--parallel'
 )

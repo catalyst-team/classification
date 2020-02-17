@@ -1,19 +1,16 @@
-import json
 import collections
+import json
+
 import numpy as np
 
 import torch
 import torch.nn as nn
 
-from catalyst.data.augmentor import Augmentor
-from catalyst.data.dataset import ListDataset
-from catalyst.data.reader import ScalarReader, ReaderCompose, ImageReader
-from catalyst.data.sampler import BalanceClassSampler
+from catalyst.data import (
+    BalanceClassSampler, ImageReader, ListDataset, ReaderCompose, ScalarReader
+)
 from catalyst.dl import ConfigExperiment
-from catalyst.utils.pandas import read_csv_data
-
-from .transforms import pre_transforms, post_transforms, hard_transform, \
-    Compose
+from catalyst.utils import read_csv_data
 
 
 class Experiment(ConfigExperiment):
@@ -29,32 +26,6 @@ class Experiment(ConfigExperiment):
             for param in model_.encoder_net.parameters():
                 param.requires_grad = True
         return model_
-
-    @staticmethod
-    def get_transforms(
-        stage: str = None,
-        mode: str = None,
-        image_size: int = 224,
-        one_hot_classes: int = None
-    ):
-        pre_transform_fn = pre_transforms(image_size=image_size)
-
-        if mode == "train":
-            post_transform_fn = Compose(
-                [hard_transform(image_size=image_size),
-                 post_transforms()]
-            )
-        elif mode in ["valid", "infer"]:
-            post_transform_fn = post_transforms()
-        else:
-            raise NotImplementedError()
-
-        result_fn = Compose([pre_transform_fn, post_transform_fn])
-        result = Augmentor(
-            dict_key="image", augment_fn=lambda x: result_fn(image=x)["image"]
-        )
-
-        return result
 
     def get_datasets(
         self,
@@ -72,7 +43,6 @@ class Experiment(ConfigExperiment):
         folds_seed: int = 42,
         n_folds: int = 5,
         one_hot_classes: int = None,
-        image_size: int = 224,
         balance_strategy: str = "upsample"
     ):
         datasets = collections.OrderedDict()
@@ -96,13 +66,13 @@ class Experiment(ConfigExperiment):
 
         open_fn = [
             ImageReader(
-                input_key="filepath", output_key="image", datapath=datapath
+                input_key="filepath", output_key="image", rootpath=datapath
             ),
             ScalarReader(
                 input_key="class",
                 output_key="targets",
                 default_value=-1,
-                dtype=np.int64
+                dtype=np.int64,
             )
         ]
 
@@ -127,10 +97,7 @@ class Experiment(ConfigExperiment):
                     source,
                     open_fn=open_fn,
                     dict_transform=self.get_transforms(
-                        stage=stage,
-                        mode=mode,
-                        image_size=image_size,
-                        one_hot_classes=one_hot_classes
+                        stage=stage, dataset=mode
                     ),
                 )
                 if mode == "train":
