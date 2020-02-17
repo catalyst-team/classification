@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 set -e
 
-mkdir -p data
+mkdir -p ./data
 
 download-gdrive 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
 tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
 mv ants_bees_cleared_190806 ./data/origin
 
-USE_WANDB=0 \
 CUDA_VISIBLE_DEVICES="" \
 CUDNN_BENCHMARK="True" \
 CUDNN_DETERMINISTIC="True" \
-WORKDIR=./logs \
-DATADIR=./data/origin \
-MAX_IMAGE_SIZE=224 \
-BALANCE_STRATEGY=64 \
-CONFIG_TEMPLATE=./configs/templates/main.yml \
-NUM_WORKERS=0 \
-BATCH_SIZE=64 \
-CRITERION=CrossEntropyLoss \
-./bin/catalyst-classification-pipeline.sh --check
+./bin/catalyst-classification-pipeline.sh \
+  --config-template ./configs/templates/main.yml \
+  --workdir ./logs \
+  --datadir ./data/origin \
+  --num-workers 0 \
+  --batch-size 64 \
+  --max-image-size 224 \
+  --balance-strategy 64 \
+  --criterion CrossEntropyLoss \
+  --check
 
 
 python -c """

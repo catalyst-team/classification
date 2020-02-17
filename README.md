@@ -150,16 +150,15 @@ We will initialize ResNet-18 model with a pre-trained network. During current pi
 CUDA_VISIBLE_DEVICES=0 \
 CUDNN_BENCHMARK="True" \
 CUDNN_DETERMINISTIC="True" \
-WORKDIR=./logs \
-DATADIR=./data/origin \
-MAX_IMAGE_SIZE=224 \  # 224 or 448 works good
-IMG_EXTENSION=png \
-BALANCE_STRATEGY=256 \  # images in epoch per class, 1024 works good
-CONFIG_TEMPLATE=./configs/templates/main.yml \
-NUM_WORKERS=4 \
-BATCH_SIZE=256 \
-CRITERION=CrossEntropyLoss \  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
-bash ./bin/catalyst-classification-pipeline.sh
+bash ./bin/catalyst-classification-pipeline.sh \
+  --workdir ./logs \
+  --datadir ./data/origin \
+  --max-image-size 224 \  # 224 or 448 works good
+  --balance-strategy 256 \  # images in epoch per class, 1024 works good
+  --config-template ./configs/templates/main.yml \
+  --num-workers 4 \
+  --batch-size 256 \
+  --criterion CrossEntropyLoss \  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
 ```
 
 #### Run in docker:
