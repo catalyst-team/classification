@@ -1,2 +1,2 @@
-catalyst[cv]==20.2.4
+catalyst[cv]==20.3
 jinja2
