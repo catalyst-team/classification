@@ -35,9 +35,6 @@ stages:
     batch_size: 64
     per_gpu_scaling: True
     one_hot_classes: *num_classes
-    in_csv_train: "./data/dataset_train.csv"
-    in_csv_valid: "./data/dataset_valid.csv"
-    datapath: "./data/dataset"
 
   transform_params:
     _key_value: True

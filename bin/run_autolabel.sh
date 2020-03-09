@@ -10,7 +10,7 @@ THRESHOLD=0.95
 
 if [[ -z "$RUN_CONFIG" ]]
 then
-      RUN_CONFIG=exp_splits.yml
+      RUN_CONFIG=autolabel.yml
 fi
 
 
