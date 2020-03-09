@@ -254,3 +254,57 @@ You can find much more options for configuring experiments in [catalyst document
 
 </p>
 </details>
+
+## 6. Autolabel
+
+#### Goals
+
+The classical way to reduce the amount of unlabeled data by having a trained model would be to run unlabeled dataset through the model and automatically label images with confidence of label prediction above the threshold. Then automatically labeled data pushing in the training process so as to optimize prediction accuracy.
+
+To run the iteration process we need to specify number of iterations `n-trials` and `threshold` of confidence to label image.
+
+- tune ResnetEncoder
+- train MultiHeadNet for image classification
+- predict unlabelled dataset
+- use most confident predictions as true labels
+- repeat
+
+
+#### Preparation
+
+```bash
+catalyst.classification/data/
+    data_raw/
+        all/
+            ...
+    data_clean/
+        0/
+            ...
+        1/
+            ...
+```
+
+#### Model training
+
+```bash
+docker run -it --rm --shm-size 8G --runtime=nvidia \
+   -v $(pwd):/workspace/ \
+   -e "CUDA_VISIBLE_DEVICES=0" \
+      catalyst-classification bash ./bin/run_autolabel.sh \
+    --data-raw ./data/data_raw/ \
+    --data-clean ./data/data_clean/ \
+    --baselogdir ./logs/autolabel \
+    --n-trials 10 \
+    --threshold 0.8
+```
+
+#### Results of autolabeling
+Out:
+```
+Predicted: 23 (100.00%)
+...
+Pseudo Lgabeling done. Nothing more to label.
+```
+Logs for trainings visualisation can be found here: `./logs/autolabel` 
+
+Labeled raw data can be found here: `/data/data_clean/dataset.csv`
