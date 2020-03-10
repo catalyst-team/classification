@@ -1,12 +1,25 @@
 #!/usr/bin/env bash
-set -e
 
+# Cause the script to exit if a single command fails
+set -eo pipefail -v
+
+
+###################################  DATA  ####################################
+rm -rf ./data
+
+# load the data
 mkdir -p ./data
 
 download-gdrive 1czneYKcE2sT8dAMHz3FL12hOU7m1ZkE7 ants_bees_cleared_190806.tar.gz
 tar -xf ants_bees_cleared_190806.tar.gz &>/dev/null
 mv ants_bees_cleared_190806 ./data/origin
 
+
+################################  pipeline 00  ################################
+rm -rf ./logs
+
+
+################################  pipeline 01  ################################
 CUDA_VISIBLE_DEVICES="" \
 CUDNN_BENCHMARK="True" \
 CUDNN_DETERMINISTIC="True" \
@@ -41,3 +54,7 @@ assert loss_class < 0.6
 assert auc_class > 0.8
 assert accuracy_class01 > 0.7
 """
+
+
+################################  pipeline 99  ################################
+rm -rf ./logs
