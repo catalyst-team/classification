@@ -11,10 +11,10 @@
 #     --balance-strategy=1024
 
 import argparse
-import json
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
+import safitty
 
 
 def build_args(parser):
@@ -60,7 +60,7 @@ def render_config(
 
     template = _env.get_template(in_template.name)
 
-    tag2class = json.load(open(dataset_path / "tag2class.json"))
+    tag2class = safitty.load(dataset_path / "tag2class.json")
     num_classes = len(tag2class)
     class_names = [
         key for key, _ in sorted(tag2class.items(), key=lambda x: x[1])
