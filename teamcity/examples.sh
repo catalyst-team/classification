@@ -1,5 +1,8 @@
-echo "pip install -r requirements/requirements.txt"
+#!/usr/bin/env bash
+
+# Cause the script to exit if a single command fails
+set -eo pipefail -v
+
 pip install -r requirements/requirements.txt
 
-echo 'executing ./bin/_check_pipeline.sh'
 bash ./bin/tests/_check_pipeline.sh

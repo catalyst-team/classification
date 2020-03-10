@@ -1,7 +1,7 @@
 import collections
-import json
 
 import numpy as np
+import safitty
 
 import torch
 import torch.nn as nn
@@ -43,12 +43,10 @@ class Experiment(ConfigExperiment):
         folds_seed: int = 42,
         n_folds: int = 5,
         one_hot_classes: int = None,
-        balance_strategy: str = "upsample"
+        balance_strategy: str = "upsampling",
     ):
         datasets = collections.OrderedDict()
-        tag2class = json.load(open(tag2class)) \
-            if tag2class is not None \
-            else None
+        tag2class = safitty.load(tag2class) if tag2class is not None else None
 
         df, df_train, df_valid, df_infer = read_csv_data(
             in_csv=in_csv,
