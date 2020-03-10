@@ -43,7 +43,7 @@ class Experiment(ConfigExperiment):
         folds_seed: int = 42,
         n_folds: int = 5,
         one_hot_classes: int = None,
-        balance_strategy: str = "upsample"
+        balance_strategy: str = "upsampling",
     ):
         datasets = collections.OrderedDict()
         tag2class = json.load(open(tag2class)) \

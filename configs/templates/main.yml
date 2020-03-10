@@ -12,7 +12,7 @@ args:
 
 stages:
   state_params:
-    main_metric: &reduce_metric  auc_class/_mean
+    main_metric: &reduced_metric auc_class/_mean
     minimize_metric: False
 
   data_params:
@@ -44,10 +44,10 @@ stages:
         - &hard_transforms
           transform: A.Compose
           transforms:
-            - transform: A.Cutout
-              num_holes: 4
-              max_w_size: 56  # 224 // 4
-              max_h_size: 56  # 224 // 4
+            - transform: A.CoarseDropout
+              max_holes: 4
+              max_height: 56  # 224 // 4
+              max_width: 56  # 224 // 4
             - transform: A.ShiftScaleRotate
               shift_limit: 0.1
               scale_limit: 0.1
@@ -66,7 +66,7 @@ stages:
               contrast_limit: 0.5
             - transform: A.RandomGamma
             - transform: A.CLAHE
-            - transform: A.JpegCompression
+            - transform: A.ImageCompression
               quality_lower: 50
         - &post_transforms
           transform: A.Compose
@@ -109,8 +109,8 @@ stages:
       input_key: targets_one_hot
       output_key: logits
       prefix: auc_class
-      num_classes: *num_classes
       class_names: *class_names
+      num_classes: *num_classes
     f1_class:
       callback: F1ScoreCallback
       input_key: targets_one_hot
@@ -121,14 +121,14 @@ stages:
       input_key: targets
       output_key: logits
       prefix: cm_class
-      num_classes: *num_classes
       class_names: *class_names
+      num_classes: *num_classes
 
     optimizer:
       callback: OptimizerCallback
       loss_key: loss_class
     scheduler:
       callback: SchedulerCallback
-      reduce_metric: *reduce_metric
+      reduced_metric: *reduced_metric
     saver:
       callback: CheckpointCallback

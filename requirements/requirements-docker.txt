@@ -1,2 +1,2 @@
-albumentations==0.4.3
+albumentations==0.4.5
 jinja2
