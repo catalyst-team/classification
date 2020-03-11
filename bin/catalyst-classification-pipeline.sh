@@ -55,7 +55,9 @@ CONFIG_TEMPLATE=${CONFIG_TEMPLATE:="./configs/templates/main.yml"}
 CRITERION=${CRITERION:="FocalLossMultiClass"}  # BCEWithLogits , CrossEntropyLoss
 DATADIR=${DATADIR:="./data/origin"}
 WORKDIR=${WORKDIR:="./logs"}
+DATASET_DIR=${DATASET_DIR:=${WORKDIR}/dataset}
 SKIPDATA=""
+
 _run_args=""
 while (( "$#" )); do
   case "$1" in
@@ -95,6 +97,10 @@ while (( "$#" )); do
       WORKDIR=$2
       shift 2
       ;;
+    --dataset-dir)
+      DATASET_DIR=$2
+      shift 2
+      ;;
     -s|--skipdata)
       SKIPDATA="true"
       shift
@@ -112,13 +118,11 @@ done
 date=$(date +%y%m%d-%H%M%S)
 postfix=$(openssl rand -hex 4)
 logname="${date}-${postfix}"
-export DATASET_DIR=${WORKDIR}/dataset
-export IMAGES_DIR=${DATASET_DIR}/images
 export CONFIG_DIR=${WORKDIR}/configs-${logname}
 export LOGDIR=${WORKDIR}/logdir-${logname}
 export SERVING_DIR=${WORKDIR}/serving-${logname}
 
-for dir in ${WORKDIR} ${DATASET_DIR} ${IMAGES_DIR} ${CONFIG_DIR} ${LOGDIR} ${SERVING_DIR}; do
+for dir in ${WORKDIR} ${DATASET_DIR} ${CONFIG_DIR} ${LOGDIR} ${SERVING_DIR}; do
   mkdir -p ${dir}
 done
 
@@ -126,24 +130,12 @@ done
 # ---- data preparation
 
 if [[ -z "${SKIPDATA}" ]]; then
-  catalyst-data process-images \
-    --in-dir ${DATADIR} \
-    --out-dir ${IMAGES_DIR} \
+  bash ./bin/_data_preparation.sh \
     --num-workers ${NUM_WORKERS} \
-    --max-size ${MAX_IMAGE_SIZE} \
-    --clear-exif
-
-  catalyst-data tag2label \
-    --in-dir ${IMAGES_DIR} \
-    --out-dataset ${DATASET_DIR}/dataset_raw.csv \
-    --out-labeling ${DATASET_DIR}/tag2class.json
-
-  catalyst-data split-dataframe \
-    --in-csv ${DATASET_DIR}/dataset_raw.csv \
-    --tag2class ${DATASET_DIR}/tag2class.json \
-    --tag-column=tag --class-column=class \
-    --n-folds=5 --train-folds=0,1,2,3 \
-    --out-csv=${DATASET_DIR}/dataset.csv
+    --max-image-size ${MAX_IMAGE_SIZE} \
+    --datadir ${DATADIR} \
+    --workdir ${WORKDIR} \
+    --dataset-dir ${DATASET_DIR}
 fi
 
 
