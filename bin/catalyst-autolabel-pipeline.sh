@@ -2,7 +2,40 @@
 
 set -e
 
-# @TODO: add help (`usage()` function like in catalyst-classification-pipeline)
+usage()
+{
+  cat << USAGE >&2
+Usage: $(basename "$0") [OPTION...] [catalyst-dl run args...]
+
+  --n-trials N_TRIALS                 Number of trials to repeat train / infer process
+  --threshold THRESHOLD               Threshold for prediction confidence in labeling
+  -j, --num-workers NUM_WORKERS       Number of data loading/processing workers
+  --max-image-size MAX_IMAGE_SIZE     Target size of images e.g. 224, 448
+  --config-template CONFIG_TEMPLATE   Model config to use
+  --datadir-clean DATADIR_CLEAN       Path to root directory with labeled data
+  --datadir-raw DATADIR_RAW           Path to root directory with unlabeled data
+  --workdir WORKDIR                   Working directory, where to store the result
+  catalyst-dl run args                Execute \`catalyst-dl run\` with args
+
+Example:
+  CUDA_VISIBLE_DEVICES=0 \\
+  CUDNN_BENCHMARK="True" \\
+  CUDNN_DETERMINISTIC="True" \\
+  ./bin/catalyst-autolabel-pipeline.sh \\
+    --n-trials 10 \\
+    --threshold 0.95 \\
+    --num-workers 4 \\
+    --max-image-size 224 \\
+    --config-template ./configs/templates/autolabel.yml \\
+    --datadir-clean ./data/origin \\
+    --datadir-raw ./data/raw \\
+    --workdir ./logs \\
+    --verbose
+
+USAGE
+  exit 1
+}
+
 
 # ---- environment variables
 

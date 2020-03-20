@@ -2,7 +2,32 @@
 
 set -e
 
-# @TODO: add help (`usage()` function like in catalyst-classification-pipeline)
+usage()
+{
+  cat << USAGE >&2
+Usage: $(basename "$0") [OPTION...]
+
+  --no-process                      Skip data pre-processing
+  --no-split                        Skip data splitting into folds
+  --max-image-size MAX_IMAGE_SIZE   Target size of images e.g. 224, 448
+  -j, --num-workers NUM_WORKERS     Number of data loading/processing workers
+  --datadir DATADIR                 Path to root directory with original images
+  --workdir WORKDIR                 Working directory, where to store the result
+  --dataset-dir DATASET_DIR         Path to root directory with dataset info, e.g. fold splits, results of labeling
+  --images-dir IMAGES_DIR           Path to root directory where to store images via script processing
+
+Example:
+  ./bin/_data_preparation.sh \\
+    --max-image-size 224 \\
+    --num-workers 4 \\
+    --datadir ./data/origin \\
+    --workdir ./logs \\
+    --dataset-dir ./logs/dataset \\
+    --images-dir ./logs/images
+USAGE
+  exit 1
+}
+
 
 # ---- environment variables
 
