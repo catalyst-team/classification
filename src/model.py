@@ -57,8 +57,9 @@ class MultiHeadNet(nn.Module):
 
         encoder_net = ResnetEncoder(**encoder_params_)
         encoder_input_shape = (3, image_size, image_size)
-        encoder_output = \
-            utils.get_network_output(encoder_net, encoder_input_shape)
+        encoder_output = utils.get_network_output(
+            encoder_net, encoder_input_shape
+        )
         enc_size = encoder_output.nelement()
         embedding_net_params_["hiddens"].insert(0, enc_size)
         embedding_net = SequentialNet(**embedding_net_params_)
@@ -72,7 +73,7 @@ class MultiHeadNet(nn.Module):
         net = cls(
             encoder_net=encoder_net,
             embedding_net=embedding_net,
-            head_nets=head_nets
+            head_nets=head_nets,
         )
 
         return net

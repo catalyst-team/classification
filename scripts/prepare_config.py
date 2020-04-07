@@ -55,7 +55,7 @@ def render_config(
     _env = Environment(
         loader=FileSystemLoader([str(_template_path)]),
         trim_blocks=True,
-        lstrip_blocks=True
+        lstrip_blocks=True,
     )
 
     template = _env.get_template(in_template.name)
@@ -78,7 +78,7 @@ def render_config(
             batch_size=batch_size,
             max_image_size=max_image_size,
             balance_strategy=balance_strategy,
-            criterion=criterion
+            criterion=criterion,
         )
     )
 

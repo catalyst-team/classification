@@ -4,7 +4,6 @@
 set -eo pipefail -v
 
 pip install -r requirements/requirements.txt
-
 pip install -r requirements/requirements-dev.txt
 
-make check-style
+catalyst-check-codestyle
