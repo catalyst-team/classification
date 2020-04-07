@@ -1,3 +1,3 @@
-catalyst[cv]==20.3
+catalyst[cv]==20.4
 jinja2
 safitty>=1.2.3
