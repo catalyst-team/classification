@@ -7,7 +7,11 @@ import torch
 import torch.nn as nn
 
 from catalyst.data import (
-    BalanceClassSampler, ImageReader, ListDataset, ReaderCompose, ScalarReader
+    BalanceClassSampler,
+    ImageReader,
+    ListDataset,
+    ReaderCompose,
+    ScalarReader,
 )
 from catalyst.dl import ConfigExperiment
 from catalyst.utils import read_csv_data
@@ -59,7 +63,7 @@ class Experiment(ConfigExperiment):
             class_column=class_column,
             tag_column=tag_column,
             seed=folds_seed,
-            n_folds=n_folds
+            n_folds=n_folds,
         )
 
         open_fn = [
@@ -71,7 +75,7 @@ class Experiment(ConfigExperiment):
                 output_key="targets",
                 default_value=-1,
                 dtype=np.int64,
-            )
+            ),
         ]
 
         if one_hot_classes:
@@ -81,7 +85,7 @@ class Experiment(ConfigExperiment):
                     output_key="targets_one_hot",
                     default_value=-1,
                     dtype=np.int64,
-                    one_hot_classes=one_hot_classes
+                    one_hot_classes=one_hot_classes,
                 )
             )
 
