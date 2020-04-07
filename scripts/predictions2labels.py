@@ -62,7 +62,7 @@ def main(args, _=None):
         )
 
     counter_ = 0
-    for i, row in df_infer.iterrows():
+    for _, row in df_infer.iterrows():
         if row["confidence"] < args.threshold:
             continue
 
