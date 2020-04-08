@@ -149,6 +149,9 @@ stages:
       callback: CheckpointCallback
 
   infer:
+    state_params:
+      num_epochs: 1
+
     data_params:
       in_csv: null
       in_csv_train: null

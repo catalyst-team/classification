@@ -159,20 +159,20 @@ bash ./bin/catalyst-classification-pipeline.sh \
   --config-template ./configs/templates/main.yml \
   --num-workers 4 \
   --batch-size 256 \
-  --criterion CrossEntropyLoss \  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
+  --criterion CrossEntropyLoss  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
 ```
 
 #### Run in docker:
 
 ```bash
 docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ \
-   -v $(pwd)/logs:/logdir/ \
-   -v $(pwd)/data/origin:/data \
-   -e "CUDA_VISIBLE_DEVICES=0" \
-   -e "CUDNN_BENCHMARK='True'" \
-   -e "CUDNN_DETERMINISTIC='True'" \
-   catalyst-classification ./bin/catalyst-classification-pipeline.sh \
+  -v $(pwd):/workspace/ \
+  -v $(pwd)/logs:/logdir/ \
+  -v $(pwd)/data/origin:/data \
+  -e "CUDA_VISIBLE_DEVICES=0" \
+  -e "CUDNN_BENCHMARK='True'" \
+  -e "CUDNN_DETERMINISTIC='True'" \
+  catalyst-classification ./bin/catalyst-classification-pipeline.sh \
     --workdir /logdir \
     --datadir /data \
     --max-image-size 224 \  # 224 or 448 works good
@@ -180,7 +180,7 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
     --config-template ./configs/templates/main.yml \
     --num-workers 4 \
     --batch-size 256 \
-    --criterion CrossEntropyLoss \  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
+    --criterion CrossEntropyLoss  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
 ```
 The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
 
@@ -291,7 +291,7 @@ CUDA_VISIBLE_DEVICES=0 \
 CUDNN_BENCHMARK="True" \
 CUDNN_DETERMINISTIC="True" \
 bash ./bin/catalyst-autolabel-pipeline.sh \
-  --workdir ./logs
+  --workdir ./logs \
   --datadir-clean ./data/clean \
   --datadir-raw ./data/raw \
   --n-trials 10 \
@@ -311,11 +311,15 @@ docker run -it --rm --shm-size 8G --runtime=nvidia \
   -e CUDNN_BENCHMARK="True" \
   -e CUDNN_DETERMINISTIC="True" \
   catalyst-classification bash ./bin/catalyst-autolabel-pipeline.sh \
-    --data-raw ./data/data_raw/ \
-    --data-clean ./data/data_clean/ \
-    --baselogdir ./logs/autolabel \
+    --workdir ./logs \
+    --datadir-clean ./data/clean \
+    --datadir-raw ./data/raw \
     --n-trials 10 \
-    --threshold 0.8
+    --threshold 0.8 \
+    --config-template ./configs/templates/autolabel.yml \
+    --max-image-size 224 \
+    --num-workers 4 \
+    --batch-size 256
 ```
 
 #### Results of autolabeling
