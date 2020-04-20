@@ -58,7 +58,7 @@ def main(args, _=None):
 
     if df_infer.shape[0] == 0:
         raise NotImplementedError(
-            "Pseudo Lgabeling done. Nothing more to label."
+            "Pseudo Labeling done. Nothing more to label."
         )
 
     counter_ = 0
@@ -74,6 +74,11 @@ def main(args, _=None):
 
         counter_ += 1
     print(f"Predicted: {counter_} ({100 * counter_ / len(df_infer):2.2f}%)")
+
+    if counter_ == 0:
+        raise NotImplementedError(
+            "Pseudo Labeling done. Nothing more to label."
+        )
 
 
 if __name__ == "__main__":
