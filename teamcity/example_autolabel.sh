@@ -5,4 +5,4 @@ set -eo pipefail -v
 
 pip install -r requirements/requirements.txt
 
-bash ./bin/tests/_check_pipeline.sh
+bash ./bin/tests/_check_autolabel_pipeline.sh
