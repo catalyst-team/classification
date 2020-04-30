@@ -1,4 +1,4 @@
-name: classification
+name: autolabel
 on:
   push:
     branches:
@@ -21,4 +21,4 @@ jobs:
           python-version: 3.6
 
       - name: check pipeline
-        run: bash teamcity/classification.sh
+        run: bash teamcity/autolabel.sh
