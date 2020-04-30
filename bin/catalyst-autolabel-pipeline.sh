@@ -140,6 +140,7 @@ for ((i=0; i < N_TRIALS; ++i)); do
     --stages/stage1="None":str --stages/stage2="None":str \
     --stages/infer/data_params/datapath="${RAW_DATASET_DIR}/images":str \
     --stages/infer/data_params/in_csv_infer="${RAW_DATASET_DIR}/dataset_raw.csv":str \
+    --stages/infer/callbacks_params/loader/resume="${LOGDIR}/checkpoints/best_full.pth":str \
     --stages/infer/callbacks_params/infer/out_prefix="${LOGDIR}/predictions/":str
 
   # select the most confident predictions and join them to the clear data

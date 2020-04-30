@@ -26,63 +26,13 @@ stages:
     datapath: {{ dataset_path }}/images
 
   transform_params:
-    _key_value: True
-
-    train:
-      transform: A.Compose
-      transforms:
-        - &pre_transforms
-          transform: A.Compose
-          transforms:
-            - transform: A.LongestMaxSize
-              max_size: *image_size
-            - transform: A.PadIfNeeded
-              min_height: *image_size
-              min_width: *image_size
-              border_mode: 0  # cv2.BORDER_CONSTANT
-              value: 0
-        - &hard_transforms
-          transform: A.Compose
-          transforms:
-            - transform: A.CoarseDropout
-              max_holes: 4
-              max_height: 56  # 224 // 4
-              max_width: 56  # 224 // 4
-            - transform: A.ShiftScaleRotate
-              shift_limit: 0.1
-              scale_limit: 0.1
-              rotate_limit: 15
-              border_mode: 2  # cv2.BORDER_REFLECT
-            - transform: A.IAAPerspective
-              scale: [0.02, 0.05]
-            - transform: A.OneOf
-              transforms:
-                - transform: A.HueSaturationValue
-                - transform: A.ToGray
-                - transform: A.RGBShift
-                - transform: A.ChannelShuffle
-            - transform: A.RandomBrightnessContrast
-              brightness_limit: 0.5
-              contrast_limit: 0.5
-            - transform: A.RandomGamma
-            - transform: A.CLAHE
-            - transform: A.ImageCompression
-              quality_lower: 50
-        - &post_transforms
-          transform: A.Compose
-          transforms:
-            - transform: A.Normalize
-            - transform: catalyst.ToTensor
-    valid:
-      transform: A.Compose
-      transforms:
-        - *pre_transforms
-        - *post_transforms
-    infer:
-      transform: A.Compose
-      transforms:
-        - *pre_transforms
-        - *post_transforms
+    transform: A.Compose
+    transforms:
+      - transform: A.Resize
+        height: *image_size
+        width: *image_size
+      - transform: A.Normalize
+      - transform: catalyst.ToTensor
 
   criterion_params:
     _key_value: True
