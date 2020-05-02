@@ -7,14 +7,10 @@ set -eo pipefail -v
 ###################################  DATA  ####################################
 rm -rf ./data
 
-mkdir -p ./data/clean
-mkdir -p ./data/raw/all
-
-cp -r ./dataset/* ./data/clean
-for FILE in ./data/clean/*/*.jpg; do
-  BASENAME=$(basename "${FILE}")
-  cp "${FILE}" ./data/raw/all/data_raw_"${BASENAME}"
-done
+download-gdrive 1kuLN2xqIKmb3U_-gYAdmxBiO4FS_T0ck cifar10-tiny.tar.gz
+tar -xf cifar10-tiny.tar.gz &> /dev/null
+mv ./cifar10-tiny ./data
+rm cifar10-tiny.tar.gz
 
 
 ################################  pipeline 00  ################################
@@ -46,7 +42,9 @@ for label_dir in prefix.glob('*'):
         basename = os.path.basename(path).replace('data_raw_', '')
         counter.update([basename])
 
-    assert all(map(lambda x: x == 2, counter.values()))
+    num_correct = len([x for x in counter.values() if x == 2])
+    num_total = len(counter)
+    assert num_correct / num_total >= 0.8
 """
 
 
