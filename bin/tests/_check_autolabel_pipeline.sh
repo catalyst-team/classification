@@ -24,7 +24,7 @@ bash ./bin/catalyst-autolabel-pipeline.sh \
   --datadir-clean ./data/clean \
   --datadir-raw ./data/raw \
   --n-trials 1 \
-  --threshold 0.8 \
+  --threshold 0.9 \
   --max-image-size 32  \
   --num-workers 0 \
   --batch-size 2
@@ -35,16 +35,16 @@ import os
 from pathlib import Path
 
 prefix = Path('./logs/dataset_clean/images/')
-for label_dir in prefix.glob('*'):
-    counter = Counter()
+counter = Counter()
 
+for label_dir in prefix.glob('*'):
     for path in label_dir.glob('*.jpg'):
         basename = os.path.basename(path).replace('data_raw_', '')
         counter.update([basename])
 
-    num_correct = len([x for x in counter.values() if x == 2])
-    num_total = len(counter)
-    assert num_correct / num_total >= 0.8
+num_correct = len([x for x in counter.values() if x == 2])
+num_total = len(counter)
+assert num_correct / num_total >= 0.8
 """
 
 
