@@ -91,8 +91,8 @@ elif [[ "$DATASET" == "artworks" ]]; then
     mv artworks ./data/origin
 fi
 
-
 ```
+
 </p>
 </details>
 
@@ -116,6 +116,7 @@ Make sure, that final folder with data has the required structure:
         class_name_100500/
             ...
 ```
+
 #### Data location
 
 * The easiest way is to move your data:
@@ -163,31 +164,28 @@ bash ./bin/catalyst-classification-pipeline.sh \
   --config-template ./configs/templates/main.yml \
   --num-workers 4 \
   --batch-size 256 \
-  --criterion CrossEntropyLoss \  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
+  --criterion CrossEntropyLoss  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
 ```
 
 #### Run in docker:
 
 ```bash
-export LOGDIR=$(pwd)/logs
 docker run -it --rm --shm-size 8G --runtime=nvidia \
-   -v $(pwd):/workspace/ \
-   -v $LOGDIR:/logdir/ \
-   -v $(pwd)/data/origin:/data \
-   -e "CUDA_VISIBLE_DEVICES=0" \
-   -e "USE_WANDB=1" \
-   -e "LOGDIR=/logdir" \
-   -e "CUDNN_BENCHMARK='True'" \
-   -e "CUDNN_DETERMINISTIC='True'" \
-   -e "WORKDIR=/logdir" \
-   -e "DATADIR=/data" \
-   -e "MAX_IMAGE_SIZE=224" \
-   -e "BALANCE_STRATEGY=256" \
-   -e "CONFIG_TEMPLATE=./configs/templates/main.yml" \
-   -e "NUM_WORKERS=4" \
-   -e "BATCH_SIZE=256" \
-   -e "CRITERION=CrossEntropyLoss" \
-   catalyst-classification ./bin/catalyst-classification-pipeline.sh
+  -v $(pwd):/workspace/ \
+  -v $(pwd)/logs:/logdir/ \
+  -v $(pwd)/data/origin:/data \
+  -e "CUDA_VISIBLE_DEVICES=0" \
+  -e "CUDNN_BENCHMARK='True'" \
+  -e "CUDNN_DETERMINISTIC='True'" \
+  catalyst-classification ./bin/catalyst-classification-pipeline.sh \
+    --workdir /logdir \
+    --datadir /data \
+    --max-image-size 224 \  # 224 or 448 works good
+    --balance-strategy 256 \  # images in epoch per class, 1024 works good
+    --config-template ./configs/templates/main.yml \
+    --num-workers 4 \
+    --batch-size 256 \
+    --criterion CrossEntropyLoss  # one of CrossEntropyLoss, BCEWithLogits, FocalLossMultiClass
 ```
 The pipeline is running and you don’t have to do anything else, it remains to wait for the best model!
 
@@ -259,3 +257,83 @@ You can find much more options for configuring experiments in [catalyst document
 
 </p>
 </details>
+
+## 6. Autolabel
+
+#### Goals
+
+The classical way to reduce the amount of unlabeled data by having a trained model would be to run unlabeled dataset through the model and automatically label images with confidence of label prediction above the threshold. Then automatically labeled data pushing in the training process so as to optimize prediction accuracy.
+
+To run the iteration process we need to specify number of iterations `n-trials` and `threshold` of confidence to label image.
+
+- tune ResNetEncoder
+- train MultiHeadNet for image classification
+- predict unlabelled dataset
+- use most confident predictions as true labels
+- repeat
+
+
+#### Preparation
+
+```bash
+catalyst.classification/data/
+    raw/
+        all/
+            ...
+    clean/
+        0/
+            ...
+        1/
+            ...
+```
+
+#### Model training
+
+##### Run in local environment:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 \
+CUDNN_BENCHMARK="True" \
+CUDNN_DETERMINISTIC="True" \
+bash ./bin/catalyst-autolabel-pipeline.sh \
+  --workdir ./logs \
+  --datadir-clean ./data/clean \
+  --datadir-raw ./data/raw \
+  --n-trials 10 \
+  --threshold 0.8 \
+  --config-template ./configs/templates/autolabel.yml \
+  --max-image-size 224 \
+  --num-workers 4 \
+  --batch-size 256
+```
+
+##### Run in docker:
+
+```bash
+docker run -it --rm --shm-size 8G --runtime=nvidia \
+  -v $(pwd):/workspace/ \
+  -e "CUDA_VISIBLE_DEVICES=0" \
+  -e CUDNN_BENCHMARK="True" \
+  -e CUDNN_DETERMINISTIC="True" \
+  catalyst-classification bash ./bin/catalyst-autolabel-pipeline.sh \
+    --workdir ./logs \
+    --datadir-clean ./data/clean \
+    --datadir-raw ./data/raw \
+    --n-trials 10 \
+    --threshold 0.8 \
+    --config-template ./configs/templates/autolabel.yml \
+    --max-image-size 224 \
+    --num-workers 4 \
+    --batch-size 256
+```
+
+#### Results of autolabeling
+Out:
+```
+Predicted: 23 (100.00%)
+...
+Pseudo Lgabeling done. Nothing more to label.
+```
+Logs for trainings visualisation can be found here: `./logs/autolabel`
+
+Labeled raw data can be found here: `/data/data_clean/dataset.csv`
