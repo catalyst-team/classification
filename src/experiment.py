@@ -8,11 +8,11 @@ import torch.nn as nn
 
 from catalyst.data import (
     BalanceClassSampler,
-    ImageReader,
     ListDataset,
     ReaderCompose,
     ScalarReader,
 )
+from catalyst.contrib.data.cv import ImageReader
 from catalyst.dl import ConfigExperiment
 from catalyst.utils import read_csv_data
 
