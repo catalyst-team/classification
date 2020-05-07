@@ -6,9 +6,9 @@ import safitty
 import torch
 import torch.nn as nn
 
+from catalyst.contrib.data.cv import ImageReader
 from catalyst.data import (
     BalanceClassSampler,
-    ImageReader,
     ListDataset,
     ReaderCompose,
     ScalarReader,
