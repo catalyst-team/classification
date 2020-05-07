@@ -6,13 +6,13 @@ import safitty
 import torch
 import torch.nn as nn
 
+from catalyst.contrib.data.cv import ImageReader
 from catalyst.data import (
     BalanceClassSampler,
     ListDataset,
     ReaderCompose,
     ScalarReader,
 )
-from catalyst.contrib.data.cv import ImageReader
 from catalyst.dl import ConfigExperiment
 from catalyst.utils import read_csv_data
 
