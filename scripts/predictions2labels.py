@@ -8,6 +8,7 @@ import safitty
 
 
 def build_args(parser):
+    """Constructs the command-line arguments for ``predictions2labels``."""
     parser.add_argument("--in-npy", type=Path, required=True)
     parser.add_argument("--in-csv-infer", type=Path, required=True)
     parser.add_argument("--in-csv-train", type=Path, required=True)
@@ -19,6 +20,7 @@ def build_args(parser):
 
 
 def parse_args():
+    """Parses the command line arguments for the main method."""
     parser = argparse.ArgumentParser()
     build_args(parser)
     args = parser.parse_args()
@@ -31,11 +33,8 @@ def softmax(x):
     return e_x / e_x.sum(axis=1, keepdims=True)
 
 
-def path2name(x):
-    return Path(x).name
-
-
 def main(args, _=None):
+    """Run the ``predictions2labels`` script."""
     logits = np.load(args.in_npy, mmap_mode="r")
     probs = softmax(logits)
     confidence = np.max(probs, axis=1)
@@ -61,7 +60,7 @@ def main(args, _=None):
             "Pseudo Labeling done. Nothing more to label."
         )
 
-    counter_ = 0
+    counter = 0
     for _, row in df_infer.iterrows():
         if row["confidence"] < args.threshold:
             continue
@@ -72,10 +71,10 @@ def main(args, _=None):
         filepath_dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(filepath_src, filepath_dst)
 
-        counter_ += 1
-    print(f"Predicted: {counter_} ({100 * counter_ / len(df_infer):2.2f}%)")
+        counter += 1
+    print(f"Predicted: {counter} ({100 * counter / len(df_infer):2.2f}%)")
 
-    if counter_ == 0:
+    if counter == 0:
         raise NotImplementedError(
             "Pseudo Labeling done. Nothing more to label."
         )

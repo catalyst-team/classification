@@ -1,1 +1,1 @@
-catalyst-codestyle
+catalyst-codestyle==20.06.1

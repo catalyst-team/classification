@@ -1,3 +1,4 @@
+from typing import Optional
 import collections
 
 import numpy as np
@@ -18,37 +19,68 @@ from catalyst.utils import read_csv_data
 
 
 class Experiment(ConfigExperiment):
+    """Classification Experiment."""
+
     def _postprocess_model_for_stage(self, stage: str, model: nn.Module):
-        model_ = model
-        if isinstance(model, torch.nn.DataParallel):
-            model_ = model_.module
+        model = (
+            model.module if isinstance(model, torch.nn.DataParallel) else model
+        )
 
         if stage in ["debug", "stage1"]:
-            for param in model_.encoder_net.parameters():
+            for param in model.encoder_net.parameters():
                 param.requires_grad = False
         elif stage == "stage2":
-            for param in model_.encoder_net.parameters():
+            for param in model.encoder_net.parameters():
                 param.requires_grad = True
-        return model_
+        return model
 
     def get_datasets(
         self,
         stage: str,
-        datapath: str = None,
-        in_csv: str = None,
-        in_csv_train: str = None,
-        in_csv_valid: str = None,
-        in_csv_infer: str = None,
-        train_folds: str = None,
-        valid_folds: str = None,
-        tag2class: str = None,
-        class_column: str = None,
-        tag_column: str = None,
+        datapath: Optional[str] = None,
+        in_csv: Optional[str] = None,
+        in_csv_train: Optional[str] = None,
+        in_csv_valid: Optional[str] = None,
+        in_csv_infer: Optional[str] = None,
+        train_folds: Optional[str] = None,
+        valid_folds: Optional[str] = None,
+        tag2class: Optional[str] = None,
+        class_column: Optional[str] = None,
+        tag_column: Optional[str] = None,
         folds_seed: int = 42,
         n_folds: int = 5,
-        one_hot_classes: int = None,
+        one_hot_classes: Optional[int] = None,
         balance_strategy: str = "upsampling",
     ):
+        """Returns the datasets for a given stage and epoch.
+
+        Args:
+            stage (str): stage name of interest,
+                like "pretrain" / "train" / "finetune" / etc
+            datapath (str): path to folder with images and masks
+            in_csv (Optional[str]): path to CSV annotation file. Look at
+                :func:`catalyst.contrib.utils.pandas.read_csv_data` for details
+            in_csv_train (Optional[str]): path to CSV annotaion file
+                with train samples.
+            in_csv_valid (Optional[str]): path to CSV annotaion file
+                with the validation samples
+            in_csv_infer (Optional[str]): path to CSV annotaion file
+                with test samples
+            train_folds (Optional[str]): folds to use for training
+            valid_folds (Optional[str]): folds to use for validation
+            tag2class (Optional[str]): path to JSON file with mapping from
+                class name (tag) to index
+            class_column (Optional[str]): name of class index column in the CSV
+            tag_column (Optional[str]): name of class name in the CSV file
+            folds_seed (int): random seed to use
+            n_folds (int): number of folds on which data will be split
+            one_hot_classes (int): number of one-hot classes
+            balance_strategy (str): strategy to handle imbalanced data,
+                look at :class:`catalyst.data.BalanceClassSampler` for details
+
+        Returns:
+            Dict: dictionary with datasets for current stage.
+        """
         datasets = collections.OrderedDict()
         tag2class = safitty.load(tag2class) if tag2class is not None else None
 

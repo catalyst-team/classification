@@ -10,29 +10,64 @@ from catalyst.contrib.models.cv import ResnetEncoder
 
 
 class MultiHeadNet(nn.Module):
+    """Multi0head network."""
+
     def __init__(
         self,
         encoder_net: nn.Module,
         head_nets: nn.ModuleList,
         embedding_net: nn.Module = None,
     ):
+        """Constructor method for the :class:`MultiHeadNet` class.
+
+        Args:
+            encoder_net (nn.Module): encoder network (resnset)
+                common for all heads
+            head_nets (nn.ModuleList): list of network heads
+            embedding_net (nn.Module): network responsible for embeddings
+                extraction, common for all heads
+        """
         super().__init__()
         self.encoder_net = encoder_net
         self.embedding_net = embedding_net or (lambda *args: args)
         self.head_nets = head_nets
 
-    def forward_embedding(self, x: torch.Tensor):
+    def forward_embedding(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward propagation method for the embedding network.
+
+        Args:
+            x (torch.Tensor): input batch
+
+        Returns:
+            torch.Tensor: batch of embeddings
+        """
         features = self.encoder_net(x)
         embeddings = self.embedding_net(features)
         return embeddings
 
-    def forward_class(self, x: torch.Tensor):
+    def forward_class(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward propagation method for the encoder and heads.
+
+        Args:
+            x (torch.Tensor): input embeddings
+
+        Returns:
+            torch.Tensor: batch of logits
+        """
         features = self.encoder_net(x)
         embeddings = self.embedding_net(features)
         logits = self.head_nets["logits"](embeddings)
         return logits
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> dict:
+        """Forward propagation method for the network.
+
+        Args:
+            x (torch.Tensor): batch of the images
+
+        Returns:
+            dict: dictionary of predictions
+        """
         features = self.encoder_net(x)
         embeddings = self.embedding_net(features)
         result = {"features": features, "embeddings": embeddings}
@@ -50,7 +85,17 @@ class MultiHeadNet(nn.Module):
         embedding_net_params: Dict = None,
         heads_params: Dict = None,
     ) -> "MultiHeadNet":
+        """Create neural network from config.
 
+        Args:
+            image_size (int): size of the first conv layer
+            encoder_params (dict): `ResnetEncoder` constructor params
+            embedding_net_params (dict): `SequentialNet` constructor params
+            heads_params (dict): heads params
+
+        Returns:
+            MultiHeadNet: network instance
+        """
         encoder_params_ = deepcopy(encoder_params)
         embedding_net_params_ = deepcopy(embedding_net_params)
         heads_params_ = deepcopy(heads_params)
