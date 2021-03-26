@@ -36,8 +36,10 @@ Project [manifest](https://github.com/catalyst-team/catalyst/blob/master/MANIFES
 
 # Catalyst.Classification [![Build Status](http://66.248.205.49:8111/app/rest/builds/buildType:id:Classification_Tests/statusIcon.svg)](http://66.248.205.49:8111/project.html?projectId=Classification&tab=projectOverview&guest=1) [![Github contributors](https://img.shields.io/github/contributors/catalyst-team/classification.svg?logo=github&logoColor=white)](https://github.com/catalyst-team/classification/graphs/contributors)
 
+> *Note: this repo uses advanced Catalyst Config API and could be a bit out-of-day right now. 
+> Use [Catalyst's minimal examples section](https://github.com/catalyst-team/catalyst#minimal-examples) for a starting point and up-to-day use cases, please.*
+
 You will learn how to build image classification pipeline with transfer learning using the Catalyst framework to get reproducible results.
-<br/> *Note: this repo could be a bit out-of-day right now. Use [Catalyst's minimal examples section](https://github.com/catalyst-team/catalyst#minimal-examples) for up-to-day use cases, please.*
 
 ## Goals
 1. Install requirements
